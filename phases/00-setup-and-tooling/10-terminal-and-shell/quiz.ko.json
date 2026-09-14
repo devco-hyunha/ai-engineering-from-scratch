@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "셸(Shell) 명령어에서 파이프 연산자 '|'의 역할은 무엇인가요?",
+      "options": [
+        "두 개의 명령어를 백그라운드에서 병렬로 실행",
+        "두 개의 텍스트 파일을 하나로 병합",
+        "앞선 명령어의 표준 출력(stdout)을 다음 명령어의 표준 입력(stdin)으로 연결",
+        "명령어의 실행 결과를 파일로 저장"
+      ],
+      "correct": 2,
+      "explanation": "파이프 연산자는 여러 명령어를 파이프라인으로 연결합니다. 예를 들어 'cat log.txt | grep error'는 log.txt의 내용을 grep 명령어로 전달하여 'error'가 포함된 줄만 필터링합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "터미널에서 장시간 실행 중인 프로세스가 있을 때, 해당 터미널 창을 그냥 닫아버리면 어떤 일이 발생하나요?",
+      "options": [
+        "새 터미널을 열 때까지 프로세스가 일시 정지됨",
+        "아무런 영향 없이 백그라운드에서 계속 정상 실행됨",
+        "터미널 종료 시그널(SIGHUP)을 수신하여 기본적으로 프로세스가 즉시 강제 종료됨",
+        "프로세스가 자동으로 운영체제 백그라운드 시스템 데몬으로 전환됨"
+      ],
+      "correct": 2,
+      "explanation": "터미널 세션이 종료되면 연결된 자식 프로세스들에게 SIGHUP 신호가 전송되어 프로세스가 종료됩니다. tmux, screen, nohup 등을 사용해야 터미널 연결이 끊어져도 작업을 보존할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "오랜 시간이 걸리는 모델 학습 시, 단순 'nohup command &' 방식 대비 tmux를 사용하는 가장 결정적인 장점은 무엇인가요?",
+      "options": [
+        "tmux가 비정상 종료된 프로세스를 자동으로 재시작해주기 때문",
+        "tmux가 nohup보다 CPU 점유율을 훨씬 적게 사용하기 때문",
+        "세션에서 분리(detach)된 후 나중에 다시 접속(attach)하여 여러 창과 분할 패널을 통해 실시간 출력을 그대로 모니터링할 수 있기 때문",
+        "디스크 공간을 아끼기 위해 프로세스 출력을 실시간으로 압축하기 때문"
+      ],
+      "correct": 2,
+      "explanation": "tmux는 터미널 세션을 서버에 영구 유지하므로, SSH 접속이 끊겨도 언제든 다시 붙어서(attach) 실시간 진행 상황을 확인하고 대화형으로 상호작용할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "'python train.py > output.log 2>&1' 명령어는 무엇을 수행하나요?",
+      "options": [
+        "train.py를 실행하고 에러 내용만 output.log에 기록함",
+        "train.py에 메모리 할당을 2배로 부여하여 실행함",
+        "train.py를 두 번 실행하고 두 번째 결과를 기록함",
+        "train.py의 표준 출력(stdout)과 표준 에러(stderr)를 모두 한곳으로 모아 output.log 파일로 리다이렉션하여 저장함"
+      ],
+      "correct": 3,
+      "explanation": "'> output.log'는 표준 출력(파일 디스크립터 1)을 파일로 보내고, '2>&1'은 표준 에러(2)를 표준 출력(1)과 같은 곳으로 합치므로, 모든 콘솔 로그와 오류를 단일 파일에 완전하게 기록합니다."
+    },
+    {
+      "stage": "post",
+      "question": "원격 GPU 서버의 8888 포트에서 실행 중인 Jupyter 노트북을 로컬 컴퓨터의 웹 브라우저에서 직접 열기 위해 사용하는 SSH 포트 포워딩 명령어는 무엇인가요?",
+      "options": [
+        "ssh -L 8888:localhost:8888 user@gpu-box",
+        "ssh user@gpu-box --forward-port 8888",
+        "scp -P 8888 user@gpu-box:~/notebook.ipynb",
+        "rsync -avz user@gpu-box:8888 localhost:8888"
+      ],
+      "correct": 0,
+      "explanation": "SSH 로컬 포트 포워딩(-L 로컬포트:대상호스트:대상포트)은 원격 서버의 포트를 내 로컬 머신의 포트로 안전하게 터널링해 줍니다. 이후 로컬 브라우저에서 http://localhost:8888 로 접속할 수 있습니다."
+    }
+  ]
+}
