@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Python에서 가상 환경(Virtual Environment)이 해결해 주는 핵심 문제는 무엇인가요?",
+      "options": [
+        "Python 스크립트 관리를 위한 그래픽 인터페이스 제공",
+        "서로 다른 프로젝트 간에 패키지 버전이 충돌하지 않도록 프로젝트별 의존성 격리",
+        "패키지를 항상 최신 버전으로 자동 업데이트",
+        "인터프리터를 최적화하여 Python 코드 실행 속도 향상"
+      ],
+      "correct": 1,
+      "explanation": "가상 환경은 각 프로젝트마다 독립된 패키지 공간을 제공합니다. 가상 환경이 없으면 A 프로젝트를 위해 설치한 PyTorch 2.4가 B 프로젝트가 요구하는 PyTorch 2.1을 덮어써서 망가뜨릴 수 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Python 의존성 관리에서 락파일(Lockfile)의 목적은 무엇인가요?",
+      "options": [
+        "Python 인터프리터 버전을 고정하는 파일",
+        "프로젝트 의존성을 암호화하는 파일",
+        "다른 사용자가 코드를 수정하지 못하도록 차단하는 파일",
+        "누구나 동일한 환경을 재현할 수 있도록 전이 의존성을 포함한 모든 패키지의 정확한 버전을 고정하는 파일"
+      ],
+      "correct": 3,
+      "explanation": "락파일(uv.lock, poetry.lock 등)은 하위 전이 의존성까지 포함한 모든 패키지의 정확한 해시와 버전을 기록하여, 어느 환경에서나 100% 동일한 설치 결과를 보장합니다."
+    },
+    {
+      "stage": "post",
+      "question": "현재 터미널의 pip 및 python 명령어가 시스템 Python이 아닌 가상 환경을 가리키고 있는지 어떻게 검증할 수 있나요?",
+      "options": [
+        "'python --check-env' 실행",
+        "'pip --version'을 실행하고 버전 번호 확인",
+        "'which python'(Windows는 'where python')을 실행하여 경로가 /usr/bin이 아닌 .venv를 가리키는지 확인",
+        "터미널 배경색이 변경되었는지 육안으로 확인"
+      ],
+      "correct": 2,
+      "explanation": "'which python'(Windows: where python)은 인터프리터의 전체 실행 파일 경로를 출력합니다. 프로젝트 디렉터리 내의 .venv 경로가 표시된다면 가상 환경이 활성화된 것입니다."
+    },
+    {
+      "stage": "post",
+      "question": "동일한 환경 안에서 pip와 conda 명령어를 혼용해서 설치하면 문제가 되는 이유는 무엇인가요?",
+      "options": [
+        "pip 패키지가 conda의 Python 인터프리터와 근본적으로 호환되지 않기 때문",
+        "pip 설치가 conda의 의존성 추적 그래프를 우회하여 추적 불가능한 의존성 충돌을 유발하기 때문",
+        "모든 패키지가 차지하는 디스크 공간이 두 배로 늘어나기 때문",
+        "conda는 pip가 이미 설치한 패키지를 인식하지 못하기 때문"
+      ],
+      "correct": 1,
+      "explanation": "Conda는 자체적인 엄격한 솔버(solver)로 의존성 그래프를 관리합니다. pip로 패키지를 설치하면 conda 솔버를 거치지 않으므로 상태가 왜곡되어 심각한 패키지 충돌을 일으킵니다."
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA GPU가 장착된 시스템인데도 PyTorch 코드에서 'CUDA not available'이 발생합니다. 가장 가능성이 높은 원인은 무엇인가요?",
+      "options": [
+        "호스트 GPU 드라이버 버전과 호환되지 않는 잘못된 CUDA 빌드의 PyTorch가 설치되었기 때문",
+        "장착된 GPU가 하드웨어적으로 CUDA를 지원하지 않기 때문",
+        "torch.cuda 모듈을 별도로 import하지 않았기 때문",
+        "가상 환경은 GPU 하드웨어에 접근할 수 없기 때문"
+      ],
+      "correct": 0,
+      "explanation": "PyTorch는 특정 CUDA 버전에 맞춰 컴파일된 바이너리로 제공됩니다. 설치된 PyTorch의 CUDA 요구 버전이 시스템에 설치된 NVIDIA 드라이버 지원 버전보다 높으면 CUDA를 로드할 수 없습니다."
+    }
+  ]
+}
