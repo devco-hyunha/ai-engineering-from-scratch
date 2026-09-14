@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "텐서의 'shape'는 무엇을 설명하나요?",
+      "options": [
+        "각 축을 따른 크기를 나열한 튜플",
+        "텐서의 메모리 주소",
+        "텐서의 총 원소 개수",
+        "텐서 원소의 데이터 타입"
+      ],
+      "correct": 0,
+      "explanation": "shape는 각 축을 따른 크기를 나열한 튜플입니다. 예를 들어 shape (2, 3, 4)인 텐서는 축 0에 2개, 축 1에 3개, 축 2에 4개 원소를 가집니다."
+    },
+    {
+      "stage": "pre",
+      "question": "PyTorch에서 이미지 배치 텐서는 기본적으로 어떤 레이아웃을 사용하나요?",
+      "options": [
+        "CHWN (channels, height, width, batch)",
+        "NHWC (batch, height, width, channels)",
+        "WHCN (width, height, channels, batch)",
+        "NCHW (batch, channels, height, width)"
+      ],
+      "correct": 3,
+      "explanation": "PyTorch는 기본적으로 NCHW(채널 먼저) 레이아웃을 사용합니다. TensorFlow는 NHWC(채널 나중)가 기본입니다. 레이아웃이 어긋나면 조용한 오류나 성능 문제가 납니다."
+    },
+    {
+      "stage": "post",
+      "question": "shape (8, 1, 6, 1)과 (7, 1, 5)를 브로드캐스트하면 결과 shape는?",
+      "options": [
+        "(8, 7, 6, 5)",
+        "(8, 1, 6, 5)",
+        "(8, 7, 6, 1)",
+        "브로드캐스트 실패 — 모양이 호환되지 않음"
+      ],
+      "correct": 0,
+      "explanation": "오른쪽부터 맞춥니다: (8,1,6,1)과 (1,7,1,5). 차원이 같거나 하나가 1이면 호환됩니다. 결과는 각 축의 최댓값: (8, 7, 6, 5)."
+    },
+    {
+      "stage": "post",
+      "question": "einsum 식 'bhtd,bhsd->bhts'에서 인덱스 'd'에는 무슨 일이 일어나나요?",
+      "options": [
+        "두 입력 텐서 사이에서 전치된다",
+        "두 입력에는 있지만 출력에는 없으므로 합산(수축)된다",
+        "두 텐서에 걸쳐 브로드캐스트된다",
+        "출력에 새 축으로 유지된다"
+      ],
+      "correct": 1,
+      "explanation": "einsum에서 입력에는 있지만 출력에는 없는 인덱스는 합산됩니다. 'd'는 'bhtd'와 'bhsd'에는 있지만 출력 'bhts'에는 없으므로 수축(곱하고 합산)됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "PyTorch에서 전치된 텐서에 .view()를 호출하면 실패하는 이유는?",
+      "options": [
+        "전치 후 텐서가 메모리에서 비연속이고, view는 연속 데이터가 필요하다",
+        "전치된 텐서는 데이터 타입이 다르다",
+        "전치는 총 원소 수를 바꾼다",
+        "view는 2D 텐서에만 동작한다"
+      ],
+      "correct": 0,
+      "explanation": "전치는 데이터를 옮기지 않고 strides만 바꿔 텐서를 비연속으로 만듭니다. .view()는 연속 메모리 레이아웃이 필요합니다. .reshape()를 쓰거나 먼저 .contiguous()를 호출하세요."
+    }
+  ]
+}
