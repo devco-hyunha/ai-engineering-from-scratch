@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "나이브 베이즈에서 '나이브'한 가정은 무엇인가요?",
+      "options": [
+        "각 클래스의 사전 확률이 같다",
+        "모든 특성이 클래스 라벨이 주어졌을 때 조건부 독립이다",
+        "데이터가 정규 분포를 따른다",
+        "모델에 학습할 파라미터가 없다"
+      ],
+      "correct": 1,
+      "explanation": "나이브 베이즈는 클래스가 주어지면 모든 특성이 서로 독립이라고 가정합니다. 수학적으로는 틀렸지만(예: 'machine'과 'learning'이 함께 나타남) 실무에서 잘 작동합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "나이브 베이즈에서 라플라스 스무딩이 막는 것은?",
+      "options": [
+        "학습 중 어떤 클래스에서 한 번도 보지 못한 단어의 확률 0",
+        "데이터셋의 클래스 불균형",
+        "고차원 데이터에서의 느린 학습",
+        "큰 데이터셋에 대한 과적합"
+      ],
+      "correct": 0,
+      "explanation": "스무딩이 없으면 '스팸' 학습 이메일에 한 번도 안 나온 단어는 P(word|spam) = 0이 되어, 다른 강한 증거와 무관하게 전체 곱이 0이 됩니다. 라플라스 스무딩은 각 카운트에 1을 더합니다."
+    },
+    {
+      "stage": "post",
+      "question": "텍스트에서 나이브한 독립성 가정은 분명히 틀렸습니다. 그런데도 나이브 베이즈가 잘 분류하는 이유는?",
+      "options": [
+        "독립성이 성립하는 아주 작은 어휘에서만 작동하기 때문",
+        "특성이 진짜로 독립일 때만 작동하기 때문",
+        "현대 구현이 몰래 독립성 가정을 제거하기 때문",
+        "분류는 정확한 확률 추정치가 아니라 올바른 클래스 순위만 필요하고, 가정이 모든 클래스에 비슷하게 영향을 주는 안정적 오차를 넣기 때문"
+      ],
+      "correct": 3,
+      "explanation": "NB는 정확한 확률이 아니라 클래스 순위만 맞으면 됩니다. 독립성 가정은 높은 편향·낮은 분산이라 데이터가 제한적일 때 안정적입니다. 상관된 특성도 올바른 클래스에 대해 증거를 이중 계산합니다."
+    },
+    {
+      "stage": "post",
+      "question": "Multinomial NB와 Gaussian NB는 언제 써야 하나요?",
+      "options": [
+        "Multinomial은 단어 카운트/빈도 특성, Gaussian은 연속 실수값 특성",
+        "서로 바꿔 써도 된다 -- 더 빠른 쪽을 항상 쓴다",
+        "Multinomial은 이진 데이터, Gaussian은 다중 클래스 문제",
+        "Multinomial은 회귀, Gaussian은 분류"
+      ],
+      "correct": 0,
+      "explanation": "Multinomial NB는 특성 카운트(텍스트의 단어 빈도)를 모델링합니다. Gaussian NB는 특성이 정규 분포를 따른다고 가정해, 측정값이나 센서 읽기 같은 연속형 특성에 적합합니다."
+    },
+    {
+      "stage": "post",
+      "question": "이메일에 'free'가 두 번, 'money'가 한 번 있습니다. 로그 확률을 쓰는 Multinomial NB에서 스팸 점수는 어떻게 계산되나요?",
+      "options": [
+        "P(spam) * P(free|spam) * P(money|spam)",
+        "log P(spam) * 2 * log P(free|spam)",
+        "log P(spam) + log P(free|spam) + log P(money|spam)",
+        "log P(spam) + 2 * log P(free|spam) + 1 * log P(money|spam)"
+      ],
+      "correct": 3,
+      "explanation": "Multinomial NB는 단어 가능도를 카운트 거듭제곱으로 곱합니다. 로그 공간: log P(spam) + 2*log P(free|spam) + 1*log P(money|spam). 단어 카운트가 지수처럼 작용합니다."
+    }
+  ]
+}
