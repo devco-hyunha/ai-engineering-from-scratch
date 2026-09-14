@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "경사 하강에서 모멘텀이 푸는 문제는?",
+      "options": [
+        "과적합을 막는다",
+        "학습률이 필요 없어진다",
+        "메모리 사용을 줄인다",
+        "과거 기울기를 누적해 진동을 감쇠하고, 일관된 방향으로의 이동을 가속한다"
+      ],
+      "correct": 3,
+      "explanation": "좁은 골짜기에서 기울기는 골짜지를 가로질러 진동하며 따라가는 방향으로는 천천히 진행합니다. 모멘텀은 과거 기울기를 누적합니다: 일관된 방향은 증폭되고 진동하는 방향은 상쇄되어, 더 부드럽고 빠른 수렴을 줍니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Adam과 AdamW의 핵심 차이는?",
+      "options": [
+        "AdamW는 더 높은 학습률을 쓴다",
+        "AdamW는 transformer에서만 동작한다",
+        "AdamW는 기울기를 통하지 않고 가중치에 직접 weight decay를 적용해 올바른 정규화를 준다",
+        "AdamW는 모멘텀을 쓰지 않는다"
+      ],
+      "correct": 2,
+      "explanation": "Adam + L2에서는 적응형 학습률이 정규화 항을 파라미터마다 다르게 스케일합니다. AdamW는 weight decay를 기울기 갱신과 분리해, 기울기 통계와 무관하게 균일한 수축을 적용합니다."
+    },
+    {
+      "stage": "post",
+      "question": "Adam이 학습 초기 스텝에서 편향 보정을 쓰는 이유는?",
+      "options": [
+        "과적합을 막기 위해",
+        "모멘트 추정치가 0으로 초기화되어 초기 값이 0 쪽으로 편향되므로, 보정이 이 콜드 스타트를 보상한다",
+        "큰 기울기를 클립하기 위해",
+        "수렴을 가속하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "beta1=0.9인 1스텝에서 m_1 = 0.1 * gradient(10배 너무 작음). (1 - 0.9^1) = 0.1로 나누면 실제 기울기로 보정됩니다. 보정은 ~50 스텝 이후에는 무시할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "Adam의 표준 기본 하이퍼파라미터는?",
+      "options": [
+        "lr=0.0001, beta1=0.8, beta2=0.9",
+        "lr=0.01, beta1=0.99, beta2=0.99",
+        "lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8",
+        "lr=0.1, beta1=0.5, beta2=0.5"
+      ],
+      "correct": 2,
+      "explanation": "원본 Adam 논문(Kingma & Ba, 2014)은 lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8를 권장했습니다. 이 기본값은 대부분의 문제에서 잘 동작합니다."
+    },
+    {
+      "stage": "post",
+      "question": "transformer와 LLM 학습의 현대 기본 옵티마이저는?",
+      "options": [
+        "SGD with momentum",
+        "RMSProp",
+        "AdamW",
+        "Vanilla SGD"
+      ],
+      "correct": 2,
+      "explanation": "AdamW(분리된 weight decay가 있는 Adam)는 BERT, GPT, LLaMA, 사실상 모든 현대 transformer 학습에 쓰입니다. 적응형 학습률과 올바른 weight decay 정규화를 결합합니다."
+    }
+  ]
+}
