@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Linux 파일 경로에서 '~' (물결표) 기호는 무엇을 의미하나요?",
+      "options": [
+        "파일 시스템의 최상위 루트 디렉터리 (/)",
+        "시스템 임시 파일 디렉터리 (/tmp)",
+        "현재 로그인한 사용자의 홈 디렉터리 (/home/username)",
+        "시스템 실행 파일이 설치되는 디렉터리 (/usr/bin)"
+      ],
+      "correct": 2,
+      "explanation": "물결표(~)는 현재 로그인된 유저의 홈 디렉터리를 가리키는 셸 단축 표기입니다. 어떤 경로에서든 'cd ~'를 입력하면 홈 디렉터리로 즉시 이동합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "명령어 앞에 'sudo'를 붙이는 이유는 무엇인가요?",
+      "options": [
+        "루트(root, 관리자) 최고 권한으로 해당 명령어를 실행하기 위해",
+        "명령어를 안전한 샌드박스 격리 환경에서 실행하기 위해",
+        "명령어의 CPU 처리 속도를 높이기 위해",
+        "명령어 출력 결과를 시스템 감사 로그 파일에 기록하기 위해"
+      ],
+      "correct": 0,
+      "explanation": "sudo(superuser do)는 일반 사용자가 패키지 설치나 시스템 설정 수정 등 관리자 권한이 필요한 단일 명령어를 일시적으로 최고 관리자(root) 권한으로 실행할 수 있게 해줍니다."
+    },
+    {
+      "stage": "post",
+      "question": "셸 스크립트를 직접 실행하려 할 때 'Permission denied' 오류가 발생했습니다. 이를 해결하는 표준 명령어는 무엇인가요?",
+      "options": [
+        "chown root script.sh",
+        "mv script.sh /usr/bin/",
+        "chmod +x script.sh",
+        "sudo rm script.sh"
+      ],
+      "correct": 2,
+      "explanation": "파일에 실행 권한(execute bit)이 부여되지 않은 상태입니다. 'chmod +x script.sh'를 실행하여 파일에 실행 권한을 추가해야 셸이 스크립트를 실행할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "원격 GPU 서버에서 대용량 데이터셋으로 인해 디스크가 가득 찼을 때, 가장 많은 용량을 차지하는 최상위 디렉터리를 찾아내는 명령어는 무엇인가요?",
+      "options": [
+        "ls -la /",
+        "cat /proc/meminfo",
+        "du -h --max-depth=1 / | sort -hr | head -20",
+        "free -h"
+      ],
+      "correct": 2,
+      "explanation": "du -h는 사람이 읽기 쉬운 단위로 디스크 점유 용량을 계산하고, --max-depth=1은 최상위 하위 폴더만 조회하며, sort -hr은 용량이 큰 순서대로 내림차순 정렬하여 상위 디렉터리를 즉시 식별해 줍니다."
+    },
+    {
+      "stage": "post",
+      "question": "macOS(BSD)와 Linux(GNU) 간에 'sed -i' 파일 인라인 치환 명령어를 실행할 때 발생하는 중요한 차이점은 무엇인가요?",
+      "options": [
+        "Linux의 sed가 macOS의 sed보다 훨씬 빠름",
+        "Linux sed는 정규 표현식을 지원하지 않음",
+        "macOS sed는 원본 파일을 직접 수정할 수 없음",
+        "macOS는 백업 확장자 인자로 빈 문자열('sed -i \"\"')을 반드시 요구하지만, Linux는 백업 확장자 없이 단독 'sed -i'를 허용함"
+      ],
+      "correct": 3,
+      "explanation": "macOS는 BSD 계열 sed를 사용하여 백업 확장자 인자를 필수로 받으므로 'sed -i \"\"' 형태로 작성해야 합니다. 반면 Linux의 GNU sed는 확장자 없이 'sed -i'만으로 동작하므로 크로스 플랫폼 셸 스크립트 작성 시 주의해야 합니다."
+    }
+  ]
+}
