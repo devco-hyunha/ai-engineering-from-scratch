@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "PyTorch와 JAX의 근본적인 설계 차이는 무엇인가요?",
+      "options": [
+        "PyTorch가 더 빠르다",
+        "PyTorch는 텐서를 즉시 변이시키고, JAX는 부수 효과 없는 순수 함수를 컴파일한다",
+        "PyTorch는 자동 미분을 지원하지 않는다",
+        "JAX는 GPU를 지원하지 않는다"
+      ],
+      "correct": 1,
+      "explanation": "PyTorch는 가변 상태로 즉시 실행합니다(예: tensor.grad가 제자리 수정). JAX는 함수형 프로그래밍을 따릅니다. 함수는 순수하고, 상태는 명시적이며, jit 컴파일이 전체 계산 그래프를 최적화합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "jax.jit은 무엇을 하나요?",
+      "options": [
+        "드롭아웃 정규화를 추가한다",
+        "Python 함수를 인터프리트된 Python보다 훨씬 빠른 최적화된 XLA 코드로 컴파일한다",
+        "기울기를 계산한다",
+        "모델 가중치를 초기화한다"
+      ],
+      "correct": 1,
+      "explanation": "jax.jit은 함수를 추적해 XLA(Accelerated Linear Algebra) 기계어로 컴파일합니다. 첫 호출은 느리고(컴파일), 이후 호출은 최적화된 컴파일 버전을 실행합니다."
+    },
+    {
+      "stage": "post",
+      "question": "jax.vmap은 무엇을 하나요?",
+      "options": [
+        "2차 기울기를 계산한다",
+        "GPU 메모리를 관리한다",
+        "모델 아키텍처를 검증한다",
+        "명시적 루프 없이 배치 차원에 걸쳐 함수를 벡터화한다"
+      ],
+      "correct": 3,
+      "explanation": "jax.vmap은 단일 예제용으로 작성된 함수를 전체 배치를 처리하도록 자동 벡터화합니다. 샘플 하나용 코드를 쓰면 vmap이 배칭을 처리하며, 종종 수동 배치 루프보다 효율적입니다."
+    },
+    {
+      "stage": "post",
+      "question": "JAX는 모델 상태(가중치)를 PyTorch와 어떻게 다르게 다루나요?",
+      "options": [
+        "JAX는 명시적 상태 전달이 필요하다 — 가중치는 가변 객체 속성이 아니라 함수 인자다",
+        "JAX와 PyTorch는 상태를 동일하게 다룬다",
+        "JAX는 학습 가능한 가중치를 지원하지 않는다",
+        "JAX는 가중치를 CPU에만 저장한다"
+      ],
+      "correct": 0,
+      "explanation": "PyTorch에서 가중치는 nn.Module 객체 안에 살고 제자리에서 변이됩니다. JAX에서 가중치는 함수 인자로 명시적으로 전달되고 새 값으로 반환됩니다. 변이 없음, 숨은 상태 없음."
+    },
+    {
+      "stage": "post",
+      "question": "언제 PyTorch 대신 JAX를 고를까요?",
+      "options": [
+        "사전학습 모델의 가장 큰 생태계가 필요할 때",
+        "모바일 디바이스에 배포할 때",
+        "작은 모델을 빠르게 프로토타이핑할 때",
+        "TPU 포드에서 대규모로 학습할 때 — 컴파일과 함수형 변환이 큰 속도 향상을 줄 때"
+      ],
+      "correct": 3,
+      "explanation": "JAX는 규모에서 뛰어납니다. jit 컴파일이 Python 오버헤드를 제거하고, pmap이 다중 디바이스 병렬을 자연스럽게 다루며, 전체 계산 그래프에 걸친 XLA 최적화가 TPU 클러스터에서 큰 속도 향상을 줍니다."
+    }
+  ]
+}
