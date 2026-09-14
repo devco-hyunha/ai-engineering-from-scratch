@@ -207,6 +207,19 @@
       color: var(--text-muted);
     }
 
+    .catalog-title-ko {
+      display: block;
+      margin-top: 2px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    .catalog-table a:hover .catalog-title-ko {
+      color: var(--accent);
+    }
+
     .catalog-phase-label {
       font-family: var(--font-mono);
       font-size: 0.8rem;
@@ -330,6 +343,7 @@
           <span class="star-count" data-loading="true" aria-label="GitHub stars">…</span>
         </a>
       </nav>
+      <div id="langPicker"></div>
       <button class="search-toggle" type="button" data-cmd-palette
         aria-label="Search (⌘K)" title="Search (⌘K)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -348,8 +362,8 @@
   <main class="catalog-page" id="main">
     <div class="container">
       <div class="catalog-header">
-        <h1>Lesson Catalog</h1>
-        <p>Every lesson across all 20 phases. Search, filter, sort.</p>
+        <h1 id="catalogTitle">Lesson Catalog</h1>
+        <p id="catalogSubtitle">Every lesson across all 20 phases. Search, filter, sort.</p>
       </div>
       <div class="catalog-controls">
         <input type="text" class="catalog-search" id="catalogSearch" placeholder="Search lessons..." aria-label="Search lessons">
@@ -928,6 +942,10 @@
     </div>
   </footer>
 
+  <script src="langs.js?v=20260802a"></script>
+  <script src="lang-picker.js?v=20260808d" defer></script>
+  <script src="ui-i18n.js?v=20260911c"></script>
+  <script src="lesson-titles-i18n.ko.js?v=20260914a"></script>
   <script src="data.js?v=20260821c"></script>
   <script src="progress.js?v=20260822a"></script>
   <script src="header.js?v=20260829b" defer></script>
@@ -952,6 +970,79 @@
       }
 
       updateIcon();
+
+      function getLang() {
+        if (typeof window.AIFS_currentLang === 'function') return window.AIFS_currentLang();
+        try {
+          var saved = localStorage.getItem('lang');
+          if (saved) return saved;
+        } catch (_) {}
+        return document.documentElement.lang || 'en';
+      }
+
+      function getBundle() {
+        var lang = getLang();
+        return (window.AIFS_UI_I18N && window.AIFS_UI_I18N[lang]) ||
+          (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en) || {};
+      }
+
+      function getI18n() {
+        return getBundle().catalog || {};
+      }
+
+      function formatTemplate(template, values) {
+        return String(template || '').replace(/\{(\w+)\}/g, function (_, key) {
+          return values[key] != null ? String(values[key]) : '';
+        });
+      }
+
+      function phaseDisplayName(phaseId, fallback) {
+        var names = getBundle().phaseNames || {};
+        if (names[phaseId]) return names[phaseId];
+        return fallback || '';
+      }
+
+      function typeLabel(type, i18n) {
+        var key = 'type' + String(type || '').charAt(0).toUpperCase() + String(type || '').slice(1).toLowerCase();
+        if (i18n[key]) return i18n[key];
+        if (type === 'Learn') return i18n.typeLearn || type;
+        if (type === 'Build') return i18n.typeBuild || type;
+        if (type === 'Capstone') return i18n.typeCapstone || type;
+        if (type === 'Reference') return i18n.typeReference || type;
+        return type;
+      }
+
+      function statusLabel(status, i18n) {
+        if (status === 'complete') return i18n.statusComplete || status;
+        if (status === 'planned') return i18n.statusPlanned || status;
+        return status;
+      }
+
+      function lessonPathFromUrl(url) {
+        var m = String(url || '').match(/(phases\/[^/]+\/[^/]+)/);
+        return m ? m[1] : '';
+      }
+
+      function lessonTitleKo(lessonPath) {
+        var map = window.AIFS_LESSON_TITLES_KO || {};
+        return lessonPath && map[lessonPath] ? map[lessonPath] : '';
+      }
+
+      function lessonTitleMarkup(name, titleKo) {
+        var tip = titleKo ? (name + ' · ' + titleKo) : name;
+        var label = escapeHtml(name);
+        if (titleKo) {
+          label += '<span class="catalog-title-ko">' + escapeHtml(titleKo) + '</span>';
+        }
+        return { tip: tip, label: label };
+      }
+
+      // escapeHtml is defined later inside DOMContentLoaded; hoist a local used by helpers after init.
+      var escapeHtml = function (str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      };
 
       document.addEventListener('DOMContentLoaded', function () {
         updateIcon();
@@ -979,37 +1070,114 @@
         var PAGE_SIZE = 48;
         var visibleLimit = PAGE_SIZE;
         var allRows = [];
+        var phasesReady = typeof PHASES !== 'undefined' && Array.isArray(PHASES);
 
-        if (typeof PHASES === 'undefined' || !Array.isArray(PHASES)) {
-          countEl.textContent = 'The lesson index could not be loaded.';
-          bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">Reload the page or use the GitHub curriculum index.</td></tr>';
-          tableWrap.setAttribute('aria-busy', 'false');
-          return;
-        }
-
-        for (var i = 0; i < PHASES.length; i++) {
-          var p = PHASES[i];
-          var opt = document.createElement('option');
-          opt.value = String(p.id);
-          opt.textContent = String(p.id).padStart(2, '0') + ' - ' + p.name;
-          phaseSelect.appendChild(opt);
-
-          for (var j = 0; j < p.lessons.length; j++) {
-            var l = p.lessons[j];
-            allRows.push({
-              phase: p.id,
-              phaseName: p.name,
-              name: l.name,
-              type: l.type,
-              lang: l.lang,
-              status: l.status,
-              url: l.url || ''
-            });
+        if (phasesReady) {
+          for (var i = 0; i < PHASES.length; i++) {
+            var p = PHASES[i];
+            for (var j = 0; j < p.lessons.length; j++) {
+              var l = p.lessons[j];
+              allRows.push({
+                phase: p.id,
+                phaseName: p.name,
+                name: l.name,
+                type: l.type,
+                lang: l.lang,
+                status: l.status,
+                url: l.url || '',
+                path: lessonPathFromUrl(l.url || ''),
+                nameKo: lessonTitleKo(lessonPathFromUrl(l.url || ''))
+              });
+            }
           }
         }
 
         var sortCol = 'phase';
         var sortDir = 1;
+
+        function applyStaticTranslations() {
+          var i18n = getI18n();
+          if (!i18n.title) return;
+
+          if (i18n.pageTitle) document.title = i18n.pageTitle;
+          var skipLink = document.querySelector('.skip-link');
+          if (skipLink && i18n.skipLink) skipLink.textContent = i18n.skipLink;
+
+          var navLinks = document.querySelectorAll('.header-nav > a');
+          if (navLinks.length >= 5) {
+            if (i18n.navContents) navLinks[0].textContent = i18n.navContents;
+            if (i18n.navCatalog) navLinks[1].textContent = i18n.navCatalog;
+            if (i18n.navRoadmap) navLinks[2].textContent = i18n.navRoadmap;
+            if (i18n.navGlossary) navLinks[3].textContent = i18n.navGlossary;
+            if (i18n.navAbout) navLinks[4].textContent = i18n.navAbout;
+          }
+
+          var title = document.getElementById('catalogTitle');
+          if (title && i18n.title) title.textContent = i18n.title;
+          var subtitle = document.getElementById('catalogSubtitle');
+          if (subtitle && i18n.subtitle) subtitle.textContent = i18n.subtitle;
+
+          if (i18n.searchPlaceholder) searchInput.placeholder = i18n.searchPlaceholder;
+          if (i18n.searchAria) searchInput.setAttribute('aria-label', i18n.searchAria);
+          if (i18n.phaseFilterAria) phaseSelect.setAttribute('aria-label', i18n.phaseFilterAria);
+          if (i18n.statusFilterAria) statusSelect.setAttribute('aria-label', i18n.statusFilterAria);
+
+          var statusOptions = statusSelect.options;
+          if (statusOptions.length >= 3) {
+            if (i18n.allStatus) statusOptions[0].textContent = i18n.allStatus;
+            if (i18n.statusComplete) statusOptions[1].textContent = i18n.statusComplete;
+            if (i18n.statusPlanned) statusOptions[2].textContent = i18n.statusPlanned;
+          }
+
+          var noscript = document.querySelector('.catalog-noscript');
+          if (noscript && i18n.noscript) noscript.innerHTML = i18n.noscript;
+
+          var headers = document.querySelectorAll('.catalog-table thead th[data-sort]');
+          var headerLabels = [i18n.colPhase, i18n.colLesson, i18n.colType, i18n.colLanguage, i18n.colStatus];
+          for (var h = 0; h < headers.length && h < headerLabels.length; h++) {
+            if (!headerLabels[h]) continue;
+            var arrow = headers[h].querySelector('.sort-arrow');
+            var arrowText = arrow ? arrow.textContent : '';
+            headers[h].textContent = '';
+            headers[h].appendChild(document.createTextNode(headerLabels[h] + ' '));
+            var newArrow = document.createElement('span');
+            newArrow.className = 'sort-arrow';
+            newArrow.setAttribute('aria-hidden', 'true');
+            newArrow.textContent = arrowText;
+            headers[h].appendChild(newArrow);
+          }
+
+          if (i18n.showAll) showAllButton.textContent = i18n.showAll;
+
+          var footerCopy = document.querySelector('.site-footer .footer-inner > p');
+          if (footerCopy && i18n.footerCopy) footerCopy.textContent = i18n.footerCopy;
+          var footerLinks = document.querySelectorAll('.site-footer .footer-links a');
+          if (footerLinks.length >= 4) {
+            if (i18n.footerHome) footerLinks[0].textContent = i18n.footerHome;
+            if (i18n.footerGlossary) footerLinks[2].textContent = i18n.footerGlossary;
+            if (i18n.footerReport) footerLinks[3].textContent = i18n.footerReport;
+          }
+        }
+
+        function rebuildPhaseOptions() {
+          var i18n = getI18n();
+          var selected = phaseSelect.value;
+          while (phaseSelect.options.length > 1) phaseSelect.remove(1);
+          if (phaseSelect.options[0] && i18n.allPhases) phaseSelect.options[0].textContent = i18n.allPhases;
+          if (!phasesReady) return;
+          for (var i = 0; i < PHASES.length; i++) {
+            var p = PHASES[i];
+            var opt = document.createElement('option');
+            opt.value = String(p.id);
+            opt.textContent = String(p.id).padStart(2, '0') + ' - ' + phaseDisplayName(p.id, p.name);
+            phaseSelect.appendChild(opt);
+          }
+          if (Array.prototype.some.call(phaseSelect.options, function (option) { return option.value === selected; })) {
+            phaseSelect.value = selected;
+          } else {
+            phaseSelect.value = '';
+          }
+        }
 
         function syncUrl(mode) {
           try {
@@ -1034,13 +1202,18 @@
           } catch (_) {}
         }
 
-        function escapeHtml(str) {
-          var div = document.createElement('div');
-          div.textContent = str;
-          return div.innerHTML;
-        }
-
         function render() {
+          var i18n = getI18n();
+          if (!phasesReady) {
+            countEl.textContent = i18n.loadError || 'The lesson index could not be loaded.';
+            bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">' +
+              escapeHtml(i18n.loadErrorHint || 'Reload the page or use the GitHub curriculum index.') +
+              '</td></tr>';
+            tableWrap.setAttribute('aria-busy', 'false');
+            progressiveActions.hidden = true;
+            return;
+          }
+
           var query = (searchInput.value || '').toLowerCase().trim();
           var phaseFilter = phaseSelect.value;
           var statusFilter = statusSelect.value;
@@ -1049,10 +1222,19 @@
             if (phaseFilter && String(r.phase) !== phaseFilter) return false;
             if (statusFilter && r.status !== statusFilter) return false;
             if (query) {
+              var translatedPhase = phaseDisplayName(r.phase, r.phaseName).toLowerCase();
+              var translatedType = typeLabel(r.type, i18n).toLowerCase();
+              var translatedStatus = statusLabel(r.status, i18n).toLowerCase();
+              var nameKo = (r.nameKo || lessonTitleKo(r.path) || '').toLowerCase();
               return r.name.toLowerCase().indexOf(query) !== -1 ||
+                nameKo.indexOf(query) !== -1 ||
                 r.phaseName.toLowerCase().indexOf(query) !== -1 ||
+                translatedPhase.indexOf(query) !== -1 ||
                 r.type.toLowerCase().indexOf(query) !== -1 ||
-                r.lang.toLowerCase().indexOf(query) !== -1;
+                translatedType.indexOf(query) !== -1 ||
+                r.lang.toLowerCase().indexOf(query) !== -1 ||
+                r.status.toLowerCase().indexOf(query) !== -1 ||
+                translatedStatus.indexOf(query) !== -1;
             }
             return true;
           });
@@ -1081,11 +1263,16 @@
           });
 
           var visibleRows = rows.slice(0, visibleLimit);
-          countEl.textContent = 'Showing ' + visibleRows.length + ' of ' + rows.length + ' matching lessons. ' + allRows.length + ' total.';
+          countEl.textContent = formatTemplate(i18n.showing || 'Showing {shown} of {matched} matching lessons. {total} total.', {
+            shown: visibleRows.length,
+            matched: rows.length,
+            total: allRows.length
+          });
           tableWrap.setAttribute('aria-busy', 'false');
 
           if (rows.length === 0) {
-            bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">No lessons match your filters.</td></tr>';
+            bodyEl.innerHTML = '<tr><td colspan="5" class="catalog-empty">' +
+              escapeHtml(i18n.empty || 'No lessons match your filters.') + '</td></tr>';
             progressiveActions.hidden = true;
             return;
           }
@@ -1099,8 +1286,18 @@
           var previousPhase = null;
           for (var i = 0; i < visibleRows.length; i++) {
             var r = visibleRows[i];
+            var displayPhaseName = phaseDisplayName(r.phase, r.phaseName);
+            var titleKo = r.nameKo || lessonTitleKo(r.path);
+            var titleBits = lessonTitleMarkup(r.name, titleKo);
             if (sortCol === 'phase' && r.phase !== previousPhase) {
-              html += '<tr class="catalog-group-row"><th colspan="5" scope="rowgroup">Phase ' + String(r.phase).padStart(2, '0') + ': ' + escapeHtml(r.phaseName) + '<span class="catalog-group-count">' + phaseCounts[r.phase] + ' lessons</span></th></tr>';
+              html += '<tr class="catalog-group-row"><th colspan="5" scope="rowgroup">' +
+                escapeHtml(formatTemplate(i18n.phaseGroup || 'Phase {id}: {name}', {
+                  id: String(r.phase).padStart(2, '0'),
+                  name: displayPhaseName
+                })) +
+                '<span class="catalog-group-count">' +
+                escapeHtml(formatTemplate(i18n.lessonCount || '{n} lessons', { n: phaseCounts[r.phase] })) +
+                '</span></th></tr>';
               previousPhase = r.phase;
             }
             html += '<tr>';
@@ -1108,23 +1305,32 @@
             if (r.url) {
               var localMatch = String(r.url).match(/(phases\/[^/]+\/[^/]+)\/?$/);
               var lessonHref = localMatch ? 'lesson?path=' + encodeURIComponent(localMatch[1]) : r.url;
-              html += '<td><a href="' + lessonHref + '"' + (localMatch ? '' : ' target="_blank" rel="noopener"') + '>' + escapeHtml(r.name) + '</a></td>';
+              html += '<td><a href="' + lessonHref + '"' +
+                (localMatch ? '' : ' target="_blank" rel="noopener"') +
+                ' title="' + escapeHtml(titleBits.tip) + '">' +
+                titleBits.label + '</a></td>';
             } else {
-              html += '<td>' + escapeHtml(r.name) + '</td>';
+              html += '<td title="' + escapeHtml(titleBits.tip) + '">' + titleBits.label + '</td>';
             }
-            html += '<td>' + escapeHtml(r.type) + '</td>';
+            html += '<td>' + escapeHtml(typeLabel(r.type, i18n)) + '</td>';
             html += '<td><span class="catalog-lang">' + escapeHtml(r.lang) + '</span></td>';
-            html += '<td><span class="catalog-status-dot ' + r.status + '" aria-hidden="true"></span>' + r.status + '</td>';
+            html += '<td><span class="catalog-status-dot ' + r.status + '" aria-hidden="true"></span>' +
+              escapeHtml(statusLabel(r.status, i18n)) + '</td>';
             html += '</tr>';
           }
           bodyEl.innerHTML = html;
 
           var remaining = rows.length - visibleRows.length;
           progressiveActions.hidden = remaining <= 0;
-          progressiveNote.textContent = remaining > 0 ? remaining + ' matching lessons remain.' : '';
-          showMoreButton.textContent = 'Show next ' + Math.min(PAGE_SIZE, remaining);
+          progressiveNote.textContent = remaining > 0
+            ? formatTemplate(i18n.remaining || '{n} matching lessons remain.', { n: remaining })
+            : '';
+          showMoreButton.textContent = remaining > 0
+            ? formatTemplate(i18n.showNext || 'Show next {n}', { n: Math.min(PAGE_SIZE, remaining) })
+            : (i18n.showMore || 'Show more');
           showMoreButton.hidden = remaining <= 0;
           showAllButton.hidden = remaining <= 0;
+          if (i18n.showAll) showAllButton.textContent = i18n.showAll;
         }
 
         function applyUrlState(focusSearch) {
@@ -1143,11 +1349,36 @@
           document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (header) {
             var active = header.getAttribute('data-sort') === sortCol;
             header.setAttribute('aria-sort', active ? (sortDir === 1 ? 'ascending' : 'descending') : 'none');
-            header.querySelector('.sort-arrow').textContent = active ? (sortDir === 1 ? ' \u25B2' : ' \u25BC') : '';
+            var arrow = header.querySelector('.sort-arrow');
+            if (arrow) arrow.textContent = active ? (sortDir === 1 ? ' \u25B2' : ' \u25BC') : '';
           });
           render();
           if (focusSearch && urlQuery) {
             try { searchInput.focus({ preventScroll: true }); } catch (_) { searchInput.focus(); }
+          }
+        }
+
+        function applyCatalogTranslations() {
+          applyStaticTranslations();
+          rebuildPhaseOptions();
+          render();
+        }
+
+        if (typeof window !== 'undefined') {
+          window.AIFS_onCatalogLangChange = function (newLang) {
+            document.documentElement.lang = newLang;
+            applyCatalogTranslations();
+          };
+          if (typeof window.AIFS_onLangChange === 'function') {
+            var prevHandler = window.AIFS_onLangChange;
+            window.AIFS_onLangChange = function (l) {
+              prevHandler(l);
+              if (window.AIFS_onCatalogLangChange) window.AIFS_onCatalogLangChange(l);
+            };
+          } else {
+            window.AIFS_onLangChange = function (l) {
+              if (window.AIFS_onCatalogLangChange) window.AIFS_onCatalogLangChange(l);
+            };
           }
         }
 
@@ -1191,9 +1422,11 @@
             visibleLimit = PAGE_SIZE;
             document.querySelectorAll('.catalog-table th[data-sort]').forEach(function (header) {
               header.setAttribute('aria-sort', header === th ? (sortDir === 1 ? 'ascending' : 'descending') : 'none');
-              header.querySelector('.sort-arrow').textContent = '';
+              var arrow = header.querySelector('.sort-arrow');
+              if (arrow) arrow.textContent = '';
             });
-            th.querySelector('.sort-arrow').textContent = sortDir === 1 ? ' \u25B2' : ' \u25BC';
+            var activeArrow = th.querySelector('.sort-arrow');
+            if (activeArrow) activeArrow.textContent = sortDir === 1 ? ' \u25B2' : ' \u25BC';
             syncUrl('push');
             render();
         }
@@ -1208,6 +1441,8 @@
         });
 
         window.addEventListener('popstate', function () { applyUrlState(false); });
+        applyStaticTranslations();
+        rebuildPhaseOptions();
         applyUrlState(true);
       });
     })();

@@ -1859,7 +1859,7 @@ function discoverArtifacts(repoRoot = REPO_ROOT) {
         const entries = fs.readdirSync(outputsDir, { withFileTypes: true })
           .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         for (const entry of entries) {
-          if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
+          if (!entry.isFile() || !entry.name.endsWith('.md') || /\.[a-z]{2}\.md$/i.test(entry.name)) continue;
           const file = entry.name;
           const stem = file.replace(/\.md$/, '');
           const type = VALID_TYPES.find(t => stem.startsWith(`${t}-`));

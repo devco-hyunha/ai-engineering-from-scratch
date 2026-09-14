@@ -818,6 +818,26 @@ p.dropcap::first-letter {
   white-space: nowrap;
 }
 
+.modal-lesson-name.has-ko {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.modal-lesson-name .lesson-title-ko,
+.lesson-title-ko {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-mute);
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.modal-lesson-open:hover .modal-lesson-name .lesson-title-ko {
+  color: var(--blueprint);
+}
+
 .modal-lesson-open:hover .modal-lesson-name {
   color: var(--blueprint);
 }

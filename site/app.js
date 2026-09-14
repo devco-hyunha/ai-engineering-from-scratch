@@ -20,6 +20,7 @@
     initCopyButton();
     initMastheadFigure();
     initFadeObserver();
+    initI18nEngine();
   });
 
   function populateCurriculumSummary() {
@@ -27,11 +28,12 @@
     var lessonTotal = PHASES.reduce(function (total, phase) {
       return total + (Array.isArray(phase.lessons) ? phase.lessons.length : 0);
     }, 0);
+    var lang = currentLang();
     var values = {
-      mastheadLessonCount: lessonTotal + ' lessons',
-      mastheadPhaseCount: PHASES.length + ' phases',
-      prefaceLessonCount: lessonTotal + ' lessons',
-      prefacePhaseCount: PHASES.length + ' phases'
+      mastheadLessonCount: lang === 'ko' ? lessonTotal + '개 레슨' : lessonTotal + ' lessons',
+      mastheadPhaseCount: lang === 'ko' ? PHASES.length + '개 단계' : PHASES.length + ' phases',
+      prefaceLessonCount: lang === 'ko' ? lessonTotal + '개 공개 레슨' : lessonTotal + ' lessons',
+      prefacePhaseCount: lang === 'ko' ? PHASES.length + '개 단계' : PHASES.length + ' phases'
     };
     Object.keys(values).forEach(function (id) {
       var target = document.getElementById(id);
@@ -146,9 +148,10 @@
       var statusClass = p.status.replace(/ /g, '-');
       var roman = toRoman(p.id);
       var num = String(p.id).padStart(2, '0');
-      html += '<div class="toc-row" data-phase="' + i + '" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Phase ' + num + ': ' + escapeHtml(p.name) + '">';
+      var phaseName = tPhaseName(p.id, p.name);
+      html += '<div class="toc-row" data-phase="' + i + '" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Phase ' + num + ': ' + escapeHtml(phaseName) + '">';
       html += '<span class="toc-num">' + roman + '.</span>';
-      html += '<div><span class="toc-status ' + statusClass + '"></span><span class="toc-name">' + escapeHtml(p.name) + '</span></div>';
+      html += '<div><span class="toc-status ' + statusClass + '"></span><span class="toc-name">' + escapeHtml(phaseName) + '</span></div>';
       html += '<span class="toc-meta">' + done + ' / ' + total + '</span>';
       html += '<span class="toc-meta">' + num + '</span>';
       html += '</div>';
@@ -248,7 +251,7 @@
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
         if (!window.AIFSProgress) return;
-        var ok = window.confirm('Clear all your local progress (quiz answers and completed lessons)? This cannot be undone.');
+        var ok = window.confirm(tHome('modalResetConfirm') || 'Clear all your local progress (quiz answers and completed lessons)? This cannot be undone.');
         if (!ok) return;
         window.AIFSProgress.reset();
       });
@@ -264,9 +267,12 @@
     currentPhaseIdx = idx;
     modalReturnFocus = document.activeElement;
 
-    document.getElementById('modalPhaseNum').textContent = 'PHASE ' + String(p.id).padStart(2, '0');
-    document.getElementById('modalTitle').textContent = p.name;
-    document.getElementById('modalDesc').textContent = p.desc;
+    var phaseName = tPhaseName(p.id, p.name);
+    var phaseDesc = tPhaseDesc(p.id, p.desc);
+    var lang = currentLang();
+    document.getElementById('modalPhaseNum').textContent = (lang === 'ko' ? '단계 ' : 'PHASE ') + String(p.id).padStart(2, '0');
+    document.getElementById('modalTitle').textContent = phaseName;
+    document.getElementById('modalDesc').textContent = phaseDesc;
 
     renderModalLessons(p);
 
@@ -299,23 +305,30 @@
 
       var canOpen = (l.status === 'complete' || userComplete) && lessonPath;
       var lessonUrl = canOpen ? 'lesson?path=' + encodeURIComponent(lessonPath) : '';
-      var lessonLabel = escapeHtml(l.name);
+      var tip = bilingualLessonTip(l.name, lessonPath);
+      var lessonLabel = bilingualLessonNameHtml(l.name, lessonPath);
+      var nameClass = 'modal-lesson-name' + (lessonTitleKo(lessonPath) ? ' has-ko' : '');
       var lessonMeta = '<span class="modal-lesson-meta"><span class="modal-lesson-type" data-type="' + escapeHtml(l.type) + '"' + (l.combines ? ' title="Combines: ' + escapeHtml(l.combines) + '"' : '') + '>' + escapeHtml(l.type) + '</span><span aria-hidden="true">·</span><span class="modal-lesson-lang">' + escapeHtml(l.lang) + '</span></span>';
+
+      var openLabel = userComplete ? (tHome('reviewLesson') || 'Review') : (tHome('openLesson') || 'Open lesson');
+      var comingSoonLabel = tHome('comingSoon') || 'Coming soon';
+      var doneLabel = userComplete ? (tHome('done') || 'Done') : (tHome('markDone') || 'Mark done');
+      var toggleTitle = userComplete ? (tHome('markNotDone') || 'Mark as not done') : (tHome('markDone') || 'Mark complete');
 
       html += '<div class="modal-lesson' + (userComplete ? ' user-done' : '') + '">';
       if (canOpen) {
-        html += '<a href="' + lessonUrl + '" class="modal-lesson-open" aria-label="Open lesson: ' + lessonLabel + '">';
-        html += '<span class="modal-lesson-copy"><span class="modal-lesson-name">' + lessonLabel + '</span>' + lessonMeta + '</span>';
-        html += '<span class="modal-lesson-cta">' + (userComplete ? 'Review' : 'Open lesson') + '<span aria-hidden="true">→</span></span></a>';
+        html += '<a href="' + lessonUrl + '" class="modal-lesson-open" title="' + escapeHtml(tip) + '" aria-label="' + escapeHtml(openLabel) + ': ' + escapeHtml(tip) + '">';
+        html += '<span class="modal-lesson-copy"><span class="' + nameClass + '">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += '<span class="modal-lesson-cta">' + escapeHtml(openLabel) + '<span aria-hidden="true">→</span></span></a>';
       } else {
-        html += '<span class="modal-lesson-open is-unavailable" aria-disabled="true">';
-        html += '<span class="modal-lesson-copy"><span class="modal-lesson-name">' + lessonLabel + '</span>' + lessonMeta + '</span>';
-        html += '<span class="modal-lesson-cta">Coming soon</span></span>';
+        html += '<span class="modal-lesson-open is-unavailable" aria-disabled="true" title="' + escapeHtml(tip) + '">';
+        html += '<span class="modal-lesson-copy"><span class="' + nameClass + '">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += '<span class="modal-lesson-cta">' + escapeHtml(comingSoonLabel) + '</span></span>';
       }
 
       var toggleHtml = '';
       if (hasProgress && canOpen) {
-        toggleHtml = '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') + '" data-path="' + lessonPath + '" title="' + (userComplete ? 'Mark as not done' : 'Mark complete') + '" aria-label="' + (userComplete ? 'Mark as not done' : 'Mark complete') + '"><span class="modal-lesson-check" aria-hidden="true">' + (userComplete ? '✓' : '') + '</span><span class="modal-lesson-toggle-label">' + (userComplete ? 'Done' : 'Mark done') + '</span></button>';
+        toggleHtml = '<button type="button" class="modal-lesson-toggle' + (userComplete ? ' done' : '') + '" data-path="' + lessonPath + '" title="' + escapeHtml(toggleTitle) + '" aria-label="' + escapeHtml(toggleTitle) + '"><span class="modal-lesson-check" aria-hidden="true">' + (userComplete ? '✓' : '') + '</span><span class="modal-lesson-toggle-label">' + escapeHtml(doneLabel) + '</span></button>';
       }
       html += toggleHtml;
       html += '</div>';
@@ -539,7 +552,11 @@
         dot.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
       caption.setAttribute('aria-live', announce ? 'polite' : 'off');
-      caption.textContent = 'Plate ' + (current + 1) + ' of ' + panels.length + '. ' + panels[current].getAttribute('data-caption');
+      var plateKey = 'plateCaption' + (current + 1);
+      var localizedCaption = tHome(plateKey);
+      caption.textContent = localizedCaption || ('Plate ' + (current + 1) + ' of ' + panels.length + '. ' + panels[current].getAttribute('data-caption'));
+      previous.textContent = tHome('figPrevious') || 'Previous';
+      next.textContent = tHome('figNext') || 'Next';
       previous.disabled = current === 0;
       next.disabled = current === panels.length - 1;
     }
@@ -702,4 +719,315 @@
     div.textContent = str == null ? '' : str;
     return div.innerHTML;
   }
+
+  const currentLang = () => {
+    if (window.AIFS_currentLang && typeof window.AIFS_currentLang === 'function') {
+      return window.AIFS_currentLang();
+    }
+    return 'en';
+  };
+
+  const getI18nDict = () => {
+    var lang = currentLang();
+    var catalog = window.AIFS_UI_I18N || {};
+    return catalog[lang] || catalog.en || {};
+  };
+
+  const tHome = (key) => {
+    var dict = getI18nDict();
+    var home = dict.home || {};
+    var fallback = (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en && window.AIFS_UI_I18N.en.home) || {};
+    return home[key] || fallback[key] || '';
+  };
+
+  const tRoute = (key) => {
+    var dict = getI18nDict();
+    var routes = dict.routes || {};
+    var fallback = (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en && window.AIFS_UI_I18N.en.routes) || {};
+    return routes[key] || fallback[key] || '';
+  };
+
+  const tPhaseName = (id, defaultName) => {
+    var dict = getI18nDict();
+    var names = dict.phaseNames || {};
+    return names[id] || defaultName;
+  };
+
+  const tPhaseDesc = (id, defaultDesc) => {
+    var dict = getI18nDict();
+    var descs = dict.phaseDescs || {};
+    return descs[id] || defaultDesc;
+  };
+
+  function lessonTitleKo(path) {
+    var map = window.AIFS_LESSON_TITLES_KO || {};
+    return path && map[path] ? map[path] : '';
+  }
+
+  function bilingualLessonNameHtml(name, path) {
+    var ko = lessonTitleKo(path);
+    var html = escapeHtml(name);
+    if (ko) html += '<span class="lesson-title-ko">' + escapeHtml(ko) + '</span>';
+    return html;
+  }
+
+  function bilingualLessonTip(name, path) {
+    var ko = lessonTitleKo(path);
+    return ko ? (name + ' · ' + ko) : name;
+  }
+
+  const applyPageTranslations = (lang) => {
+    var isKorean = (lang === 'ko');
+
+    // 1. Header navigation
+    var navMap = {
+      '#contents': tHome('navContents') || 'Contents',
+      '#books': tHome('navBooks') || 'Books',
+      'catalog.html': tHome('navCatalog') || 'Catalog',
+      'prereqs.html': tHome('navRoadmap') || 'Roadmap',
+      'glossary.html': tHome('navGlossary') || 'Glossary',
+      'about.html': tHome('navAbout') || 'About'
+    };
+    document.querySelectorAll('.header-nav a').forEach(function (link) {
+      var href = link.getAttribute('href');
+      if (href && navMap[href]) link.textContent = navMap[href];
+    });
+
+    // 2. Masthead
+    var metaRow = document.querySelector('.manual-meta-row .right');
+    if (metaRow) metaRow.textContent = tHome('openSourceMit') || 'open source · MIT';
+
+    var tagline = document.querySelector('.manual-tagline');
+    if (tagline) {
+      var suffix = tHome('taglineSuffix') || 'Every algorithm built from raw math before a single framework gets imported.';
+      tagline.innerHTML = '<span id="mastheadLessonCount"></span>. <span id="mastheadPhaseCount"></span>. ' + escapeHtml(suffix);
+    }
+
+    var attribution = document.querySelector('.manual-attribution');
+    if (attribution) attribution.textContent = tHome('attribution') || 'Maintained by Rohit Ghumare and contributors. Run on your own machine.';
+
+    var ctaPrimary = document.querySelector('.masthead-btn--primary span');
+    if (ctaPrimary) ctaPrimary.textContent = tHome('btnStartCourse') || 'Start the Course';
+
+    var ctaPaths = document.querySelector('.masthead-btn[href="learning-paths.html"] span');
+    if (ctaPaths) ctaPaths.textContent = tHome('btnExplorePaths') || 'Explore Learning Paths';
+
+    var ctaStar = document.querySelector('a[aria-label="Star ai-engineering-from-scratch on GitHub"] span:not(.masthead-btn-count)');
+    if (ctaStar) ctaStar.textContent = tHome('btnStarGitHub') || 'Star on GitHub';
+
+    var ctaFollow = document.querySelector('a[aria-label="Follow Rohit Ghumare on GitHub"] span');
+    if (ctaFollow) ctaFollow.textContent = tHome('btnFollow') || 'Follow @rohitg00';
+
+    var installTitle = document.querySelector('.masthead-install-bar > span');
+    if (installTitle) installTitle.textContent = tHome('terminalLearn') || 'Learn in your terminal';
+
+    var installCopyLabel = document.getElementById('installCopyLabel');
+    if (installCopyLabel) installCopyLabel.textContent = tHome('terminalCopy') || 'copy';
+
+    var installCaption = document.querySelector('.masthead-install-caption');
+    if (installCaption) installCaption.textContent = tHome('terminalCaption') || 'Your agent becomes your tutor: placement quiz, personalized path, lessons taught interactively in your terminal.';
+
+    var figPrev = document.querySelector('.fig-previous');
+    if (figPrev) figPrev.textContent = tHome('figPrevious') || 'Previous';
+    var figNext = document.querySelector('.fig-next');
+    if (figNext) figNext.textContent = tHome('figNext') || 'Next';
+
+    // 3. Learners strip
+    var learnersEyebrow = document.querySelector('.learners-eyebrow');
+    if (learnersEyebrow) learnersEyebrow.textContent = tHome('learnersEyebrow') || 'Read by engineers and students at';
+
+    var learnersQuote = document.querySelector('.learners-quote');
+    if (learnersQuote) learnersQuote.innerHTML = tHome('learnersQuote') || '&ldquo;Obsessed with the AI Engineering from Scratch repo.&rdquo; <span class="learners-quote-attr">- AI engineer at Google</span>';
+
+    // 4. Preface
+    var prefaceEyebrow = document.querySelector('.preface-eyebrow');
+    if (prefaceEyebrow) prefaceEyebrow.textContent = tHome('prefaceEyebrow') || 'How this works';
+
+    var prefaceBody = document.querySelector('.preface-body');
+    if (prefaceBody) {
+      var paragraphs = prefaceBody.querySelectorAll('p');
+      if (paragraphs.length >= 3) {
+        paragraphs[0].textContent = tHome('prefaceP1') || paragraphs[0].textContent;
+        var p2Prefix = tHome('prefaceP2Prefix') || 'This curriculum is the spine.';
+        var p2Suffix = tHome('prefaceP2Suffix') || 'four languages: Python, TypeScript, Rust, Julia...';
+        paragraphs[1].innerHTML = p2Prefix + ' <span id="prefacePhaseCount"></span>, <span id="prefaceLessonCount"></span>, ' + p2Suffix;
+        paragraphs[2].textContent = tHome('prefaceP3') || paragraphs[2].textContent;
+      }
+    }
+
+    // 5. Course paths
+    var coursePathsTitle = document.getElementById('coursePathsTitle');
+    if (coursePathsTitle) coursePathsTitle.textContent = tHome('coursePathsTitle') || 'Choose the work you want to do';
+
+    var coursePathsCopy = document.querySelector('.course-paths-header-copy > p');
+    if (coursePathsCopy) coursePathsCopy.textContent = tHome('coursePathsHeaderCopy') || 'AI engineering is larger than model code...';
+
+    var viewPathsLink = document.querySelector('.course-paths-entry-links a[href="learning-paths.html"]');
+    if (viewPathsLink) viewPathsLink.textContent = tHome('viewLearningPaths') || 'View Learning Paths';
+
+    var browseRoutesLink = document.querySelector('.course-paths-entry-links a[href="learning-paths.html#career-routes"]');
+    if (browseRoutesLink) browseRoutesLink.textContent = tHome('browseCareerRoutes') || 'Browse career routes';
+
+    var lpRoot = document.querySelector('.learning-paths-compact-root strong');
+    if (lpRoot) lpRoot.textContent = tHome('learningPathsRoot') || 'AI Engineering';
+    var lpSub = document.querySelector('.learning-paths-compact-root span');
+    if (lpSub) lpSub.textContent = tHome('learningPathsSub') || '4 connected domains';
+
+    var appLabel = document.querySelector('.learning-paths-node--applications .learning-paths-node-label');
+    if (appLabel) appLabel.textContent = tHome('pathAppLabel') || 'Building and Deploying AI Applications';
+    var softwareLabel = document.querySelector('.learning-paths-node--software .learning-paths-node-label');
+    if (softwareLabel) softwareLabel.textContent = tHome('pathSoftwareLabel') || 'Software Engineering Fundamentals';
+    var agentsLabel = document.querySelector('.learning-paths-node--agents .learning-paths-node-label');
+    if (agentsLabel) agentsLabel.textContent = tHome('pathAgentsLabel') || 'Agent-Assisted Engineering';
+    var shapingLabel = document.querySelector('.learning-paths-node--shaping .learning-paths-node-label');
+    if (shapingLabel) shapingLabel.textContent = tHome('pathShapingLabel') || 'Product Judgment and Delivery';
+
+    // Route cards
+    var routeCards = document.querySelectorAll('.course-route');
+    routeCards.forEach(function (card) {
+      var nameEl = card.querySelector('.course-route-name strong');
+      var tagEl = card.querySelector('.course-route-name span');
+      var descEl = card.querySelector('p');
+      var links = card.querySelectorAll('.course-route-actions a');
+      if (!nameEl) return;
+      var routeId = card.getAttribute('data-route-id');
+      if (!routeId) {
+        var txt = nameEl.textContent.trim().toLowerCase();
+        if (txt.indexOf('new to') >= 0) routeId = 'newToAi';
+        else if (txt.indexOf('building') >= 0) routeId = 'app';
+        else if (txt.indexOf('software') >= 0) routeId = 'software';
+        else if (txt.indexOf('agent-assisted') >= 0) routeId = 'agents';
+        else if (txt.indexOf('product') >= 0) routeId = 'shaping';
+        else if (txt.indexOf('model context') >= 0) routeId = 'mcp';
+        else if (txt.indexOf('agent skills') >= 0) routeId = 'skills';
+        else if (txt.indexOf('certification') >= 0) routeId = 'cert';
+        card.setAttribute('data-route-id', routeId || '');
+      }
+
+      if (routeId === 'newToAi') {
+        if (tagEl) tagEl.textContent = tRoute('recFirst') || 'Recommended first';
+        nameEl.textContent = tRoute('newToAiTitle') || 'New to AI engineering';
+        if (descEl) descEl.textContent = tRoute('newToAiDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('openLesson') || 'Open lesson';
+        if (links[1]) links[1].textContent = tRoute('ghSource') || 'GitHub source';
+      } else if (routeId === 'app') {
+        if (tagEl) tagEl.textContent = tRoute('coreDomain') || 'Core domain';
+        nameEl.textContent = tRoute('appTitle') || 'Building and Deploying AI Applications';
+        if (descEl) descEl.textContent = tRoute('appDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghPath') || 'GitHub path';
+      } else if (routeId === 'software') {
+        if (tagEl) tagEl.textContent = tRoute('coreDomain') || 'Core domain';
+        nameEl.textContent = tRoute('softwareTitle') || 'Software Engineering Fundamentals';
+        if (descEl) descEl.textContent = tRoute('softwareDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghPath') || 'GitHub path';
+      } else if (routeId === 'agents') {
+        if (tagEl) tagEl.textContent = tRoute('coreDomain') || 'Core domain';
+        nameEl.textContent = tRoute('agentsTitle') || 'Agent-Assisted Engineering';
+        if (descEl) descEl.textContent = tRoute('agentsDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghPath') || 'GitHub path';
+      } else if (routeId === 'shaping') {
+        if (tagEl) tagEl.textContent = tRoute('coreDomain') || 'Core domain';
+        nameEl.textContent = tRoute('shapingTitle') || 'Product Judgment and Delivery';
+        if (descEl) descEl.textContent = tRoute('shapingDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghPath') || 'GitHub path';
+      } else if (routeId === 'mcp') {
+        if (tagEl) tagEl.textContent = tRoute('focusedPath') || 'Focused path';
+        nameEl.textContent = tRoute('mcpTitle') || 'Model Context Protocol (MCP)';
+        if (descEl) descEl.textContent = tRoute('mcpDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghSource') || 'GitHub source';
+      } else if (routeId === 'skills') {
+        if (tagEl) tagEl.textContent = tRoute('focusedPath') || 'Focused path';
+        nameEl.textContent = tRoute('skillsTitle') || 'Agent Skills';
+        if (descEl) descEl.textContent = tRoute('skillsDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('startPath') || 'Start path';
+        if (links[1]) links[1].textContent = tRoute('ghSource') || 'GitHub source';
+      } else if (routeId === 'cert') {
+        if (tagEl) tagEl.textContent = tRoute('practiceEvidence') || 'Practice by evidence';
+        nameEl.textContent = tRoute('certTitle') || 'Certification preparation';
+        if (descEl) descEl.textContent = tRoute('certDesc') || descEl.textContent;
+        if (links[0]) links[0].textContent = tRoute('explorePaths') || 'Explore paths';
+        if (links[1]) links[1].textContent = tRoute('ghTutor') || 'GitHub tutor';
+      }
+    });
+
+    // 6. Stats block
+    var statTitle = document.querySelector('.stat-block-title');
+    if (statTitle) statTitle.textContent = tHome('statBlockTitle') || 'Current Progress';
+
+    var statLabels = document.querySelectorAll('.stat-row-label');
+    if (statLabels.length >= 4) {
+      statLabels[0].textContent = tHome('statFinishedLessons') || 'Finished Lessons';
+      statLabels[1].textContent = tHome('statPhases') || 'Phases';
+      statLabels[2].textContent = tHome('statLanguages') || 'Languages';
+      statLabels[3].textContent = tHome('statGlossaryTerms') || 'Glossary Terms';
+    }
+
+    // 7. Contents (TOC)
+    var tocTitle = document.querySelector('#contents .toc-title');
+    if (tocTitle && typeof PHASES !== 'undefined') {
+      tocTitle.textContent = isKorean
+        ? (tHome('tocTitleSuffix') || '전체 커리큘럼') + ' · ' + PHASES.length + '개 단계 · 523개 레슨'
+        : 'Curriculum · ' + PHASES.length + ' phases · 523 lessons';
+    }
+    var tocSubtitle = document.querySelector('#contents .toc-subtitle');
+    if (tocSubtitle) tocSubtitle.textContent = tHome('tocSubtitle') || 'Tap a phase to expand its lessons...';
+
+    var legendItems = document.querySelectorAll('.legend .legend-item');
+    if (legendItems.length >= 3) {
+      legendItems[0].innerHTML = '<span class="toc-status complete"></span> ' + (tHome('legendComplete') || 'Complete');
+      legendItems[1].innerHTML = '<span class="toc-status in-progress"></span> ' + (tHome('legendInProgress') || 'In progress');
+      legendItems[2].innerHTML = '<span class="toc-status planned"></span> ' + (tHome('legendPlanned') || 'Planned');
+    }
+
+    // 8. Books, Colophon, Footer
+    var booksTitle = document.querySelector('#books .toc-title');
+    if (booksTitle) booksTitle.textContent = tHome('booksTitle') || 'The book edition · six volumes';
+    var booksSubtitle = document.querySelector('#books .toc-subtitle');
+    if (booksSubtitle) booksSubtitle.textContent = tHome('booksSubtitle') || 'The course, compiled...';
+    var booksNote = document.querySelector('.books-note');
+    if (booksNote) booksNote.innerHTML = tHome('booksNote') || booksNote.innerHTML;
+
+    var colophonEyebrow = document.querySelector('.colophon-eyebrow');
+    if (colophonEyebrow) colophonEyebrow.textContent = tHome('colophonEyebrow') || 'Colophon';
+    var colophonP = document.querySelector('.colophon-grid .reveal p');
+    if (colophonP) colophonP.textContent = tHome('colophonText') || colophonP.textContent;
+    var copyBtnLabel = document.getElementById('copyBtnLabel');
+    if (copyBtnLabel) copyBtnLabel.textContent = tHome('terminalCopy') || 'copy';
+
+    var footerP = document.querySelector('.site-footer p');
+    if (footerP) footerP.textContent = tHome('footerCopy') || '© 2026 · open source · free forever';
+    var footerMap = {
+      'about.html': tHome('navAbout') || 'About',
+      'certifications.html': tHome('navCertifications') || 'Certifications',
+      'catalog.html': tHome('navCatalog') || 'Catalog',
+      'glossary.html': tHome('navGlossary') || 'Glossary'
+    };
+    document.querySelectorAll('.footer-links a').forEach(function (link) {
+      var href = link.getAttribute('href') || '';
+      if (footerMap[href]) link.textContent = footerMap[href];
+      else if (href.indexOf('issues') >= 0) link.textContent = tHome('navReport') || 'Report';
+    });
+
+    populateCurriculumSummary();
+    renderPhases();
+    var modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay && modalOverlay.classList.contains('open') && currentPhaseIdx >= 0) {
+      openModal(currentPhaseIdx, false);
+    }
+  };
+
+  const handleLanguageChange = (newLang) => {
+    applyPageTranslations(newLang);
+  };
+
+  const initI18nEngine = () => {
+    var lang = currentLang();
+    applyPageTranslations(lang);
+    window.AIFS_onLangChange = handleLanguageChange;
+  };
 })();
