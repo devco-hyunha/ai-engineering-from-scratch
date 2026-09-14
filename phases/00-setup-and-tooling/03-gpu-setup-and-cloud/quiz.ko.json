@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "신경망 학습에서 GPU가 CPU보다 빠른 근본적인 이유는 무엇인가요?",
+      "options": [
+        "GPU가 CPU보다 클럭 속도가 훨씬 높기 때문",
+        "GPU는 수천 개의 병렬 행렬 연산을 동시에 수행할 수 있기 때문",
+        "GPU가 더 효율적인 프로그래밍 언어를 사용하기 때문",
+        "GPU가 CPU보다 RAM 용량이 더 많기 때문"
+      ],
+      "correct": 1,
+      "explanation": "GPU는 병렬 컴퓨팅에 최적화된 수천 개의 코어를 갖추고 있어, 신경망 학습의 대부분을 차지하는 행렬 곱셈 연산에 매우 이상적입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "VRAM(Video RAM)은 무엇을 의미하나요?",
+      "options": [
+        "모든 장치에서 사용할 수 있는 전체 RAM",
+        "CPU 캐시 메모리의 한 종류",
+        "시스템 RAM과 분리된 GPU 전용 비디오 메모리",
+        "운영체제가 스왑 공간으로 사용하는 가상 RAM"
+      ],
+      "correct": 2,
+      "explanation": "VRAM은 GPU 전용으로 탑재된 메모리입니다. 시스템의 기본 RAM과는 별개이며, 학습 시 모델 크기와 배치(batch) 크기를 결정하는 중요한 한계선이 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA GPU가 시스템에서 인식되는지 확인하고 현재 상태를 점검하는 표준 명령어는 무엇인가요?",
+      "options": [
+        "torch.cuda.list_devices()",
+        "nvidia-smi",
+        "lspci | grep gpu",
+        "gpu --status"
+      ],
+      "correct": 1,
+      "explanation": "nvidia-smi(NVIDIA System Management Interface)는 GPU 사용률, 메모리 점유율, 온도, 실행 중인 프로세스를 보여주며 GPU 가용성을 점검하는 표준 도구입니다."
+    },
+    {
+      "stage": "post",
+      "question": "GPU와 CPU의 행렬 곱셈 벤치마크를 수행할 때, GPU 실행 시간을 측정하기 전에 torch.cuda.synchronize()를 호출해야 하는 이유는 무엇인가요?",
+      "options": [
+        "CPU에서 GPU 메모리로 데이터를 전송하기 위해",
+        "타이머를 멈추기 전 모든 GPU 비동기 연산이 완전히 끝났는지 보장하기 위해",
+        "사용되지 않는 GPU 메모리를 해제하기 위해",
+        "GPU 클럭 속도를 기본 주파수로 초기화하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "GPU 연산은 비동기적(asynchronous)으로 동작하므로, GPU가 계산을 계속하는 동안 Python 코드는 즉시 반환될 수 있습니다. synchronize()를 호출해야 모든 GPU 연산이 끝날 때까지 대기하여 정확한 시간을 측정할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "fp16 기준 어림셈법을 적용할 때, 24GB VRAM에는 대략 몇 개의 파라미터가 적재될 수 있나요?",
+      "options": [
+        "약 60억(6B) 파라미터",
+        "약 240억(24B) 파라미터",
+        "약 120억(12B) 파라미터",
+        "약 480억(48B) 파라미터"
+      ],
+      "correct": 2,
+      "explanation": "fp16에서 1개 파라미터는 2바이트를 사용합니다. 24GB / 2바이트 = 120억(12B) 파라미터입니다. 이는 대략적인 추정치이며 실제로는 활성화 맵, 그래디언트, 옵티마이저 상태 메모리가 추가로 필요합니다."
+    }
+  ]
+}
