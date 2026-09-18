@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Tracking-by-detection에서 Hungarian algorithm은 무엇을 하나요?",
+      "options": [
+        "검출기를 학습함",
+        "미래 궤적을 예측함",
+        "저신뢰 검출을 걸러냄",
+        "트랙과 검출 사이 최소 비용 일대일 할당을 풂 — 보통 비용으로 1 - IoU를 써서 각 트랙을 최대 하나의 검출에, 그 반대로도 매칭"
+      ],
+      "correct": 3,
+      "explanation": "모든 tracking-by-detection 프레임은 할당 문제를 풉니다: M개 트랙, N개 검출, 최선의 일대일 매치를 찾음. Hungarian은 이에 대한 최적 다항 알고리즘입니다. 비용은 보통 1 - IoU(오버랩이 클수록 비용이 작음). scipy.optimize.linear_sum_assignment가 표준 구현입니다. SORT, DeepSORT, ByteTrack, BoT-SORT가 모두 씁니다."
+    },
+    {
+      "stage": "pre",
+      "question": "ByteTrack의 구별되는 기여는 무엇인가요?",
+      "options": [
+        "새 백본",
+        "Appearance 임베딩",
+        "새 Kalman filter",
+        "남은 트랙을 저신뢰 검출에 매칭하려는 2단계 연관으로, 표준 트래커가 그 검출을 버려 잃을 짧은 가림과 ID를 복구함"
+      ],
+      "correct": 3,
+      "explanation": "대부분 트래커는 신뢰 임계값(~0.5) 아래 검출을 버립니다. ByteTrack은 유지하고, 고신뢰 검출에 매칭되지 않은 트랙에 두 번째 Hungarian 패스를 돌립니다. 짧은 가림과 교차를 복구해, 학습된 appearance 특징 없이 MOT17에서 IDF1을 크게 올립니다. 단순성 때문에 Ultralytics와 Roboflow Supervision의 기본값입니다."
+    },
+    {
+      "stage": "post",
+      "question": "SAM 2의 메모리 기반 트래커는 명시적 Hungarian형 연관을 어떻게 피하나요?",
+      "options": [
+        "인스턴스별 시공간 특징을 메모리 뱅크에 저장하고; 새 프레임마다 메모리와 현재 특징의 cross-attention이 같은 인스턴스의 마스크를 직접 만들며, 연관은 어텐션 연산에 암묵적임",
+        "내부적으로 SORT를 돌림",
+        "Kalman filter를 씀",
+        "프레임마다 수동 라벨 ID가 필요함"
+      ],
+      "correct": 0,
+      "explanation": "SAM 2는 detect-then-associate 루프를 메모리 조건부 세그먼터로 교체합니다. 메모리 뱅크가 이전 프레임의 인스턴스 특징을 보유합니다. 새 프레임마다 디코더가 새 프레임 특징을 메모리에 대해 cross-attend하고, 결과 마스크가 같은 인스턴스입니다 — 외부 할당 단계 없음. 인스턴스가 많은 프레임 동안 사라져도 메모리가 남아 긴 가림을 우아하게 다룹니다."
+    },
+    {
+      "stage": "post",
+      "question": "각 사람의 ID를 일관되게 유지하는 것이 주된 요구인 감시 비디오에서, 어떤 지표를 보고해야 하나요?",
+      "options": [
+        "IDF1 — ID precision과 recall의 조화평균; 프레임당 검출 정확도보다 시간에 걸친 정체성 보존을 측정",
+        "Top-1 accuracy",
+        "MOTA",
+        "FID"
+      ],
+      "correct": 0,
+      "explanation": "MOTA는 검출과 연관 오류를 섞어, 거짓 양성이 많은 트래커가 ID 실패를 숨길 수 있습니다. IDF1은 '시간에 걸쳐 누가 누구인가' 질문에 맞춰 설계되었습니다: 전체 비디오에 걸쳐 예측 트랙을 ground-truth 트랙에 전역 매칭하고 정체성 라벨의 F1을 계산합니다. 감시와 군중 분석에서는 IDF1을 보고하세요; HOTA가 더 넓은 학술 표준입니다."
+    },
+    {
+      "stage": "post",
+      "question": "SAM 3.1 Object Multiplex(2026년 3월)가 많은 추적 인스턴스에 걸쳐 공유 메모리를 도입합니다. 이것이 가능하게 하는 것은?",
+      "options": [
+        "효율적 다중 객체 트래킹 — 인스턴스별 쿼리 토큰이 있는 하나의 공유 메모리 뱅크가 N개 별도 메모리 뱅크를 대체해, 비용이 인스턴스 수에 준선형으로 스케일하고 콘서트 군중 크기 장면이 다루기 쉬워짐",
+        "새 학습 목적",
+        "더 낮은 정확도",
+        "클라우드 전용 추론"
+      ],
+      "correct": 0,
+      "explanation": "Multiplex 이전 SAM 2 / SAM 3는 객체마다 자체 메모리 뱅크로 추적해, 비용이 인스턴스 수에 선형으로 스케일했습니다. Multiplex(2026년 3월)는 인스턴스별 특징을 가져오는 인스턴스별 쿼리 토큰과 하나의 공유 메모리를 도입합니다. 다객체 트래킹 — 군중, 교통, 창고 작업자 — 이 메모리 기반 트래커로 처음으로 효율적이 됩니다."
+    }
+  ]
+}
