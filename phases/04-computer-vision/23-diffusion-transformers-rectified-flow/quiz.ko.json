@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2024+ SOTA text-to-image 모델(SD3, FLUX, Z-Image)이 U-Net 디노이저를 Diffusion Transformer(DiT)로 교체한 이유는 무엇인가요?",
+      "options": [
+        "U-Net이 더 이상 GPU에서 지원되지 않기 때문",
+        "DiT가 U-Net보다 예측 가능하게 스케일되고(LLM과 같은 스케일링 법칙 체제), 프롬프트에 정확한 생성을 위한 장거리 공간 의존성을 더 잘 다루며, cross 또는 joint attention으로 텍스트 인코더와 자연스럽게 짝을 이루기 때문",
+        "트랜스포머가 쓰기 더 쉽기 때문",
+        "DiT의 파라미터가 더 적기 때문"
+      ],
+      "correct": 1,
+      "explanation": "DiT는 확산을 또 하나의 시퀀스 모델링 과제로 취급합니다. 언어 모델처럼 스케일되고, 장거리 구조를 병목할 수 있는 컨볼루션의 고정 귀납 편향을 피하며, 트랜스포머 텍스트 인코더와 깔끔하게 통합됩니다. 모든 2026 SOTA 모델 — SD3, FLUX.1, FLUX.2, SD4, Z-Image, Qwen-Image — 이 DiT입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Rectified flow는 데이터와 노이즈 사이 직선 보간을 따라 속도 `v = epsilon - x_0`을 예측하도록 모델을 학습합니다. 이것이 1000스텝 대신 20스텝 샘플링을 가능하게 하는 이유는?",
+      "options": [
+        "더 큰 모델이 필요하기 때문",
+        "학습된 ODE가 DDPM의 곡선 SDE보다 직선에 가까워, 소수 스텝 Euler 적분이 정확한 샘플을 만들고; 증류와 결합하면 FLUX schnell 같은 1–4스텝 변형을 얻기 때문",
+        "Euler가 DDIM보다 엄격히 낫기 때문",
+        "그렇지 않다; rectified flow도 1000스텝이 필요함"
+      ],
+      "correct": 1,
+      "explanation": "DDPM의 역과정은 많은 작은 스텝이 필요한 확률적 곡선 경로입니다. Rectified flow는 직선 보간을 정의하고; 학습된 속도는 궤적을 따라 대략 상수입니다. 거의 직선인 ODE를 적분하는 데는 적은 스텝이면 됩니다. SD3와 FLUX는 풀 퀄리티에서 20–30 스텝으로 샘플링하고; schnell/turbo/LCM은 이를 1–4스텝으로 더 증류합니다."
+    },
+    {
+      "stage": "post",
+      "question": "MMDiT(SD3)는 텍스트 토큰용과 이미지 토큰용 두 가중치 집합이 단일 조인트 어텐션 층을 공유합니다. 이유는?",
+      "options": [
+        "메모리를 아끼려고",
+        "텍스트와 이미지 임베딩은 개념적으로 다른 분포이므로, 별도 가중치가 각 모달리티가 자체 표현을 처리하게 하고 조인트 어텐션이 상호작용하게 하며; 결과가 단일 공유 스트림보다 더 나은 텍스트-이미지 정렬과 프롬프트 추종이기 때문",
+        "레거시 설계이기 때문",
+        "실제로 어텐션을 통과하는 것은 이미지 토큰뿐이기 때문"
+      ],
+      "correct": 1,
+      "explanation": "Stable Diffusion 3의 MMDiT는 텍스트·이미지 토큰의 다른 통계를 보존하려고 모달리티별 가중치 스트림을 유지하면서, 조인트 self-attention 층이 융합하게 합니다. 이는 concat-and-share(SD1/2가 쓴 방식)보다 구조적으로 표현력이 크고, 경험적으로 프롬프트 준수와 텍스트 렌더링을 올립니다. FLUX는 효율을 위해 교대 double-stream / single-stream 블록으로 이를 확장합니다."
+    },
+    {
+      "stage": "post",
+      "question": "DiT 블록에서 AdaLN-Zero는 무엇을 뜻하며, 왜 도움이 되나요?",
+      "options": [
+        "시간의 50%만 적용되는 LayerNorm",
+        "변조 MLP가 0으로 초기화되어 블록이 identity로 시작하는 Adaptive LayerNorm; 이후 학습이 scale/shift/gate를 배우며, 매우 깊은 확산 트랜스포머를 안정화함",
+        "epsilon이 0인 layer norm",
+        "평균이 0인 LayerNorm"
+      ],
+      "correct": 1,
+      "explanation": "AdaLN은 조건화 벡터에서 scale, shift, gate를 예측합니다. 'Zero'는 MLP가 0으로 초기화되어 gate가 0에서 시작하고 블록이 identity처럼 동작함을 뜻합니다. 기울기가 천천히 변조를 0에서 밀어내, 깊은 스택이 학습 초반에 발산하는 것을 막습니다. ResNet의 residual zero-init에 해당하는 DiT 기법이며 모든 현대 확산 트랜스포머에서 쓰입니다."
+    },
+    {
+      "stage": "post",
+      "question": "FLUX.1-schnell은 4스텝으로 이미지를 만들 수 있습니다. 어떤 기법이 이를 가능하게 하나요?",
+      "options": [
+        "더 낮은 정밀도 가중치",
+        "더 작은 파라미터 수",
+        "증류 — schnell은 느린 다스텝 교사로부터 적대적/consistency형 목적으로 학습되어, 1–4 디노이징 스텝이 교사의 20–30스텝 출력과 맞음",
+        "FLUX.1-dev와 다른 기본 아키텍처"
+      ],
+      "correct": 2,
+      "explanation": "Schnell / Turbo / LCM 변형은 스텝 증류를 씁니다. 소수 스텝 학생이 다스텝 교사의 출력을 맞추도록 학습합니다. 기본 아키텍처와 파라미터 수는 종종 동일합니다(FLUX.1-dev와 schnell은 둘 다 12B). 증류가 1초 미만 추론을 실용적으로 만듭니다. SDXL Turbo, SD Turbo, Latent Consistency Models와 같은 아이디어입니다."
+    }
+  ]
+}
