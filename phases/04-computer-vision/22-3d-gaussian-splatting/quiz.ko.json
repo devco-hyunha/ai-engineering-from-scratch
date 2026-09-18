@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026년까지 사실적 장면 재구성의 프로덕션 기본값으로 3D Gaussian Splatting이 NeRF를 대체한 주된 이유는 무엇인가요?",
+      "options": [
+        "NeRF가 연구 기록에서 철회되었기 때문",
+        "3DGS는 명시적(픽셀당 MLP 없음): 렌더링이 100+ fps GPU 래스터화이고, 학습이 수 시간 대신 수 분이며, 장면이 편집 가능하고, 2026년에 Khronos와 OpenUSD가 모두 표준화했기 때문",
+        "Gaussian Splatting이 모든 경우에서 NeRF보다 높은 이미지 품질을 내기 때문",
+        "PyTorch가 NeRF 연산자를 지원하지 않게 되었기 때문"
+      ],
+      "correct": 1,
+      "explanation": "3DGS는 암시적 MLP를 수백만 개의 명시적 3D Gaussian으로 바꿉니다. 렌더링은 소비자 GPU에서 100+ fps로 도는 정렬된 alpha 합성이 됩니다. 학습은 수 분입니다. 모든 Gaussian이 편집 가능합니다. 2026년까지 Khronos가 3DGS용 glTF 확장을 비준하고 OpenUSD 26.03이 네이티브 스키마를 실어, 3DGS가 이식 가능한 프로덕션 포맷이 되었습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "장면의 3D Gaussian은 위치, 회전, 스케일, 불투명도와 함께, 스펙큘러 하이라이트 같은 시야 의존 색을 다루기 위해 어떤 추가 표현을 가집니까?",
+      "options": [
+        "두 번째 RGB 텍스처",
+        "Gaussian당 작은 MLP",
+        "구면 조화 계수: 차수 3까지면 색 채널당 16계수이며, 렌더 시점에 시야 방향에 대해 평가",
+        "라이트 프로브 큐브맵"
+      ],
+      "correct": 2,
+      "explanation": "구면 조화는 구 위의 푸리에 기저입니다. 각 Gaussian은 시야 방향에 따라 색이 어떻게 달라지는지를 담는 학습된 SH 계수를 저장합니다. 렌더 시점에 픽셀에서 Gaussian 중심으로의 단위 벡터에 대해 계수를 평가하면, 텍스처나 MLP 없이 스펙큘러 하이라이트·약한 반사·시야 의존 셰이딩을 얻습니다."
+    },
+    {
+      "stage": "post",
+      "question": "3DGS 학습 중 밀도화에는 'clone'과 'split' 연산이 포함됩니다. 각각을 유발하는 것은 무엇인가요?",
+      "options": [
+        "없음 — Gaussian은 초기화 후 고정됨",
+        "기울기 크기가 크고 스케일이 작으면 clone(지역 세부가 더 필요); 기울기가 크고 스케일이 크면 split(한 Gaussian이 너무 부드러워 영역을 맞추지 못함). 불투명도가 임계값 아래면 pruning",
+        "마지막 체크포인트 이후 경과 시간",
+        "매 에폭의 무작위 샘플링"
+      ],
+      "correct": 1,
+      "explanation": "적응적 밀도화 덕분에 3DGS가 ~100k SfM 시드 Gaussian에서 수렴 시 1–5M까지 자랍니다. Clone은 해상도가 부족한 작은 Gaussian을 복제하고, split은 너무 큰 Gaussian을 두 개의 더 작은 것으로 나누며, prune은 sigmoid 불투명도가 임계값 아래로 떨어진 것을 제거합니다. 이 세 연산과 파라미터에 대한 경사하강법이 학습 역학의 전부입니다."
+    },
+    {
+      "stage": "post",
+      "question": "NeRF와 3DGS 모두에서 한 픽셀의 색 식은 `C = sum_i alpha_i * T_i * c_i`이고 `T_i = prod_{j<i}(1 - alpha_j)`입니다. 이 공유 식이 두 방법에 대해 말하는 바는?",
+      "options": [
+        "NeRF가 엄격히 더 나음",
+        "둘 다 같은 체적 렌더링 식을 적분한다; 차이는 표현(암시적 MLP 샘플 vs 명시적 희소 Gaussian)과 렌더 절차(레이 마칭 vs 래스터화)뿐이며 — 그래서 이미지 품질이 비슷하다",
+        "모든 면에서 수학적으로 동일하다",
+        "3DGS가 엄격히 더 나음"
+      ],
+      "correct": 1,
+      "explanation": "공유 식은 고전적 체적 렌더입니다. NeRF는 광선을 따라 샘플링하고 MLP를 쿼리해 평가합니다. 3DGS는 Gaussian을 2D로 투영하고 픽셀당 정렬된 프리미티브를 alpha 합성해 평가합니다. 같은 물리, 같은 손실, 다른 자료구조와 렌더 알고리즘입니다. 그 동일성 때문에 최종 PSNR / LPIPS가 비슷하고, 실질적 격차는 속도와 편집성입니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에 Unreal Engine, Vision Pro, Blender, Three.js 웹 뷰어에 걸쳐 3DGS 장면을 배포하려 합니다. 가장 안전한보내기 포맷은?",
+      "options": [
+        "뷰어마다 커스텀 바이너리 blob",
+        "3D Gaussian의 PNG 스트립",
+        "원시 `.ply`만",
+        "`KHR_gaussian_splatting` 확장이 있는 glTF(Khronos RC 2026년 2월) 및/또는 `UsdVolParticleField3DGaussianSplat`이 있는 OpenUSD 26.03; 이것이 2026년에 비준/표준화된 두 포맷"
+      ],
+      "correct": 3,
+      "explanation": "2024년까지 뷰어마다 자체 포맷이 있었습니다. Khronos가 2026년 2월 glTF용 KHR_gaussian_splatting을 비준하고 OpenUSD 26.03이 2026년 4월 네이티브 3DGS 스키마를 추가했습니다. 둘 중 하나로보내면 엔진·뷰어·파이프라인 간 이식성을 얻습니다. `.ply`는 연구용 교환의 링구아 프랑카로 남지만 구조가 덜합니다. 도구 간 프로덕션에는 glTF + USD가 2026년의 답입니다."
+    }
+  ]
+}
