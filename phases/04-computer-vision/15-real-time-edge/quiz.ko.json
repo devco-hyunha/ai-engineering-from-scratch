@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "모델을 벤치마크하고 '4090에서 이미지당 평균 12ms'라고 보고했습니다. 무엇이 빠져 있나요?",
+      "options": [
+        "데이터셋 이름",
+        "모델 크기",
+        "아무것도 없음; 완전한 벤치마크다",
+        "백분위수(p50/p95/p99), 워밍업 규율, CUDA 동기화; 평균만으로는 꼬리 지연이 가려지고 커널 실행이 아니라 커널 디스패치를 측정할 수 있다"
+      ],
+      "correct": 3,
+      "explanation": "프로덕션 지연은 백분위수로 측정합니다. 실시간 시스템은 평균이 아니라 꼬리에서 실패하기 때문입니다. 워밍업이 없으면 JIT 컴파일이 처음 몇 측정을 부풀립니다. torch.cuda.synchronize가 없으면 GPU 커널 런치가 커널 종료 전에 반환되어 디스패치를 측정합니다. 세 가지가 맞아야 숫자가 의미가 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "FLOPs와 온디바이스 지연이 완벽하게 상관되지 않는 이유는 무엇인가요?",
+      "options": [
+        "연산마다 하드웨어 친화도가 다릅니다. depthwise convolution은 FLOPs가 낮아도 GPU에서 메모리 바운드일 수 있고, dense convolution은 Tensor Core를 효율적으로 씁니다. 메모리 대역폭, 커널 런치 오버헤드, 캐시 행동도 원시 FLOPs 너머에서 지연을 만듭니다",
+        "FLOPs 카운터가 고장 났기 때문",
+        "FLOPs가 배치 크기를 무시하기 때문",
+        "PyTorch가 FLOPs를 잘못 세기 때문"
+      ],
+      "correct": 0,
+      "explanation": "FLOPs는 저렴한 대리입니다. 벽시계 지연은 연산이 하드웨어 강점과 얼마나 맞는지에 달립니다. dense matmul은 Tensor Core에 붙고, depthwise conv는 메모리 대역폭에서 멈추며, attention은 시퀀스 길이² 메모리 읽기에서 멈춥니다. 아키텍처 탐색에는 FLOPs가 유용하고, 배포 결정에는 대상 기기에서 측정합니다."
+    },
+    {
+      "stage": "post",
+      "question": "사후 학습 정적 INT8 양자화는 ImageNet급 비전 모델에서 보통 얼마나 정확도를 잃나요?",
+      "options": [
+        "항상 0; 무손실이다",
+        "20포인트 이상; 쓸 수 없다",
+        "5–10포인트",
+        "제대로 캘리브레이션하면 0.1–1포인트; BatchNorm이 퓨즈된 conv 모델은 INT8에서 특히 잘 동작한다"
+      ],
+      "correct": 3,
+      "explanation": "잘 캘리브레이션된 비전 모델의 정적 PTQ는 소수점 이하부터 약 1포인트까지 잃습니다. 큰 손실 모드는 (a) 캘리브레이션 데이터 부족, (b) 극단 이상치 활성화 양자화(채널별 양자화나 클리핑으로 수정), (c) 퓨즈되지 않은 BatchNorm입니다. 이를 처리하면 INT8은 거의 공짜입니다."
+    },
+    {
+      "stage": "post",
+      "question": "모바일 앱에 10MB 미만, 지연 10ms 미만의 비전 모델이 필요합니다. 어떤 백본을 고르나요?",
+      "options": [
+        "ResNet-50",
+        "ConvNeXt-Large",
+        "ViT-Base",
+        "INT8로 양자화한 MobileNetV3-Small 또는 EfficientNet-Lite-B0; 둘 다 이 예산을 목표로 하고 TFLite / Core ML로 깔끔히 컴파일된다"
+      ],
+      "correct": 3,
+      "explanation": "2026년 모바일 비전 출시는 여전히 MobileNetV3와 EfficientNet-Lite 변형이 지배합니다. depthwise conv, h-swish, squeeze-excite, 처음부터 양자화 인식으로 이 예산에 맞춰 설계되었기 때문입니다. ResNet-50과 ViT-Base는 FP32에서 100MB+, INT8에서도 25MB+라 지연을 재기도 전에 크기 예산을 넘깁니다."
+    },
+    {
+      "stage": "post",
+      "question": "opset 17로 PyTorch 모델을 ONNX로 내보냈더니 'Unsupported operator'로 실패합니다. 가장 흔한 원인은 무엇인가요?",
+      "options": [
+        "파라미터가 너무 많다",
+        "입력 모양이 잘못되었다",
+        "ONNX 라이브러리가 오래되었다",
+        "(1) ONNX 매핑이 없는 커스텀 op; (2) 트레이싱이 잡지 못하는 비결정적 제어 흐름; (3) Python에서는 암묵적이지만 ONNX 등가가 없는 텐서-스칼라 상호작용. 수정: op 교체, 제어 흐름에 `torch.jit.script` 사용, 또는 opset 업그레이드"
+      ],
+      "correct": 3,
+      "explanation": "ONNX 내보내기는 기본적으로 트레이싱이라, 트레이싱이 못 잡는 것 — 런타임 제어 흐름, Python 수준 분기, 커스텀 CUDA op — 은 실패합니다. 대부분은 ONNX 등가가 없는 단일 노드(종종 작은 커스텀 op나 torch.special.* 호출)입니다. 수정은 op 교체, `torch.jit.script`로 전환, 또는 해당 op가 있는 새 opset으로 이동입니다."
+    }
+  ]
+}
