@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SAM 3가 도입한 Promptable Concept Segmentation(PCS)이란 무엇인가요?",
+      "options": [
+        "검출기 다음에 SAM이 오는 다단계 연쇄",
+        "짧은 명사구 또는 이미지 exemplar로 기술된 개념의 모든 인스턴스를 단일 전방 패스로 세그먼트하고, 마스크와 고유 인스턴스 ID를 반환",
+        "고전적 SAM처럼 시각 프롬프트(점/박스) 세그멘테이션",
+        "트래킹 전용 모드"
+      ],
+      "correct": 1,
+      "explanation": "PCS는 SAM 3의 대표 능력입니다. 'yellow school bus' 또는 버스의 이미지 exemplar를 넘기면; SAM 3가 자체 마스크와 고유 ID, presence 점수와 함께 모든 매칭 인스턴스를 반환합니다. 고전적 SAM은 인스턴스당 프롬프트가 필요했고; PCS는 end-to-end로 모든 매치를 만듭니다."
+    },
+    {
+      "stage": "pre",
+      "question": "SAM 3가 이미 텍스트 프롬프트 세그멘테이션을 하는데, 2026년에 분리된 검출기 + SAM 2 파이프라인(Grounded SAM 2)을 유지하는 이유는?",
+      "options": [
+        "SAM 3가 클라우드에서만 사용 가능하기 때문",
+        "Grounded SAM 2가 항상 더 정확하기 때문",
+        "모듈성 — 도메인·라이선스 제약·임계값 행동에 따라 다른 open-vocabulary 검출기(DINO-X, Florence-2, Grounding DINO 1.5)를 교체할 수 있고; SAM 3 아키텍처는 모놀리식이기 때문",
+        "SAM 3가 비디오를 지원하지 않기 때문"
+      ],
+      "correct": 2,
+      "explanation": "Grounded SAM 2는 동결 가중치의 검출기와 SAM 2의 조합입니다. 그 모듈성이 때로 정확히 필요한 것입니다 — 의료 영상 검출기, 라이선스 친화 검출기, 또는 타이트한 임계값 제어. SAM 3는 흔한 용도에서 end-to-end로 더 정확하지만 커스터마이즈가 어렵습니다. 둘 다 2026 프로덕션에서 역할이 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "SAM 3의 presence head는 무엇을 내나요?",
+      "options": [
+        "위치 추정과 분리된, 쿼리된 개념이 이미지에 존재하는지의 스칼라 확률; 모델이 '없음'을 깨끗이 말하게 하고 없는 개념의 거짓 양성을 줄임",
+        "후보 바운딩 박스 목록",
+        "트래킹 메모리 뱅크",
+        "최종 마스크"
+      ],
+      "correct": 0,
+      "explanation": "Presence head는 '여기 있는가?' 결정을 '어디에 있는가?' 결정과 분리합니다. 요청받을 때마다 박스를 내야 하는 모델은 없는 개념에 대해 매치를 환각하는 경향이 있습니다. Presence head로 SAM 3는 0개 검출을 깨끗이 반환할 수 있습니다. 이는 가까운 프롬프트 구분도 개선합니다(예: '흰 옷 선수' vs '빨간 옷 선수')."
+    },
+    {
+      "stage": "post",
+      "question": "SAM 3.1 Object Multiplex(2026년 3월)가 도입한 공유 메모리 트래킹 메커니즘이 대체하는 것은?",
+      "options": [
+        "인스턴스별 별도 메모리 뱅크; Multiplex가 이를 인스턴스별 쿼리가 있는 하나의 공유 메모리로 접어, N개 객체 트래킹이 정확도를 유지하면서 상당히 빨라짐",
+        "전체 presence head",
+        "SAM 2 전부",
+        "ViT 백본"
+      ],
+      "correct": 0,
+      "explanation": "이전 SAM 2 / SAM 3 트래킹은 추적 인스턴스당 하나의 메모리 뱅크를 유지해, 비용이 객체 수에 선형으로 커졌습니다. Object Multiplex는 단일 공유 메모리와 인스턴스별 특징을 가져오는 인스턴스별 쿼리를 도입합니다. 다인스턴스 트래킹이 이제 효율적입니다 — 군중과 조밀한 다중 객체 장면에 필수입니다."
+    },
+    {
+      "stage": "post",
+      "question": "엣지 디바이스에서 실시간 open-vocabulary DETECTION(박스만, 마스크 없음)이 필요합니다. 2026년에 맞는 모델 패밀리는?",
+      "options": [
+        "커스텀 CLIP + 검출기 연쇄",
+        "SAM 3",
+        "Grounded SAM 2",
+        "YOLO-World(및 관련 실시간 open-vocab 검출기); SAM 3는 마스크를 만들고 더 무겁지만, YOLO-World는 엣지 하드웨어에서 높은 fps 박스에 특화"
+      ],
+      "correct": 3,
+      "explanation": "YOLO-World와 유사 모델(OV-DINO, LLMDet)은 실시간 open-vocabulary 검출기입니다. 마스크는 만들지 않지만 보통 GPU에서 640x640에 30–60 fps를 냅니다. 마스크와 트래킹이 중요하면 SAM 3가 맞습니다. 항상 도구 무게를 과제에 맞추세요: 검출만이면 마스크 오버헤드 없이 충분합니다."
+    }
+  ]
+}
