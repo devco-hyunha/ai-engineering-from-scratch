@@ -1,0 +1,102 @@
+{
+  "lesson": "15-topic-modeling",
+  "title": "토픽 모델링 — LDA 및 BERTopic",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LDA는 각 문서에 대해 무엇을 가정합니까?",
+      "options": [
+        "각 문서는 정확히 하나의 토픽에 속한다",
+        "문서는 문장이다",
+        "각 문서는 토픽의 혼합이며, 각 토픽은 단어에 대한 분포이다",
+        "문서는 토픽과 독립적이다"
+      ],
+      "correct": 2,
+      "explanation": "LDA의 생성 모델(generative story)은 혼합 멤버십(mixed-membership) 방식입니다. 즉, 각 문서는 토픽 분포를 가지며, 각 토픽은 단어 분포를 가집니다."
+    },
+    {
+      "stage": "pre",
+      "question": "BERTopic은 토픽 클러스터를 형성하기 위해 무엇을 사용합니까?",
+      "options": [
+        "BM25를 실행한 후 k-means를 실행한다",
+        "문서를 sentence transformer로 인코딩하고, UMAP으로 차원을 축소한 후, HDBSCAN으로 클러스터링한다",
+        "LSTM을 엔드투엔드(end-to-end)로 학습시킨다",
+        "어휘(vocabulary)에 대해 직접 softmax를 적용한다"
+      ],
+      "correct": 1,
+      "explanation": "BERTopic = 임베딩 + UMAP + HDBSCAN이며, 토픽 단어를 추출하기 위해 c-TF-IDF(class-based TF-IDF)를 사용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "scikit-learn의 LDA는 왜 TF-IDF가 아닌 원시 카운트(CountVectorizer)를 필요로 합니까?",
+      "options": [
+        "LDA는 부동 소수점(float)을 처리할 수 없다",
+        "LDA의 확률 모델은 정수 단어 빈도(term counts)를 기반으로 정의됩니다. TF-IDF는 기저 분포를 왜곡합니다.",
+        "메모리 제한",
+        "TF-IDF는 너무 느리다"
+      ],
+      "correct": 1,
+      "explanation": "LDA의 가능도(likelihood)는 카운트를 가정합니다. TF-IDF 값을 입력하는 것은 모델의 가정을 위반하는 것입니다."
+    },
+    {
+      "stage": "check",
+      "question": "BERTopic 출력에서 HDBSCAN의 -1 레이블은 무엇을 의미합니까?",
+      "options": [
+        "불용어(stopword) 클러스터",
+        "밀도 기반 알고리즘이 확신을 가지고 할당할 수 없었던 문서들의 이상치(outlier) 클러스터",
+        "예약된 카테고리",
+        "최상위 토픽"
+      ],
+      "correct": 1,
+      "explanation": "HDBSCAN은 클러스터링되지 않은 지점을 -1로 표시합니다. BERTopic에서 이는 어떤 토픽에도 속하지 않는 문서들을 의미합니다."
+    },
+    {
+      "stage": "check",
+      "question": "토픽 모델 평가를 위한 일반적인 기본 일관성(coherence) 지표는 무엇입니까?",
+      "options": [
+        "BLEU",
+        "상위 토픽 단어들의 슬라이딩 윈도우에 대한 NPMI를 통한 c_v 일관성",
+        "정확도(Accuracy)",
+        "Perplexity(혼란도)만 사용"
+      ],
+      "correct": 1,
+      "explanation": "c_v 일관성(Roder et al., 2015)은 표준적인 자동 토픽 일관성 지표입니다."
+    },
+    {
+      "stage": "post",
+      "question": "LDA가 일반적으로 BERTopic보다 더 적합한 경우는 언제입니까?",
+      "options": [
+        "임베딩에 노이즈가 많을 때",
+        "문서당 하나의 토픽만 필요할 때",
+        "혼합 멤버십 토픽 분포가 유용하고 임베딩이 입력을 잘라버릴(truncate) 수 있는 긴 문서의 경우",
+        "짧은 트윗의 경우"
+      ],
+      "correct": 2,
+      "explanation": "긴 문서는 LDA의 혼합 멤버십 모델로부터 이점을 얻습니다. 반면 BERT 인코더는 입력을 잘라냅니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 BERTopic은 일반적으로 짧은 텍스트(트윗, 헤드라인)에서 더 우수한 성능을 보입니까?",
+      "options": [
+        "짧은 텍스트는 토픽 수가 적다",
+        "더 많은 언어를 지원한다",
+        "단어 가방(bag-of-words) 카운트가 너무 희소한 경우에도 임베딩 공간의 의미적 유사성이 의미를 포착한다",
+        "더 빠르다"
+      ],
+      "correct": 2,
+      "explanation": "BERT 임베딩은 단어 중복 통계가 제대로 작동하지 않는 짧은 텍스트에 대해 의미적 유사성을 제공합니다."
+    },
+    {
+      "stage": "post",
+      "question": "토픽을 모니터링할 때 주의해야 할 일반적인 LDA 실패 모드는 무엇입니까?",
+      "options": [
+        "레이블이 지정된 카테고리와 완벽하게 일치하는 토픽",
+        "문서 수가 너무 적은 토픽",
+        "불용어나 극도로 빈번한 단어들을 흡수하는 정크(junk) 토픽",
+        "합계가 1이 되는 문서 혼합"
+      ],
+      "correct": 2,
+      "explanation": "LDA는 불용어를 흡수하는 정크 토픽을 생성할 수 있습니다. 더 엄격한 min_df/max_df 설정과 불용어 필터링을 통해 이를 완화할 수 있습니다."
+    }
+  ]
+}
