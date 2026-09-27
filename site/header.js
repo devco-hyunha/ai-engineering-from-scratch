@@ -11,6 +11,7 @@
   var COMPACT_HEADER_QUERY = '(max-width: 1400px)';
   var NARROW_HEADER_QUERY = '(max-width: 820px)';
   var NARRATION_VERSION = '20260829a';
+  var UI_I18N_VERSION = '20260923a';
   var navId = 0;
 
   function isStaticPreview(locationValue) {
@@ -161,6 +162,15 @@
     document.head.appendChild(script);
   }
 
+  function ensureUiI18n() {
+    if (window.AIFSUiI18n || document.querySelector('script[data-aifs-ui-i18n="' + UI_I18N_VERSION + '"]')) return;
+    var script = document.createElement('script');
+    script.src = 'ui-i18n.js?v=' + UI_I18N_VERSION;
+    script.async = true;
+    script.setAttribute('data-aifs-ui-i18n', UI_I18N_VERSION);
+    document.head.appendChild(script);
+  }
+
   function pageFile(url) {
     try {
       var parsed = new URL(url, location.href);
@@ -226,6 +236,7 @@
   function addNavigationLinks(nav) {
     ensureNavigationLink(nav, 'learning-paths.html', 'Learning Paths', '');
     ensureNavigationLink(nav, 'certifications.html', 'Certifications', 'header-mobile-only');
+    ensureNavigationLink(nav, 'sponsors.html', 'Sponsor us', 'header-mobile-only');
   }
 
   function setupNavigation(header) {
@@ -412,6 +423,7 @@
     for (var i = 0; i < headers.length; i++) setupNavigation(headers[i]);
     loadStars();
     ensureNarration();
+    ensureUiI18n();
   }
 
   setupRouteLinks();
