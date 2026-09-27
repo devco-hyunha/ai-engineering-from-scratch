@@ -1,0 +1,102 @@
+{
+  "lesson": "11-machine-translation",
+  "title": "기계 번역",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "BLEU는 무엇을 측정합니까?",
+      "options": [
+        "가설(hypothesis)과 참조(reference) 사이의 N-gram 정밀도(일반적으로 1-4) 및 간결성 페널티(brevity penalty)",
+        "임베딩 코사인 유사도",
+        "언어 식별 정확도",
+        "문자 수준 F-score"
+      ],
+      "correct": 0,
+      "explanation": "BLEU는 참조 문장에 대한 1-4-gram 정밀도의 기하 평균에 간결성 페널티를 더한 값입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "직접 BLEU를 구현하는 대신 sacrebleu를 사용하는 이유는 무엇입니까?",
+      "options": [
+        "GPU에서 실행됩니다",
+        "더 정확합니다",
+        "토큰화를 정규화하여 논문이나 실행 결과 간에 점수를 비교할 수 있게 합니다",
+        "스트리밍을 지원합니다"
+      ],
+      "correct": 2,
+      "explanation": "sacrebleu는 토큰화를 고정하여 비교 불가능한 BLEU 수치가 발생하는 흔한 원인을 제거합니다."
+    },
+    {
+      "stage": "check",
+      "question": "디코딩 중에 대상 언어를 제어하는 NLLB 전용 설정은 무엇입니까?",
+      "options": [
+        "src_lang",
+        "대상 언어 코드의 토큰 ID로 설정된 forced_bos_token_id",
+        "num_beams",
+        "length_penalty"
+      ],
+      "correct": 1,
+      "explanation": "NLLB는 forced_bos_token_id를 통해 첫 번째 디코딩된 토큰을 대상 언어 코드로 강제합니다."
+    },
+    {
+      "stage": "check",
+      "question": "레이블이 지정된 데이터가 존재하는 경우, 2026년 프로덕션 MT 품질의 기본이 될 지표군은 무엇입니까?",
+      "options": [
+        "토큰 편집 거리",
+        "지연 시간(Latency)",
+        "BLEU 단독 사용",
+        "인간의 판단을 바탕으로 학습된 COMET(및 BERTScore/BLEURT)과 같은 학습된 지표"
+      ],
+      "correct": 3,
+      "explanation": "COMET과 같은 학습된 지표는 BLEU/chrF 단독 사용보다 인간의 판단과 더 강력한 상관관계를 보입니다."
+    },
+    {
+      "stage": "check",
+      "question": "chrF가 BLEU보다 더 유용한 정보를 제공하는 경우는 언제입니까?",
+      "options": [
+        "문자 수준의 일치가 BLEU가 놓치는 굴절 변형을 포착할 수 있는 형태론적으로 풍부한 언어의 경우",
+        "빔 서치(beam search)를 사용할 때",
+        "매우 짧은 문장의 경우",
+        "참조 문장이 존재하는 경우라면 언제나"
+      ],
+      "correct": 0,
+      "explanation": "문자 수준 F-score는 단어 수준의 BLEU가 과소평가하는 부분적인 형태론적 일치를 포착합니다."
+    },
+    {
+      "stage": "post",
+      "question": "다국어 MT에서 대상 이탈 생성(off-target generation)이란 무엇입니까?",
+      "options": [
+        "고유 명사를 누락하는 출력",
+        "모델이 잘못된 대상 언어로 디코딩하는 것 (예: 프랑스어를 요청했는데 NLLB가 스페인어를 출력하는 경우)",
+        "너무 짧은 출력",
+        "문장 부호를 누락하는 출력"
+      ],
+      "correct": 1,
+      "explanation": "대상 이탈 생성(off-target generation)은 희귀 언어 쌍에서 흔히 발생하며, 번역 후 언어 식별(language-ID) 체크를 통해 이를 잡아낼 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "수천 개의 고품질 도메인 쌍으로 미세 조정(fine-tuning)하는 것이 훨씬 더 큰 규모의 노이즈가 있는 웹 데이터보다 더 나은 성능을 보이는 이유는 무엇입니까?",
+      "options": [
+        "품질과 도메인 일치 여부가 데이터 양보다 중요하며, 노이즈가 있는 병렬 데이터는 드리프트(drift)와 환각(hallucination)을 유발합니다",
+        "작은 데이터셋이 더 빠르게 학습됩니다",
+        "웹 데이터 사용은 불법입니다",
+        "데이터가 너무 크면 GPU 메모리가 초과됩니다"
+      ],
+      "correct": 0,
+      "explanation": "깨끗하게 도메인에 맞춰진 쌍은 프로덕션에서 가장 큰 레버리지이며, 노이즈가 있는 데이터는 적응 성능을 저하시킵니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에 LLM(예: GPT-4)이 전문화된 MT 모델보다 성능이 더 좋을 가능성이 높은 경우는 언제입니까?",
+      "options": [
+        "지연 시간에 민감한 브라우저 번역",
+        "관용적 표현, 긴 문맥, 프롬프팅을 통한 스타일 적응, 또는 어조 제어가 필요한 콘텐츠",
+        "최고의 처리량을 요구하는 배치 번역",
+        "수백만 개의 병렬 문장이 있는 소수 언어 쌍"
+      ],
+      "correct": 1,
+      "explanation": "LLM은 관용적 표현, 긴 문맥 또는 스타일 제어 번역에서 우세하며, 전문화된 MT는 처리량과 지연 시간 측면에서 우세합니다."
+    }
+  ]
+}
