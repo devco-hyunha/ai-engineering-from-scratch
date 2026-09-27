@@ -1,0 +1,102 @@
+{
+  "lesson": "07-pos-tagging-parsing",
+  "title": "POS Tagging and Syntactic Parsing",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "POS 태깅의 목표는 무엇인가요?",
+      "options": [
+        "문장을 번역한다",
+        "감성을 탐지한다",
+        "개체명을 추출한다",
+        "각 토큰에 문법 범주(명사, 동사 등)를 부여한다"
+      ],
+      "correct": 3,
+      "explanation": "POS 태깅은 각 토큰에 품사를 라벨링합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "교차언어 작업의 기본 태그셋은 무엇인가요?",
+      "options": [
+        "Penn Treebank",
+        "CoNLL-2003",
+        "Stanford Dependencies",
+        "Universal Dependencies"
+      ],
+      "correct": 3,
+      "explanation": "Universal Dependencies는 더 거칠고 언어에 중립적인 17개 태그셋을 제공합니다."
+    },
+    {
+      "stage": "check",
+      "question": "바이그램 HMM POS 태거는 무엇을 모델링하나요?",
+      "options": [
+        "의존성 파스",
+        "P(tags)만",
+        "P(tag | previous tag) 전이와 P(word | tag) 방출을 Viterbi로 디코딩",
+        "임베딩 유사도"
+      ],
+      "correct": 2,
+      "explanation": "바이그램 HMM은 태그 전이와 단어 방출을 쓰며, Viterbi가 최고 확률 시퀀스를 찾습니다."
+    },
+    {
+      "stage": "check",
+      "question": "HMM 태거에서 Viterbi 알고리즘은 무엇을 계산하나요?",
+      "options": [
+        "전이 행렬",
+        "각 태그의 주변 확률",
+        "전방 확률만",
+        "태그 격자 위의 동적 프로그래밍으로 단일 최고 확률 태그 시퀀스"
+      ],
+      "correct": 3,
+      "explanation": "Viterbi는 O(n * |T|^2) 동적 프로그래밍으로 argmax 시퀀스를 찾습니다."
+    },
+    {
+      "stage": "check",
+      "question": "의존성 파싱은 무엇을 만들어 내나요?",
+      "options": [
+        "NP/VP/PP 라벨의 구성(constituency) 트리",
+        "각 단어가 하나의 머리(head) 단어와 라벨링된 문법 관계를 갖는 트리",
+        "상호참조 체인",
+        "평평한 BIO 시퀀스"
+      ],
+      "correct": 1,
+      "explanation": "의존성 파스는 단어별 (head, relation) 엣지를 주고, 구성 파스는 중첩된 구 구조를 줍니다."
+    },
+    {
+      "stage": "post",
+      "question": "PTB POS 태깅의 정확도 천장이 약 97–98%인 이유는 무엇인가요?",
+      "options": [
+        "어떤 과제에서도 모델이 98%를 넘을 수 없다",
+        "Universal Dependencies가 98%로 제한한다",
+        "인간 주석자가 약 97%만 일치하므로, ~98%를 넘는 모델은 테스트 데이터를 과적합했을 수 있다",
+        "하드웨어 한계"
+      ],
+      "correct": 2,
+      "explanation": "주석자 불일치가 달성 가능한 정확도의 상한을 정합니다. 매우 높은 수치는 종종 과적합을 신호합니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년 LLM 파이프라인에서도 POS 태깅이 중요한 이유는 무엇인가요?",
+      "options": [
+        "토큰화에 필수다",
+        "표제어 추출, 측면 기반 감성, 질의 분해, 구조화 출력 검증, 교차언어 전이가 여전히 POS나 의존성 파스를 소비한다",
+        "트랜스포머를 대체한다",
+        "LLM은 이것 없이 실행할 수 없다"
+      ],
+      "correct": 1,
+      "explanation": "LLM이 산문을 생성해도, POS와 의존성 파스는 많은 구조화 다운스트림 과제에 공급됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "대부분의 프로덕션 POS / 파스 작업에서 어떤 라이브러리를 써야 하나요?",
+      "options": [
+        "scikit-learn",
+        "spaCy (최고 정확도나 더 넓은 언어 커버리지는 stanza/trankit)",
+        "NumPy",
+        "직접 파서를 만든다"
+      ],
+      "correct": 1,
+      "explanation": "spaCy는 빠른 프로덕션급 POS + 의존성 파서를 제공하고, stanza/trankit은 더 넓은 언어를 커버합니다."
+    }
+  ]
+}
