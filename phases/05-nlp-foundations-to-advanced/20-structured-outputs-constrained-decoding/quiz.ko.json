@@ -1,0 +1,102 @@
+{
+  "lesson": "20-structured-outputs-constrained-decoding",
+  "title": "구조화된 출력(Structured Outputs) 및 제약 디코딩(Constrained Decoding)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "프롬프트만으로 'JSON 반환'을 요청하는 것이 프로덕션 환경에서 충분하지 않은 이유는 무엇인가요?",
+      "options": [
+        "프롬프트가 너무 길다",
+        "프롬프팅으로는 스키마를 설명할 수 없다",
+        "JSON이 너무 장황하다",
+        "최첨단(Frontier) 모델은 대부분 준수하지만, 드물게 발생하는 형식 오류가 다운스트림 파서를 망가뜨릴 수 있습니다"
+      ],
+      "correct": 3,
+      "explanation": "프롬프트만으로 구조를 잡는 방식은 최첨단 모델에서 약 80%의 성공률을 보이지만, 프로덕션 환경에서는 더 강력한 보장이 필요합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "제약 디코딩(constrained decoding)은 각 생성 단계에서 무엇을 수정하나요?",
+      "options": [
+        "로짓 벡터(logit vector)를 수정하여 문법에 어긋나는 토큰을 마스킹함으로써 유효한 토큰만 샘플링되도록 합니다",
+        "학습 손실(training loss)",
+        "토크나이저(tokenizer)",
+        "KV 캐시(KV cache)"
+      ],
+      "correct": 0,
+      "explanation": "로짓 프로세서가 유효하지 않은 토큰을 -inf로 설정하여 소프트맥스(softmax)가 이를 샘플링할 수 없게 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "제약 디코딩이 자유 생성(free generation)보다 더 빠를 수 있는 이유는 무엇인가요?",
+      "options": [
+        "모델이 더 작다",
+        "소프트맥스를 완전히 피한다",
+        "역전파(backprop)를 건너뛴다",
+        "강제된 스캐폴드 토큰(예: '{\"name\": \"')은 샘플링 없이 직접 출력될 수 있으며, 유효 토큰의 탐색 공간이 줄어듭니다"
+      ],
+      "correct": 3,
+      "explanation": "결정된 토큰은 샘플링을 건너뛰며, 축소된 유효 토큰 세트가 디코딩 비용을 줄여줍니다."
+    },
+    {
+      "stage": "check",
+      "question": "모델이 성급하게 결론을 내리는 것을 방지하는 스키마 설계 방식은 무엇인가요?",
+      "options": [
+        "'answer'를 가장 먼저 배치한다",
+        "답변/결정 필드 앞에 추론(reasoning) 필드를 배치하여 모델이 결론을 내리기 전에 생각할 수 있게 한다",
+        "더 짧은 키를 사용한다",
+        "snake_case를 사용한다"
+      ],
+      "correct": 1,
+      "explanation": "필드 순서는 논리적 흐름을 따릅니다. 추론을 먼저 배치하면 모델이 답변을 확정하기 전에 생각할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "Outlines와 같은 FSM 기반 제약 디코딩 도구의 한계는 무엇인가요?",
+      "options": [
+        "열거형(enums)만 지원한다",
+        "OpenAI에 종속된다",
+        "재귀적 스키마를 지원하지 않아 평탄화(flatten)가 필요함 (진정한 재귀를 위해서는 XGrammar 같은 CFG 기반 엔진 필요)",
+        "결정론적이지 않다"
+      ],
+      "correct": 2,
+      "explanation": "FSM은 무한 재귀를 표현할 수 없지만, CFG 엔진은 이를 처리할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "Instructor가 로짓을 수정하지 않는다고 설명되는 이유는 무엇인가요?",
+      "options": [
+        "스키마를 프롬프트에 포함해 출력을 파싱하거나 재시도하며, 로짓 마스킹은 서버 측에서 처리됩니다",
+        "프롬프트를 편집한다",
+        "그래디언트 업데이트를 사용한다",
+        "Anthropic에서 요구한다"
+      ],
+      "correct": 0,
+      "explanation": "Instructor는 로짓 마스킹이 아니라, 제공자 측의 구조화된 출력과 클라이언트 측의 검증 및 재시도 방식을 사용합니다."
+    },
+    {
+      "stage": "post",
+      "question": "date='YYYY-MM-DD'와 같이 엄격한 정규 표현식(regex)이 일으킬 수 있는 문제는 무엇인가요?",
+      "options": [
+        "JSON 파싱을 망가뜨린다",
+        "알 수 없는 값에 대한 탈출구(escape hatch)가 없어, 모델이 null이나 센티널(sentinel) 값을 반환하는 대신 날짜를 지어내게 만든다",
+        "CFG 지원이 필요하다",
+        "정규 표현식이 느리다"
+      ],
+      "correct": 1,
+      "explanation": "지나치게 엄격한 문법은 모델이 값을 지어내도록 강요합니다. 알 수 없는 값에 대해서는 항상 null이나 센티널 값을 허용해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "벤더의 구조화된 출력 API 대신 vLLM 가이드 디코딩(guided decoding)을 사용해야 하는 경우는 언제인가요?",
+      "options": [
+        "바이트 수준 BPE를 사용할 때만",
+        "항상 벤더를 사용한다",
+        "모델을 직접 제어하며 재시도 없이 로짓 수준의 보장을 원하는 셀프 호스팅 추론 환경",
+        "매우 작은 스키마의 경우에만"
+      ],
+      "correct": 2,
+      "explanation": "vLLM 가이드 디코딩은 로짓 수준의 제약이 필요한 셀프 호스팅 서빙에 적합하며, 벤더 API는 해당 업체의 스택에 종속되게 만듭니다."
+    }
+  ]
+}
