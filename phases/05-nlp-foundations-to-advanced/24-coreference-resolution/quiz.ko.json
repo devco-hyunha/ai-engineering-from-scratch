@@ -1,0 +1,102 @@
+{
+  "lesson": "24-coreference-resolution",
+  "title": "상호 참조 해결 (Coreference Resolution)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "상호 참조 해결(coreference resolution)의 목표는 무엇인가요?",
+      "options": [
+        "동일한 실제 세계의 엔티티를 가리키는 모든 언급(고유 명사, 명사구, 대명사)을 클러스터링한다",
+        "관계 추출",
+        "품사 태깅",
+        "대명사를 명사로 번역"
+      ],
+      "correct": 0,
+      "explanation": "상호 참조는 모두 동일한 엔티티를 가리키는 언급 스팬(mention spans)들을 클러스터링합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "'명사구(nominal)' 언급은 어떤 유형의 표현인가요?",
+      "options": [
+        "동사",
+        "'she'와 같은 대명사",
+        "고유 명사만",
+        "'the CEO' 또는 'the company'와 같은 명사구"
+      ],
+      "correct": 3,
+      "explanation": "명사구 언급은 'the company'와 같은 명사구이며, 대명사 언급은 대명사입니다."
+    },
+    {
+      "stage": "check",
+      "question": "현대적인(Lee et al., 2017) 상호 참조 아키텍처는 무엇인가요?",
+      "options": [
+        "규칙 기반 구문 분석만 사용",
+        "의사결정 나무(Decision trees)",
+        "엔드투엔드(End-to-end) 스팬 기반: 모든 후보 스팬을 나열하고 언급 점수를 매긴 후, 선행사 확률을 예측하여 탐욕적(greedy)으로 클러스터링함",
+        "BM25 검색"
+      ],
+      "correct": 2,
+      "explanation": "엔드투엔드 신경망 상호 참조는 스팬을 나열하고 언급 및 선행사 점수 계산을 공동으로 학습합니다."
+    },
+    {
+      "stage": "check",
+      "question": "CoNLL F1은 무엇의 평균인가요?",
+      "options": [
+        "MUC, B³(B-cubed), CEAF-φ4 F1 점수",
+        "정밀도(Precision)와 재현율(Recall)",
+        "언어 간 F1",
+        "토큰 및 스팬(span) F1"
+      ],
+      "correct": 0,
+      "explanation": "CoNLL F1은 MUC, B³, CEAF-φ4 지표의 평균입니다."
+    },
+    {
+      "stage": "check",
+      "question": "가교 조응(bridging anaphora)이란 무엇인가요?",
+      "options": [
+        "이전에 언급된 자동차의 바퀴를 암시하는 'the wheels'와 같은 암시적 참조",
+        "오역",
+        "지시 대상(referent) 앞의 대명사",
+        "선행사가 없는 대명사"
+      ],
+      "correct": 0,
+      "explanation": "가교 조응(Bridging)은 언급을 명시적으로 언급되지는 않았지만 암시된 부분이나 관련 엔티티와 연결합니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 긴 문서에서 LLM만 사용하는 상호 참조 해결은 신뢰할 수 없나요?",
+      "options": [
+        "상호 참조 해결에는 CFG가 필요함",
+        "LLM은 텍스트를 읽을 수 없음",
+        "토크나이저 오류",
+        "단일 호출 LLM은 50개 이상의 단락에 걸쳐 언급을 과도하게 병합하거나 조용히 누락시킴; 슬라이딩 윈도우와 병합 방식이 필요함"
+      ],
+      "correct": 3,
+      "explanation": "긴 문서에 대한 LLM 상호 참조 성능은 저하되며, 윈도우 간 병합을 포함한 슬라이딩 윈도우 방식이 이를 완화합니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 다운스트림 태스크 전에 상호 참조 클러스터를 NER 결과와 병합해야 하나요?",
+      "options": [
+        "Wikidata에서 요구함",
+        "다운스트림 태스크가 표면적 언급(surface mention)마다 하나가 아닌 클러스터당 하나의 엔티티를 보게 하여 커버리지를 획기적으로 향상시키기 위해",
+        "지연 시간(latency) 감소",
+        "토큰 수를 늘리기 위해"
+      ],
+      "correct": 1,
+      "explanation": "병합하지 않으면 NER은 각 표면 형태를 개별적으로 계산하여 엔티티 언급의 60~80%를 놓치게 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 하드코딩된 성별 규칙이 상호 참조 시스템의 취약점이 되나요?",
+      "options": [
+        "비이진(non-binary) 지시 대상, 조직, 동물에 대해 오류가 발생함; 학습된 점수 산정 방식이 더 견고함",
+        "품사(POS) 태그를 사용할 수 없음",
+        "GPU가 필요함",
+        "너무 빠르게 실행됨"
+      ],
+      "correct": 0,
+      "explanation": "성별 휴리스틱은 인구통계학적으로 다양한 텍스트에서 실패하므로, 학습된 모델이 선호됩니다."
+    }
+  ]
+}
