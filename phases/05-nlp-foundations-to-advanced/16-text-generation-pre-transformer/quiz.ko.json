@@ -1,0 +1,102 @@
+{
+  "lesson": "16-text-generation-pre-transformer",
+  "title": "트랜스포머 이전의 텍스트 생성 — N-gram 언어 모델",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "n-gram 언어 모델은 무엇을 추정합니까?",
+      "options": [
+        "문서 임베딩",
+        "단어 간 편집 거리",
+        "카운트 통계로부터의 P(다음 단어 | 이전 n-1개 단어)",
+        "P(레이블 | 문서)"
+      ],
+      "correct": 2,
+      "explanation": "n-gram LM은 카운트된 출현 빈도를 통해 P(w | 마지막 n-1개 단어)를 모델링합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "n-gram 모델에서 스무딩(smoothing)은 어떤 문제를 해결합니까?",
+      "options": [
+        "수치 정밀도",
+        "훈련 시 보지 못한 n-gram에 0의 확률을 할당하여 문장 가능도(likelihood)가 0으로 수렴하는 문제",
+        "메모리 사용량",
+        "토큰화 불일치"
+      ],
+      "correct": 1,
+      "explanation": "스무딩은 확률 질량을 재할당하여 보지 못한 n-gram이 0이 아닌 확률을 갖도록 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "Kneser-Ney 스무딩이 단순 절대 할인(naive absolute discounting) 방식보다 더 나은 이유는 무엇입니까?",
+      "options": [
+        "더 큰 n을 사용함",
+        "TF-IDF를 사용함",
+        "경사 하강법을 사용함",
+        "단순 빈도 대신 연속 확률(continuation probability, 단어가 나타나는 서로 다른 문맥의 수)을 사용하여 하위 차수 분포를 추정함"
+      ],
+      "correct": 3,
+      "explanation": "연속 확률은 단순 빈도수가 아닌 문맥의 다양성을 반영합니다."
+    },
+    {
+      "stage": "check",
+      "question": "퍼플렉서티(perplexity)는 무엇을 측정합니까?",
+      "options": [
+        "서로 다른 n-gram의 수",
+        "홀드아웃 테스트 세트에서 토큰당 평균 음의 로그 가능도(negative log-likelihood)의 지수 값; 낮을수록 좋음",
+        "레이블의 교차 엔트로피",
+        "생성 처리량"
+      ],
+      "correct": 1,
+      "explanation": "Perplexity = exp(- 평균 log P)이며, 값이 낮을수록 모델이 테스트 텍스트를 덜 놀라워한다는 것을 의미합니다."
+    },
+    {
+      "stage": "check",
+      "question": "퍼플렉서티 수치를 비교할 때 훈련 세트와 테스트 세트가 동일한 토큰화를 사용해야 하는 이유는 무엇입니까?",
+      "options": [
+        "OOV를 피하기 위해",
+        "퍼플렉서티는 토큰화 방식에 의존하며, 토크나이저가 일치하지 않으면 비교 불가능한 점수가 생성됨",
+        "경사 하강법에서 요구됨",
+        "배치 크기를 제어하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "서로 다른 토큰화는 토큰 수와 가능도를 변화시켜 퍼플렉서티 값을 비교할 수 없게 만듭니다."
+    },
+    {
+      "stage": "post",
+      "question": "생성된 trigram-LM 문장들이 국소적으로는 유창하지만 전역적으로는 일관성이 없는 이유는 무엇입니까?",
+      "options": [
+        "국소적인 trigram 문맥이 다음 단어를 안내하지만, 모델이 n-1개 토큰 이상의 장기 기억을 갖지 못함",
+        "문장 부호를 생략함",
+        "Laplace 스무딩을 사용함",
+        "빔 서치(beam search)가 실패함"
+      ],
+      "correct": 0,
+      "explanation": "마지막 n-1개 토큰에만 조건화(conditioning)하기 때문에 장기적인 일관성은 우연에 맡겨지게 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에도 n-gram 모델이 실제 서비스(production)에 사용되는 분야는 어디입니까?",
+      "options": [
+        "다국어 번역",
+        "요약",
+        "오픈 도메인 챗봇",
+        "KenLM과 같은 라이브러리를 통한 음성 인식 재점수화(rescoring) 및 온디바이스 자동 완성 등 지연 시간에 민감한 경로"
+      ],
+      "correct": 3,
+      "explanation": "KenLM 스타일의 n-gram 모델은 여전히 빠른 온디바이스 또는 재점수화 구성 요소로 사용됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "신경망 언어 모델(neural LM)이 '좋다'고 선언하기 전에 n-gram 베이스라인을 계산하는 것이 여전히 권장되는 이유는 무엇입니까?",
+      "options": [
+        "훈련 속도를 높여줌",
+        "ROUGE에서 요구됨",
+        "OOV를 제거함",
+        "동일한 토큰화에서 트랜스포머 LM이 튜닝된 Kneser-Ney 베이스라인을 큰 차이로 압도하지 못한다면, 훈련 파이프라인에 문제가 있는 것임"
+      ],
+      "correct": 3,
+      "explanation": "KN 베이스라인은 놀라울 정도로 강력합니다. 신경망 LM은 큰 차이로 이겨야 하며, 그렇지 않다면 버그가 있는 것입니다."
+    }
+  ]
+}
