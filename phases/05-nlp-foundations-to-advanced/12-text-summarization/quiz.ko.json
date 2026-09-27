@@ -1,0 +1,102 @@
+{
+  "lesson": "12-text-summarization",
+  "title": "텍스트 요약",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "추출적 요약(extractive summarization)과 생성적 요약(abstractive summarization)의 주요 동작 차이점은 무엇인가요?",
+      "options": [
+        "추출적 요약은 다국어만 지원한다",
+        "추출적 요약은 소스에서 문장을 그대로 가져오며, 생성적 요약은 새로운 텍스트를 생성하고 환각(hallucination)이 발생할 수 있다",
+        "추출적 요약은 TF-IDF를 사용하고, 생성적 요약은 Word2Vec을 사용한다",
+        "추출적 요약이 생성적 요약보다 느리다"
+      ],
+      "correct": 1,
+      "explanation": "추출적 요약은 문장을 그대로 가져오고, 생성적 요약은 문장을 재작성하며 환각의 위험이 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "ROUGE는 무엇을 측정하나요?",
+      "options": [
+        "토큰 수준의 퍼플렉서티(perplexity)",
+        "임베딩 유사도",
+        "시스템 요약과 참조 요약 간의 N-gram 및 최장 공통 부분 수열(LCS) 중첩도",
+        "읽기 시간"
+      ],
+      "correct": 2,
+      "explanation": "ROUGE-1/2/L은 참조 요약과의 유니그램(unigram), 바이그램(bigram) 및 LCS 중첩도를 측정합니다."
+    },
+    {
+      "stage": "check",
+      "question": "추출적 요약에서 TextRank은 문장의 점수를 어떻게 매기나요?",
+      "options": [
+        "에지가 문장 유사도 가중치인 그래프에서 PageRank 방식의 반복 계산을 수행하여",
+        "질문에 대한 코사인 임베딩을 통해",
+        "참조 요약과 비교하여",
+        "단순 단어 수로"
+      ],
+      "correct": 0,
+      "explanation": "TextRank은 문장 유사도 그래프에 대해 PageRank를 사용하며, 연결성이 높은 문장이 가장 높은 점수를 받습니다."
+    },
+    {
+      "stage": "check",
+      "question": "ROUGE를 계산할 때 어간 추출(stemming)을 활성화하는 이유는 무엇인가요?",
+      "options": [
+        "어간 추출이 없으면 'running'과 'run'이 서로 다른 토큰으로 간주되어 ROUGE가 실제 중첩도를 과소평가하기 때문입니다",
+        "어간 추출은 대소문자를 정규화한다",
+        "rouge-score 패키지에서 어간 추출을 요구한다",
+        "ROUGE 속도를 높이기 위해"
+      ],
+      "correct": 0,
+      "explanation": "어간 추출은 형태학적 변이형을 병합하여 ROUGE가 의미적으로 동일한 형태에 점수를 부여할 수 있게 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "NLI 함의(entailment)를 통해 요약 환각을 탐지하기 위해 특별히 설계된 2026년 지표는 무엇인가요?",
+      "options": [
+        "소스와 요약 주장 간의 NLI를 사용하는 충실도(faithfulness) 검사 (예: FactCC 또는 RAGAS faithfulness)",
+        "BLEU",
+        "chrF",
+        "ROUGE-L"
+      ],
+      "correct": 0,
+      "explanation": "NLI 기반의 충실도 점수는 소스에 의해 함의되지 않는 요약 내의 주장을 찾아냅니다."
+    },
+    {
+      "stage": "post",
+      "question": "규제 준수와 관련된 콘텐츠의 경우 왜 추출적 요약이 선호되나요?",
+      "options": [
+        "추출적 요약은 더 긴 출력을 지원한다",
+        "출력이 소스에서 그대로 가져오므로 생성적 요약의 환각 문제를 제거할 수 있다",
+        "더 빠르다",
+        "ROUGE 점수가 더 높다"
+      ],
+      "correct": 1,
+      "explanation": "문장을 그대로 추출하면 내용을 지어낼 수 없으며, 이는 사실 관계가 규제되는 분야에서 중요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "다음 중 모니터링해야 할 생성적 요약의 환각 유형은 무엇인가요?",
+      "options": [
+        "긴 문장",
+        "개체 교체 (예: 'John Smith'가 'John Brown'으로 표시됨), 숫자 변동, 극성 반전 또는 사실 조작",
+        "문장 부호 변동",
+        "불용어 제거"
+      ],
+      "correct": 1,
+      "explanation": "개체 교체, 숫자 변동, 극성 반전 및 사실 조작은 생성적 요약의 전형적인 실패 모드입니다."
+    },
+    {
+      "stage": "post",
+      "question": "BART-large-CNN 대신 Pegasus 체크포인트를 사용하는 경우는 언제인가요?",
+      "options": [
+        "BLEU를 평가할 때",
+        "추출적 출력이 필요할 때",
+        "Pegasus의 gap-sentence 사전 학습 목표가 더 적합한 과학 초록과 같은 도메인의 경우",
+        "입력이 짧을 때"
+      ],
+      "correct": 2,
+      "explanation": "Pegasus의 gap-sentence 목표는 긴 형태의 도메인 요약(예: pubmed)에 탁월합니다."
+    }
+  ]
+}
