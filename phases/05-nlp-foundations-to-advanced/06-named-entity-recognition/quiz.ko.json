@@ -1,0 +1,102 @@
+{
+  "lesson": "06-named-entity-recognition",
+  "title": "개체명 인식 (Named Entity Recognition)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "BIO 태깅이란 무엇인가요?",
+      "options": [
+        "개체의 트리 표현",
+        "개체 vs 비개체의 이진 스키마",
+        "토큰별 라벨: 개체 시작은 B-TYPE, 내부는 I-TYPE, 외부는 O",
+        "토큰화 스타일"
+      ],
+      "correct": 2,
+      "explanation": "BIO는 B/I/O 접두사로 스팬 추출을 토큰 분류로 바꿉니다."
+    },
+    {
+      "stage": "pre",
+      "question": "프로덕션 NER에서 규칙 기반 가제티어가 취약한 이유는?",
+      "options": [
+        "느리기 때문",
+        "다중 토큰 개체를 처리하지 못하기 때문",
+        "새 개체에 대한 커버리지가 없고 중의성을 해소하지 못하기 때문(예: Apple 과일 vs 회사)",
+        "GPU가 필요하기 때문"
+      ],
+      "correct": 2,
+      "explanation": "가제티어는 알려진 문자열은 매칭하지만 의미 중의성을 해소하거나 보지 못한 이름으로 일반화하지는 못합니다."
+    },
+    {
+      "stage": "check",
+      "question": "NER에서 HMM 대비 CRF의 핵심 이점은?",
+      "options": [
+        "CRF는 Viterbi 알고리즘을 쓰지 않는다",
+        "CRF는 판별적이라 임의 특징(형태, 대문자화, 이웃)을 섞을 수 있다",
+        "CRF가 더 빠르다",
+        "CRF는 학습 데이터가 필요 없다"
+      ],
+      "correct": 1,
+      "explanation": "CRF는 판별적이며 풍부하고 겹치는 특징에 조건부로 의존할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "BiLSTM-CRF 아키텍처에서 CRF 층의 역할은?",
+      "options": [
+        "토큰화를 수행한다",
+        "임베딩을 대체한다",
+        "LSTM을 사전학습한다",
+        "LSTM 방출 위에서 태그-대-태그 전이를 모델링해 유효한 BIO 태그 시퀀스를 강제한다"
+      ],
+      "correct": 3,
+      "explanation": "LSTM 특징 위의 CRF는 라벨 간 의존성을 모델링하고 불법 시퀀스를 배제합니다."
+    },
+    {
+      "stage": "check",
+      "question": "NER를 토큰 수준 F1이 아니라 개체 수준 F1로 평가해야 하는 이유는?",
+      "options": [
+        "예측 스팬이 정답 스팬과 정확히 일치해야 하며, 토큰 수준 F1은 부분 일치를 세어 정확도를 과장한다",
+        "HuggingFace가 개체 수준 F1을 요구한다",
+        "토큰 수준 F1은 BIO를 처리하지 못한다",
+        "개체 수준 F1이 계산하기 더 쉽다"
+      ],
+      "correct": 0,
+      "explanation": "스팬 정확 일치가 의미 있는 지표이며, 토큰 수준 F1은 부분 겹침으로 점수를 부풀립니다."
+    },
+    {
+      "stage": "post",
+      "question": "HuggingFace NER 파이프라인에서 aggregation_strategy='simple'은 무엇을 하나요?",
+      "options": [
+        "가장 확신 높은 개체만 반환한다",
+        "연속된 B-X와 I-X 토큰을 하나의 스팬으로 합친다",
+        "출력을 소문자로 만든다",
+        "토큰화를 건너뛴다"
+      ],
+      "correct": 1,
+      "explanation": "같은 유형의 연속 BIO 토큰을 스팬 수준 개체로 합칩니다."
+    },
+    {
+      "stage": "post",
+      "question": "표준 BIO가 중첩 개체에서 실패하는 이유는?",
+      "options": [
+        "BIO는 평탄한 토큰별 스키마라 서로 다른 유형의 겹치는 두 스팬을 표현할 수 없다",
+        "BIO는 트랜스포머가 필요하다",
+        "BIO는 다중 토큰 개체를 표현하지 못한다",
+        "BIO는 유형 라벨을 버린다"
+      ],
+      "correct": 0,
+      "explanation": "BIO는 토큰당 라벨 하나이며, 중첩 스팬에는 멀티패스 또는 스팬 기반 모델이 필요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에 고전 NER(CRF 또는 BiLSTM-CRF)가 LLM을 여전히 이기는 경우는?",
+      "options": [
+        "오픈 도메인 서사에서",
+        "중첩 개체에서",
+        "입력이 영어일 때마다",
+        "지연 예산이 빡빡하거나, 라벨이 풍부하거나, 온톨로지가 안정적이거나, 비생성 규제 제약이 있을 때"
+      ],
+      "correct": 3,
+      "explanation": "고전 NER는 지연, 라벨 데이터 체제, 고정 온톨로지, 온프레미스 제약에서 이깁니다."
+    }
+  ]
+}
