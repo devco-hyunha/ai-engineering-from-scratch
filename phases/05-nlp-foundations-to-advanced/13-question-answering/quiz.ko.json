@@ -1,0 +1,102 @@
+{
+  "lesson": "13-question-answering",
+  "title": "질의응답 시스템",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "추출형 QA(extractive QA)는 무엇을 예측합니까?",
+      "options": [
+        "주어진 지문 내 정답 구간(span)의 시작 및 종료 토큰 인덱스",
+        "검색된 지문 ID",
+        "생성된 자연어 답변",
+        "신뢰도 점수만"
+      ],
+      "correct": 0,
+      "explanation": "추출형 QA는 정답을 포함하는 지문의 구간(span)을 출력합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "기본적인 RAG 파이프라인을 정의하는 두 가지 구성 요소는 무엇입니까?",
+      "options": [
+        "토크나이저와 POS 태거",
+        "공동 학습된 인코더와 디코더",
+        "리랭커(reranker)와 번역기",
+        "검색기(관련 지문 검색)와 리더(정답 추출 또는 생성)"
+      ],
+      "correct": 3,
+      "explanation": "RAG = 검색기(관련 문맥 검색) + 리더(문맥을 바탕으로 답변 생성)입니다."
+    },
+    {
+      "stage": "check",
+      "question": "SQuAD에서 Exact Match(EM)는 무엇을 측정합니까?",
+      "options": [
+        "토큰 수준의 F1 점수",
+        "정규화(소문자 변환, 문장 부호 제거, 관사 제거) 후 예측값이 참조값과 정확히 일치하는지 여부",
+        "편집 거리(edit distance)",
+        "단어별 중첩도"
+      ],
+      "correct": 1,
+      "explanation": "EM은 정의된 정규화 단계 이후의 엄격한 일치 여부를 측정하며, 부분 일치는 0점으로 처리됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "deepset/roberta-base-squad2는 SQuAD 1.1 모델에 비해 어떤 점이 추가되었습니까?",
+      "options": [
+        "더 큰 컨텍스트 창(context window)",
+        "다국어 지원",
+        "교차 언어 검색",
+        "모델이 '답 없음(null answer)'을 예측할 수 있도록 답변 불가능한 질문으로 학습됨"
+      ],
+      "correct": 3,
+      "explanation": "SQuAD 2.0에는 답변 불가능한 항목이 포함되어 있어, 이를 학습한 모델은 '답 없음'을 예측할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "RAGAS 차원 중 환각(hallucination)을 구체적으로 겨냥하는 것은 무엇입니까?",
+      "options": [
+        "문맥 정밀도(context precision)",
+        "답변 관련성(answer relevance)",
+        "충실도(faithfulness): 답변 주장과 검색된 문맥 간의 NLI 함의(entailment)로 측정",
+        "문맥 재현율(context recall)"
+      ],
+      "correct": 2,
+      "explanation": "충실도는 NLI 함의를 통해 각 답변 주장이 검색된 문맥과 일치하는지 확인합니다."
+    },
+    {
+      "stage": "post",
+      "question": "리더의 정확도를 평가하기 전에 검색기의 재현율(retrieval recall)을 먼저 측정해야 하는 이유는 무엇입니까?",
+      "options": [
+        "리더의 지연 시간(latency)이 이에 달려 있기 때문",
+        "정답 지문이 top-k 내에 없다면, 리더의 성능이 아무리 좋아도 성공할 수 없기 때문",
+        "재현율이 ROUGE 점수를 결정하기 때문",
+        "Transformer 모델의 요구 사항이기 때문"
+      ],
+      "correct": 1,
+      "explanation": "올바른 지문이 누락되면 리더는 답변할 수 없으므로, 검색기의 재현율이 리더의 성능 한계를 결정합니다."
+    },
+    {
+      "stage": "post",
+      "question": "RAG 생성 시 환각을 줄이는 프롬프트 패턴은 무엇입니까?",
+      "options": [
+        "질문을 제거함",
+        "더 많은 지문을 포함함",
+        "모델에게 창의적일 것을 요구함",
+        "제공된 문맥 내에서만 답변하고, 문맥이 불충분할 경우 '모르겠습니다'라고 답하도록 지시함"
+      ],
+      "correct": 3,
+      "explanation": "근거 제시(grounding)와 명시적인 거절 지침은 환각 발생률을 크게 낮춥니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에도 생성형 RAG보다 추출형 QA가 선호되는 경우는 언제입니까?",
+      "options": [
+        "권위 있는 출처로부터의 문자 그대로의 인용이 필요한 규제 도메인(법률, 의료, 감사)",
+        "오픈 도메인 상식 퀴즈",
+        "대화형 QA",
+        "다국어 지원"
+      ],
+      "correct": 0,
+      "explanation": "추출형 QA는 규제 준수가 요구되는 환경에서 필요한 권위 있는 코퍼스의 축자적(verbatim) 인용을 제공합니다."
+    }
+  ]
+}
