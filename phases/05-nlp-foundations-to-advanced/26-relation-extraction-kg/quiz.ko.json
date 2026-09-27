@@ -1,0 +1,102 @@
+{
+  "lesson": "26-relation-extraction-kg",
+  "title": "관계 추출(Relation Extraction) 및 지식 그래프(Knowledge Graph) 구축",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "지식 그래프의 원자 단위(atomic unit)는 무엇입니까?",
+      "options": [
+        "토큰(token)",
+        "POS 태그",
+        "(주체, 관계, 객체) 트리플(triple)",
+        "문장"
+      ],
+      "correct": 2,
+      "explanation": "지식 그래프(KG)는 정보를 (s, r, o) 트리플 형태로 저장하며, 이러한 트리플들이 모여 그래프를 형성합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "2026년 관계 추출에서 AEVS는 무엇의 약자입니까?",
+      "options": [
+        "Aggregated Entity-Value Schema",
+        "Async Entity Validation Service",
+        "Auto-Encoder Vector Search",
+        "Anchor-Extraction-Verification-Supplement (앵커 스팬 지정, 트리플 추출, 소스 대조 검증, 커버리지 보완)"
+      ],
+      "correct": 3,
+      "explanation": "AEVS는 근거 기반(grounded) 관계 추출(RE)을 위한 2026년형 환각 완화(hallucination-mitigation) 프레임워크입니다."
+    },
+    {
+      "stage": "check",
+      "question": "각 트리플이 반드시 소스 출처(문서 ID 및 스팬)를 포함해야 하는 이유는 무엇입니까?",
+      "options": [
+        "SPARQL에서 출처를 요구하기 때문",
+        "추출 속도를 높이기 위해",
+        "출처가 온톨로지를 변경하기 때문",
+        "트리플을 감사(audit)하고, 스팬이 원문과 일치하지 않는 환각(hallucination)을 거부하기 위해"
+      ],
+      "correct": 3,
+      "explanation": "출처 정보는 데이터 감사를 가능하게 하며, AEVS 방식의 환각 탐지에 핵심적인 역할을 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "관계의 정규화(canonicalization)는 어떤 역할을 합니까?",
+      "options": [
+        "임베딩 추가",
+        "트리플 제거",
+        "표층 동사구(예: 'was born in', 'is a native of')를 고정된 속성 ID로 매핑하여 그래프의 쿼리 가능성을 높임",
+        "문서 번역"
+      ],
+      "correct": 2,
+      "explanation": "정규화는 다양한 표현(paraphrases)을 표준화된 KG 속성 ID로 통합하는 과정입니다."
+    },
+    {
+      "stage": "check",
+      "question": "관계 추출(RE) 작업에서 상호 참조 해결(coreference resolution)이 선행되어야 하는 이유는 무엇입니까?",
+      "options": [
+        "'he founded Apple'과 같은 대명사를 트리플 추출 전에 반드시 개체명(named entity)으로 치환해야 하기 때문",
+        "상호 참조 해결이 케이스를 정규화하기 때문",
+        "상호 참조 해결이 위치 정보를 제공하기 때문",
+        "상호 참조 해결이 임베딩을 추가하기 때문"
+      ],
+      "correct": 0,
+      "explanation": "상호 참조 해결이 이루어지지 않으면, RE 모델이 실제 개체명이 아닌 대명사에 관계를 연결하는 오류를 범하게 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "Open IE의 재현율(recall)을 일부 희생하더라도 그래프 쿼리 가능성을 확보할 수 있는 방법은 무엇입니까?",
+      "options": [
+        "트리플의 무작위 샘플링",
+        "임베딩 전용 그래프 구축",
+        "Open-IE 관계를 KG로 병합하기 전 폐쇄형 온톨로지(예: Wikidata 속성)에 매핑",
+        "NER 단계 생략"
+      ],
+      "correct": 2,
+      "explanation": "폐쇄형 온톨로지를 사용하면 그래프를 구조적으로 쿼리할 수 있습니다. 정규화 단계는 후속 작업의 효율성을 위해 필수적인 과정입니다."
+    },
+    {
+      "stage": "post",
+      "question": "많은 상용 지식 그래프(KG)가 시간적 한정자(시작/종료 시간)를 사용하는 이유는 무엇입니까?",
+      "options": [
+        "RDF 표준에서 요구하기 때문",
+        "NIL 엔티티를 제거하기 위해",
+        "SPARQL 쿼리 속도를 높이기 위해",
+        "고용주, 배우자 등 시간적 범위가 있는 관계에서 정보가 유효하지 않게 되는 '영원한 참' 오류를 방지하기 위해"
+      ],
+      "correct": 3,
+      "explanation": "시간적 범위가 있는 관계에는 한정자(예: Wikidata P580/P582)가 필요하며, 이를 통해 사실 정보의 유효 기간을 관리할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "REBEL이란 무엇입니까?",
+      "options": [
+        "토크나이저",
+        "상호 참조 모델",
+        "Wikidata 속성 ID를 직접 출력하는 seq2seq 방식의 관계 추출기",
+        "벡터 데이터베이스"
+      ],
+      "correct": 2,
+      "explanation": "REBEL(Babelscape)은 원격 지도 학습(distantly supervised)된 Wikidata 트리플로 학습된 seq2seq RE 모델입니다."
+    }
+  ]
+}
