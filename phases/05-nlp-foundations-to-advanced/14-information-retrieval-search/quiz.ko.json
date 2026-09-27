@@ -1,0 +1,102 @@
+{
+  "lesson": "14-information-retrieval-search",
+  "title": "정보 검색 및 검색",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "BM25는 무엇을 기준으로 문서를 점수화하나요?",
+      "options": [
+        "단어 빈도(TF), IDF, 그리고 문서 길이로 정규화된 쿼리 용어의 존재 여부",
+        "쿼리와의 편집 거리(Edit distance)",
+        "쿼리와의 임베딩 코사인 유사도",
+        "코퍼스에 대한 PageRank"
+      ],
+      "correct": 0,
+      "explanation": "BM25는 어휘적 일치를 점수화하기 위해 TF 포화도, IDF, 그리고 길이 정규화를 가중치로 사용합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "BM25가 보완하는 dense-only 검색의 주요 약점은 무엇인가요?",
+      "options": [
+        "다국어 쿼리",
+        "지연 시간(Latency)",
+        "의미론적 임베딩이 놓칠 수 있는 정확한 키워드 및 식별자 일치(제품 코드, 오류 문자열, 개체명 등)",
+        "긴 문서"
+      ],
+      "correct": 2,
+      "explanation": "Dense 임베딩은 식별자와 정확한 문자열을 모호하게 만들 수 있지만, BM25는 이를 정확하게 잡아냅니다."
+    },
+    {
+      "stage": "check",
+      "question": "Reciprocal Rank Fusion(RRF)은 왜 각 검색기의 원시 점수(raw scores)를 무시하나요?",
+      "options": [
+        "BM25와 dense 점수는 서로 다른 스케일을 가집니다. 순위(rank) 위치만 사용하면 퓨전(fusion) 과정이 보정(calibration)에 강건해집니다.",
+        "정렬 속도 향상",
+        "RRF는 확률을 필요로 함",
+        "원시 점수 사용은 허용되지 않음"
+      ],
+      "correct": 0,
+      "explanation": "RRF는 1/(k + rank)를 사용하므로, 두 점수 체계의 스케일이 일치할 필요가 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 퓨전된 상위 30개 결과에 대해서만 cross-encoder 리랭커를 실행하나요?",
+      "options": [
+        "Cross-encoder는 쌍(pair)당 속도가 느립니다. 적은 수의 후보군에 대해 비용을 분산시키면 수용 가능한 지연 시간 내에 높은 정확도를 얻을 수 있습니다.",
+        "리랭커는 재현율(recall)을 감소시킴",
+        "모든 단계에서 cross-encoder가 필요함",
+        "FAISS에서 상위 30개를 요구함"
+      ],
+      "correct": 0,
+      "explanation": "Cross-encoder는 쿼리와 문서를 결합하여 점수를 매깁니다. 적은 수의 퓨전 후보군에 대해서만 실행함으로써 지연 시간을 관리 가능한 수준으로 유지합니다."
+    },
+    {
+      "stage": "check",
+      "question": "RAG 검색기(retriever)를 최적화할 때 가장 중요한 지표는 무엇인가요?",
+      "options": [
+        "처리량(Throughput)",
+        "Recall@k, 상위 k개 결과에 정답 구절이 없으면 리더(reader)가 답변할 수 없기 때문입니다.",
+        "BLEU",
+        "지연 시간(Latency)"
+      ],
+      "correct": 1,
+      "explanation": "검색된 상위 k개 결과에 올바른 구절이 포함되어 있지 않으면, 리더는 반드시 실패하게 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년 업계 경험에 따르면, 대부분의 프로덕션 RAG 실패는 어디에서 기인하나요?",
+      "options": [
+        "모델이 아닌 데이터 수집(ingestion) 및 청킹(chunking) 단계; 잘못된 컨텍스트는 우수한 리더의 성능을 저하시킵니다.",
+        "프롬프트의 장황함",
+        "리랭커 튜닝",
+        "LLM 선택"
+      ],
+      "correct": 0,
+      "explanation": "RAG 실패의 약 80%는 생성 모델이 아닌 청킹 및 데이터 수집 품질에서 비롯됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "'parent-doc' 검색 패턴이란 무엇인가요?",
+      "options": [
+        "가장 긴 문서를 선택함",
+        "부모 문서(parent doc) 임베딩만 사용함",
+        "정밀도를 위해 작은 자식 청크(child chunk)를 검색한 다음, 동일한 부모로부터 나온 여러 자식이 나타나면 부모 블록으로 확장하여 컨텍스트를 보존함",
+        "부모 문서만 임베딩함"
+      ],
+      "correct": 2,
+      "explanation": "자식 수준의 검색은 정밀합니다. 부모로 확장하면 리더에게 필요한 주변 컨텍스트를 보존할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "언제 3-way 검색(BM25 + dense + SPLADE)을 도입해야 하나요?",
+      "options": [
+        "항상",
+        "인프라가 학습된 희소 인덱스(learned-sparse indexes)를 지원하고, 쿼리가 고유 명사와 의미적 의도를 혼합하여 사용할 때",
+        "문서가 1000개 미만일 때만",
+        "영어 전용 코퍼스인 경우에만"
+      ],
+      "correct": 1,
+      "explanation": "SPLADE 인프라가 갖춰진 경우, 2026년 벤치마크에 따르면 혼합 어휘-의미론적 쿼리에 대해 3-way 검색이 2-way 검색보다 성능이 뛰어납니다."
+    }
+  ]
+}
