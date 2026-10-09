@@ -1,0 +1,78 @@
+{
+  "lesson": "66-reranker-cross-encoder",
+  "title": "크로스 인코더 리랭커(Cross-Encoder Reranker)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "바이 인코더(bi-encoder)와 크로스 인코더(cross-encoder)의 아키텍처 차이는 무엇인가요?",
+      "options": [
+        "바이 인코더는 쿼리와 문서를 독립적으로 임베딩(Embedding)합니다. 크로스 인코더는 (쿼리, 문서)가 연결된 시퀀스를 읽으며 양쪽 모두에 대한 완전한 어텐션(Attention)을 적용합니다",
+        "바이 인코더는 학습되지만, 크로스 인코더는 학습되지 않습니다",
+        "바이 인코더는 코사인 유사도(Cosine Similarity)를 사용하며, 크로스 인코더는 내적(dot product)을 사용합니다",
+        "크로스 인코더는 GPU에서만 실행됩니다"
+      ],
+      "correct": 0,
+      "explanation": "연결된 입력에 대한 교차 어텐션(Cross-Attention)이 크로스 인코더의 정밀도를 높여줍니다. 바이 인코더는 쿼리와 문서를 함께 보지 못합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "1000만 개 문서 코퍼스를 대상으로 크로스 인코더를 주요 검색기(retriever)로 사용할 수 없는 이유는 무엇인가요?",
+      "options": [
+        "텍스트를 임베딩할 수 없기 때문입니다",
+        "(쿼리, 문서) 쌍마다 하나의 순방향 전파(forward pass)가 필요하므로, 쿼리당 1000만 번의 전파가 필요합니다",
+        "음수 점수를 지원하지 않기 때문입니다",
+        "시퀀스 끝에 CLS 토큰이 필요하기 때문입니다"
+      ],
+      "correct": 1,
+      "explanation": "코퍼스 규모에서 처리량이 급감합니다. 크로스 인코더는 인덱싱 시 문서마다 한 번 실행되는 것이 아니라, 쌍마다 한 번 실행됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "검색 후 리랭킹(retrieve-then-rerank)의 2단계 파이프라인에서 N 매개변수(Parameter)의 역할은 무엇인가요?",
+      "options": [
+        "어휘(Vocabulary)의 크기입니다",
+        "크로스 인코더의 은닉 차원(hidden dimension)입니다",
+        "크로스 인코더의 레이어(layer) 수입니다",
+        "바이 인코더가 크로스 인코더가 재채점(rescore)하도록 반환하는 후보 수입니다"
+      ],
+      "correct": 3,
+      "explanation": "N은 리랭킹 풀(pool)입니다. 이는 품질(크로스 인코더는 N에서의 바이 인코더 재현율(recall)을 초과할 수 없음)과 지연(latency)(크로스 인코더는 N번의 순방향 전파를 실행)를 제한합니다."
+    },
+    {
+      "stage": "check",
+      "question": "N을 K보다 엄격하게 더 크게 선택해야 하는 이유(통상 3배 이상)는 무엇인가요?",
+      "options": [
+        "BM25는 IDF 계산에 이를 요구하기 때문입니다",
+        "더 작은 N은 임베딩 차원 수를 줄이기 때문입니다",
+        "크로스 인코더는 N이 K의 배수여야 하기 때문입니다",
+        "N이 K와 같으면 크로스 인코더는 재정렬(reorder)할 수 없고, 가중치만 재조정(reweight)할 수 있으며, 리랭킹 상승 효과(rerank lift)는 0으로 수렴합니다"
+      ],
+      "correct": 3,
+      "explanation": "N = K인 경우 재정렬할 것이 없습니다. 크로스 인코더의 유일한 작업은 N 중에서 올바른 K를 선택하는 것이며, 이는 N > K를 필요로 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의에서 크로스 인코더의 평균 풀링(mean-pooling) 헤드는 무엇을 수행하나요?",
+      "options": [
+        "어휘 분포(vocabulary distribution)에 대해 풀링합니다",
+        "문서 위치에 대해 소프트맥스(Softmax)를 계산합니다",
+        "패딩(pad)되지 않은 위치에 대해 마지막 레이어의 출력들을 평균 내며, 하나의 선형(linear) 헤드에 입력하여 하나의 관련성(relevance) 스칼라를 생성합니다",
+        "임베딩 인덱스(embedding indices)를 합산합니다"
+      ],
+      "correct": 2,
+      "explanation": "패딩되지 않은 위치에 대해 평균 풀링(mean-pool)을 수행한 후, 단일 선형 레이어가 관련성 점수를 출력합니다. CLS 풀링은 유사한 품질의 대안입니다."
+    },
+    {
+      "stage": "post",
+      "question": "1위 크로스 인코더 점수를 로깅(logging)하면 어떤 프로덕션 실패 모드(failure mode)를 감지하는 데 도움이 되나요?",
+      "options": [
+        "도메인 밖(out-of-domain) 쿼리: 상위 1위 리랭커 점수가 코퍼스 특정 임계값(threshold) 미만일 때, 모델은 코퍼스 내의 아무것도 쿼리에 답하지 못한다는 신호를 보내고 있습니다",
+        "네트워크 장애",
+        "토크나이저(tokenizer)의 어휘(Vocabulary) 드리프트(drift)",
+        "바이 인코더의 인덱스 손상"
+      ],
+      "correct": 0,
+      "explanation": "일관되게 낮은 1위 점수는 크로스 인코더가 검색된 풀(pool)에 답이 없다는 것을 알려주는 것입니다. 이를 LLM에 낮은 신뢰도로 표시해야 합니다."
+    }
+  ]
+}
