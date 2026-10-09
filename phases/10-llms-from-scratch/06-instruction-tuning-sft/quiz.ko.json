@@ -1,0 +1,62 @@
+[
+  {
+    "question": "기본 언어 모델과 지시문 미세 조정 모델의 근본적인 차이점은 무엇인가요?",
+    "options": [
+      "지시문 미세 조정 모델이 더 큽니다",
+      "기본 모델이 더 빠릅니다",
+      "아키텍처가 다릅니다",
+      "기본 모델은 텍스트 패턴을 이어가며, 지시문 미세 조정 모델은 지시문을 따르고 질문에 답합니다"
+    ],
+    "correct": 3,
+    "explanation": "다음 토큰 예측으로 학습된 기본 모델은 텍스트 패턴을 이어갑니다. 질문을 하면 추가 질문을 생성할 수 있습니다. 지도 미세 조정 (SFT)(Supervised Fine-Tuning)은 (지시문, 응답) 쌍으로 학습하여 답변을 생성하도록 가르칩니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "지도 미세 조정 (SFT)(Supervised Fine-Tuning) 중 비어시스턴트 토큰에 손실 마스킹을 하는 목적은 무엇인가요?",
+    "options": [
+      "메모리 사용량을 줄이기 위해",
+      "학습 속도를 높이기 위해",
+      "과적합(Overfitting)을 방지하기 위해",
+      "모델이 응답을 생성하도록 학습하고, 지시문 형식이나 시스템 프롬프트(System Prompt)를 암기하지 않도록 하기 위해"
+    ],
+    "correct": 3,
+    "explanation": "지도 미세 조정 (SFT)(Supervised Fine-Tuning) 중에는 모델이 응답하는 방법을 학습하길 원하지, 지시문을 재현하는 방법을 학습하길 원하지 않습니다. 손실 마스킹은 시스템/사용자 토큰의 손실을 0으로 설정하여, 기울기(Gradient)가 오직 어시스턴트 응답 토큰에서만 발생하도록 합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "지도 미세 조정 (SFT)(Supervised Fine-Tuning) 학습 데이터는 일반적으로 어떤 형식을 따르나요?",
+    "options": [
+      "키-값 쌍",
+      "시스템, 사용자, 어시스턴트 역할이 특수 토큰으로 표시된 채팅 템플릿",
+      "원시 텍스트 문서",
+      "SQL 쿼리 및 결과"
+    ],
+    "correct": 1,
+    "explanation": "지도 미세 조정 (SFT)(Supervised Fine-Tuning) 데이터는 구조화된 채팅 형식을 사용합니다. 행동을 설정하는 시스템 프롬프트(System Prompt), 사용자 지시문, 어시스턴트 응답이 포함됩니다. 특수 토큰이 역할 경계를 표시하여 모델이 대화 구조를 학습합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "지도 미세 조정 (SFT)(Supervised Fine-Tuning) 모델이 벤치마크에서 퍼플렉시티(Perplexity)는 낮지만 대화 품질이 더 나쁜 이유는 무엇일 수 있나요?",
+    "options": [
+      "벤치마크가 잘못되었습니다",
+      "지도 미세 조정 (SFT)(Supervised Fine-Tuning)은 인간이 중요하게 여기는 미묘한 품질 판단이 아닌, 학습 예제에 대한 패턴 매칭을 최적화합니다. 이는 RLHF (인간 피드백 기반 강화 학습)(RLHF (Reinforcement Learning from Human Feedback)) 또는 DPO (직접 선호 최적화)(DPO (Direct Preference Optimization))가 필요합니다",
+      "학습률(Learning Rate)이 잘못되었습니다",
+      "모델이 너무 작습니다"
+    ],
+    "correct": 1,
+    "explanation": "지도 미세 조정 (SFT)(Supervised Fine-Tuning)은 모델이 형식을 따르고 그럴듯한 응답을 생성하도록 가르칩니다. 여러 유효한 옵션이 존재할 때 어떤 응답이 더 좋은지는 가르치지 않습니다. 인간 선호 정렬(Alignment) (RLHF/DPO)은 이 격차를 해결합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "효과적인 지도 미세 조정 (SFT)(Supervised Fine-Tuning)에는 일반적으로 몇 개의 고품질 지시문-응답 쌍이 필요하나요?",
+    "options": [
+      "10,000에서 100,000개의 고품질 예제",
+      "100개 미만",
+      "수십억 개",
+      "수백만 개"
+    ],
+    "correct": 0,
+    "explanation": "지도 미세 조정 (SFT)(Supervised Fine-Tuning)은 놀라울 정도로 데이터 효율적입니다. Alpaca나 LIMA 데이터셋과 같은 10K-100K개의 고품질 예제가 지시문 따르기(Instruction Following)를 효과적으로 가르칠 수 있다고 연구가 보여줍니다. 양보다 질이 훨씬 중요합니다.",
+    "stage": "post"
+  }
+]
