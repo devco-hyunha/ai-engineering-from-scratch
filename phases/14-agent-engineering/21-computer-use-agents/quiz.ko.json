@@ -1,0 +1,90 @@
+{
+  "lesson": "21-computer-use-agents",
+  "title": "컴퓨터 사용: Claude, OpenAI CUA, Gemini",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Claude의 컴퓨터 사용 기능은 어떤 입력을 받고, 무엇을 출력합니까?",
+      "options": [
+        "스크린샷 입력 (비전 기반), 키보드/마우스 명령 출력",
+        "접근성 트리 입력, 키보드/마우스 명령 출력",
+        "DOM XML 입력, JavaScript 출력",
+        "JSON 입력, SQL 출력"
+      ],
+      "correct": 0,
+      "explanation": "Claude는 픽셀을 읽고 키보드/마우스 동작을 출력합니다. OS 접근성 API는 사용되지 않습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Gemini 2.5 Computer Use의 구별되는 안전 기능은 무엇입니까?",
+      "options": [
+        "실행 전 각 동작을 평가하고 위험한 동작을 거부하는 단계별 안전 서비스",
+        "기본 읽기 전용 모드",
+        "하드코딩된 WAF 규칙",
+        "강제 CAPTCHA"
+      ],
+      "correct": 0,
+      "explanation": "Gemini 2.5 Computer Use는 정의적 특징으로 단계별 안전 분류기를 탑재하고 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의는 세 모델 모두에 걸쳐 신뢰할 수 없는 입력으로 무엇을 식별합니까?",
+      "options": [
+        "없음; 모든 것이 신뢰됨",
+        "HTTPS 응답만",
+        "스크린샷, DOM 텍스트, 도구 출력, PDF 콘텐츠, 검색된 모든 것",
+        "PDF 콘텐츠만"
+      ],
+      "correct": 2,
+      "explanation": "직접적인 사용자 지시만 권한으로 간주되며, 그 외 모든 것은 신뢰할 수 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의는 OpenAI CUA의 출시 시 OSWorld / WebArena 점수로 어떤 수치를 인용합니까?",
+      "options": [
+        "보고되지 않은 수치",
+        "OSWorld 99%, WebArena 99%",
+        "OSWorld 0%, WebArena 0%",
+        "OSWorld 38.1%, WebArena 58.1%, WebVoyager 87%"
+      ],
+      "correct": 3,
+      "explanation": "그것들이 인용된 출시 수치였습니다."
+    },
+    {
+      "stage": "check",
+      "question": "2026년 수렴 목록에 포함되지 않은 방어 패턴은 무엇입니까?",
+      "options": [
+        "탐색 대상에 대한 허용 목록/차단 목록",
+        "단계별 안전 분류기",
+        "민감한 동작에 대한 인간 개입 루프 (HITL)(Human-in-the-Loop (HITL))",
+        "시간 절약을 위해 대화 상자를 자동으로 클릭하는 것"
+      ],
+      "correct": 3,
+      "explanation": "대화 상자를 자동으로 클릭하는 것은 안전의 반대입니다. 이 강의는 명시적인 확인을 권장합니다."
+    },
+    {
+      "stage": "post",
+      "question": "이 강의가 컴퓨터 사용 에이전트(Agent)에 대한 주요 공격으로 강조하는 것은 무엇입니까?",
+      "options": [
+        "네트워크 장애",
+        "OS 업데이트 지연",
+        "느린 렌더링",
+        "모델이 사용자 의도로 취급하는 검색된 콘텐츠에 지시문을 포함하는 악성 페이지나 PDF"
+      ],
+      "correct": 3,
+      "explanation": "스크린샷이나 DOM 텍스트를 권한으로 신뢰하는 것은 전형적인 간접 프롬프트 주입(Indirect Prompt Injection) 실패입니다."
+    },
+    {
+      "stage": "post",
+      "question": "인간 개입 루프 (HITL)(Human-in-the-Loop (HITL)) 확인이 구체적으로 권장되는 시점은 언제입니까?",
+      "options": [
+        "전혀",
+        "로그인, 구매, 파일 삭제와 같은 민감한 동작",
+        "모델이 요청할 때만",
+        "읽기 전용 탐색"
+      ],
+      "correct": 1,
+      "explanation": "민감한 동작 (금전, 데이터 노출, 신규 로그인)은 명시적인 인간 확인을 필요로 합니다."
+    }
+  ]
+}
