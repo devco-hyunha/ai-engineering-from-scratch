@@ -1,0 +1,102 @@
+{
+  "lesson": "02-bag-of-words-tfidf",
+  "title": "Bag of Words, TF-IDF, 및 텍스트 표현",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Bag of Words는 무엇을 버립니까?",
+      "options": [
+        "구두점",
+        "토큰 순서",
+        "어휘 크기",
+        "문서 길이"
+      ],
+      "correct": 1,
+      "explanation": "BoW는 문서별 토큰을 세지만 그 순서를 버립니다."
+    },
+    {
+      "stage": "pre",
+      "question": "TF를 IDF 계수로 왜 스케일링합니까?",
+      "options": [
+        "문서 길이를 정규화하기 위해",
+        "모든 문서에 나타나는 단어는 판별 신호가 적으므로 가중치를 낮춰야 합니다",
+        "구두점을 제거하기 위해",
+        "학습을 가속화하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "IDF는 흔한 단어에 페널티를 부여하고 희소한 단어를 부스트합니다."
+    },
+    {
+      "stage": "check",
+      "question": "스무딩된 IDF 공식 log((N+1)/(df+1)) + 1에서, 마지막 +1은 무엇을 보장합니까?",
+      "options": [
+        "큰 N에 대한 수치적 안정성",
+        "원시 카운트(raw counts)와의 호환성",
+        "모든 문서에 나타나는 단어도 IDF가 0이 아니라 1이 됩니다",
+        "더 빠른 계산"
+      ],
+      "correct": 2,
+      "explanation": "+1은 흔한 단어를 IDF=1로 유지하여 0으로 소거되지 않게 하며, scikit-learn의 기본값과 일치합니다."
+    },
+    {
+      "stage": "check",
+      "question": "코사인 유사도 계산 전에 TF-IDF 행을 L2 정규화하는 이유는 무엇입니까?",
+      "options": [
+        "희소 벡터를 밀집 벡터로 변환하기 위해",
+        "긴 문서가 유사도 점수를 지배하게 되며, 정규화는 모든 문서를 단위 초구(unit hypersphere) 위에 놓습니다",
+        "0 항목을 제거하기 위해",
+        "어휘를 압축하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "L2 정규화는 문서 길이 편향을 제거하고 코사인 유사도를 내적(dot product)으로 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "감정 분석에서 활성화하는 것이 위험한 TfidfVectorizer 설정은 무엇입니까?",
+      "options": [
+        "sublinear_tf=True",
+        "ngram_range=(1, 2)",
+        "min_df=2",
+        "stop_words='english'"
+      ],
+      "correct": 3,
+      "explanation": "영어 불용어(stopword) 목록은 'not'과 같은 부정어(drop)를 제거하는데, 이는 감정 신호를 담고 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에도 TF-IDF가 이기는 작업은 무엇입니까?",
+      "options": [
+        "기계 번역",
+        "개방형 대화",
+        "이미지 캡셔닝",
+        "스팸 탐지, 로그 이상 감지, 낮은 지연의 좁은 분류"
+      ],
+      "correct": 3,
+      "explanation": "단어의 존재가 신호이며 설명 가능성이나 속도가 중요할 때, TF-IDF는 임베딩을 이깁니다."
+    },
+    {
+      "stage": "post",
+      "question": "'The movie was not good'와 'The movie was excellent' 쌍에서 TF-IDF가 실패하는 이유는 무엇입니까?",
+      "options": [
+        "TF-IDF는 바이그램(bigram)이 작동해야 합니다",
+        "두 문서가 대부분의 토큰을 공유하며, bag-of-words는 부정이나 단어 순서에 대한 개념이 없습니다",
+        "TF-IDF는 불용어를 처리할 수 없습니다",
+        "임베딩 겹침이 너무 높습니다"
+      ],
+      "correct": 1,
+      "explanation": "단어 순서나 구문적 컨텍스트가 없으면, BoW는 'not'이 'good'의 감정을 뒤집는 것을 모델링할 수 없습니다."
+    },
+    {
+      "stage": "post",
+      "question": "TF-IDF 가중 임베딩 하이브리드(hybrid)는 무엇입니까?",
+      "options": [
+        "BoW와 밀집 임베딩을 연결(concatenating)하는 것",
+        "TF-IDF에 PCA를 실행한 후 재임베딩하는 것",
+        "평균 내기 전에 토큰별 임베딩에 대한 풀링(pooling) 가중치로 TF-IDF 가중치를 사용하는 것",
+        "TF-IDF 특징(features)으로 BERT를 학습하는 것"
+      ],
+      "correct": 2,
+      "explanation": "하이브리드는 각 토큰의 임베딩을 그 TF-IDF 점수로 가중하고 평균하여, 의미적 용량과 희소 단어 강조를 혼합합니다."
+    }
+  ]
+}
