@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Mask R-CNN은 왜 RoIPool을 RoIAlign으로 대체했습니까?",
+      "options": [
+        "RoIPool은 여러 단계에서 상자 좌표를 정수로 반올림하여 입력 픽셀과 특징 맵(feature map)의 정렬을 최대 특징 맵 픽셀만큼 어긋나게 만듭니다. RoIAlign은 반올림 없이 이중 선형 보간(bilinear sampling)을 사용하므로 위치 정보(localisation)를 보존합니다.",
+        "RoIPool은 저작권 문제였습니다.",
+        "RoIPool은 CPU에서만 작동합니다.",
+        "RoIAlign은 GPU에서 더 빠릅니다."
+      ],
+      "correct": 0,
+      "explanation": "RoIPool의 반올림은 스트라이드 크기의 정렬 어긋남(예: 스트라이드 32인 특징 맵에서 32픽셀)을 발생시킬 수 있습니다. RoIAlign은 이중 선형 보간을 통해 정확한 float 좌표에서 샘플링합니다. 원 논문에서는 이 변경으로 COCO 데이터셋의 mask AP가 3~4점 상승했으며, 현재는 위치 정보(localisation)를 중시하는 모든 검출기(detector)의 표준이 되었습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Mask R-CNN의 mask head는 제안(proposal)당 클래스별 28x28 mask를 출력합니다. 왜 클래스별로 분리합니까?",
+      "options": [
+        "논문에서 그렇게 요구했습니다.",
+        "단일 채널에서는 binary mask가 오버플로됩니다.",
+        "mask 예측을 분류(classification)와 분리(decoupling)하기 때문입니다. mask head는 각 클래스에 대해 형태(shape)만 학습해야 하므로, 분류기의 결정은 생성되는 mask에 영향을 주지 않으며, 추론 시 읽을 채널만 결정합니다.",
+        "binary mask는 역전파(backprop)를 위해 클래스별 채널이 필요합니다."
+      ],
+      "correct": 2,
+      "explanation": "제안(proposal)당 클래스별 mask를 생성하는 것은 mask 형태 학습을 분류와 분리(decoupling)합니다. 추론 시에는 예측된 클래스에 해당하는 채널만 읽습니다. 이러한 다중 작업 분리(multi-task decoupling)는 mask 형태와 클래스 확률이 서로 다른 목표이며 서로 다른 기울기(gradient)로 학습되기 때문에 중요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "torchvision의 Mask R-CNN 예측 dict에서 `labels`는 0이 아닌 1부터 시작합니다. 왜입니까?",
+      "options": [
+        "torchvision은 전체적으로 1-based 인덱싱을 사용합니다.",
+        "클래스 0은 배경(background)을 위해 예약되어 있으며, 사용자 클래스는 항상 1-based입니다. 따라서 분류기 헤드는 배경을 자체 로짓(logits)와 기울기(gradient)를 가진 실제 클래스로 처리할 수 있습니다.",
+        "학습 데이터가 이를 결정했습니다.",
+        "레거시 버그입니다."
+      ],
+      "correct": 1,
+      "explanation": "대부분의 검출기(detector)는 배경을 클래스 0으로, 명시적인 전경(foreground) 클래스를 1..C로 취급합니다. (C+1)개 클래스에 대한 softmax는 네트워크가 모든 클래스에 대해 낮은 확신만 갖는 것이 아니라 '여기에는 객체가 없다'를 능동적으로 예측하도록 학습할 수 있게 합니다. 4개의 실제 클래스가 있는 데이터셋은 예측기를 교체할 때 num_classes = 5가 필요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "500개 이미지 데이터셋으로 Mask R-CNN을 미세 조정(Fine-tuning)할 때 val mAP는 정체되고 train loss는 계속 떨어집니다. 가장 먼저 시도해야 할 것은 무엇입니까?",
+      "options": [
+        "에포크(Epoch)를 늘립니다.",
+        "더 높은 학습률(Learning Rate)을 사용합니다.",
+        "분할(segmentation) U-Net으로 전환합니다.",
+        "백본(backbone)과 FPN을 동결(freeze)하여 모델이 RPN과 헤드(head)만 미세 조정하도록 합니다. 500개 이미지는 23M 백본 매개변수(Parameter)를 과적합(Overfitting) 없이 업데이트하기에는 너무 적습니다."
+      ],
+      "correct": 3,
+      "explanation": "소규모 데이터셋에서는 모든 매개변수(Parameter)를 미세 조정하기에 충분한 신호가 없습니다. 사전 학습된 백본(backbone)과 FPN(ImageNet + COCO 특징)을 동결(freeze)하고 RPN objectness 헤드와 두 개의 분류기/mask 헤드만 학습하는 것이 표준 레시피이며, 보통 한 번의 학습 실행으로 이 정체 현상을 해결합니다."
+    },
+    {
+      "stage": "post",
+      "question": "Mask R-CNN 내부의 FPN은 스트라이드 4, 8, 16, 32인 네 개의 레벨(P2, P3, P4, P5)을 가집니다. 왜 하나의 레벨만 사용하지 않습니까?",
+      "options": [
+        "매개변수(Parameter) 수를 줄이기 위해.",
+        "네 개의 레벨은 임의적입니다.",
+        "자연 이미지에서의 객체는 다양한 스케일(scale) 범위에 걸쳐 있습니다. 각 제안(proposal)을 그 크기에 맞는 FPN 레벨로 라우팅하면 헤드(head)가 해당 객체에 적합한 수용장(receptive field)을 가진 특징 맵(feature map)을 얻게 되며, 이는 항상 하나의 스케일만 사용하는 것보다 엄격하게 더 좋습니다.",
+        "GPU 메모리를 더 많이 사용하기 위해."
+      ],
+      "correct": 2,
+      "explanation": "스트라이드 32인 특징 맵(feature map)에서 작은 객체는 단일 셀을 차지하며, 거의 공간적 정보가 없습니다. FPN은 작은 객체를 고해상도의 얕은 레벨(P2)로, 큰 객체를 저해상도의 깊은 레벨(P5)로 라우팅하여 수용장(receptive field)을 객체 크기에 맞춥니다. 모든 현대 검출기(detector)가 피라미드(pyramid) 구조를 갖는 이유입니다."
+    }
+  ]
+}
