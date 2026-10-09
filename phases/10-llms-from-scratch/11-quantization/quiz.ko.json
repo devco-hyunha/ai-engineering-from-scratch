@@ -1,0 +1,62 @@
+[
+  {
+    "question": "FP16의 70B 매개변수 모델은 가중치에만 VRAM을 얼마나 요구합니까?",
+    "options": [
+      "70 GB",
+      "140 GB",
+      "35 GB",
+      "280 GB"
+    ],
+    "correct": 1,
+    "explanation": "700억 매개변수 * FP16 매개변수당 2바이트 = 1400억 바이트 = 140 GB. 이는 단일 A100 (80GB)을 초과하므로, 가중치를 로드하기 위해 최소 두 개의 GPU가 필요합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "LLM의 맥락에서 양자화(Quantization)란 무엇입니까?",
+    "options": [
+      "메모리 사용량을 줄이고 추론 속도를 높이기 위해 가중치의 수치 정밀도를 낮추는 것 (예: FP16에서 INT4로)",
+      "학습 데이터를 압축하는 것",
+      "사용되지 않는 모델 레이어를 제거하는 것",
+      "어휘(Vocabulary) 크기를 줄이는 것"
+    ],
+    "correct": 0,
+    "explanation": "양자화(Quantization)는 고정밀도 부동 소수점 가중치를 저정밀도 정수 매핑합니다. INT4 양자화(Quantization)는 각 가중치를 16비트 대신 4비트로 저장하여, 최소한의 정확도 손실로 메모리를 4배 줄입니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "학습 후 양자화(PTQ)와 양자화 인식 학습(QAT)의 주요 차이점은 무엇입니까?",
+    "options": [
+      "QAT는 기울기(Gradient)를 사용하지 않습니다",
+      "PTQ는 더 많은 데이터를 필요로 합니다",
+      "PTQ는 재학습 없이 학습 후 양자화하며, QAT는 학습 중 양자화를 시뮬레이션하여 모델이 낮은 정밀도를 견디도록 학습합니다",
+      "PTQ가 더 정확합니다"
+    ],
+    "correct": 2,
+    "explanation": "PTQ는 빠릅니다(보정 및 양자화만 수행)하지만 정확도를 잃을 수 있습니다. QAT는 학습 중 가짜 양자화를 포함하여, 모델이 가중치를 조정하여 정밀도 손실에 더 견고해지도록 합니다. QAT는 일반적으로 더 높은 정확도를 제공합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "'채널별(per-channel)' 양자화(Quantization)란 무엇을 의미하며, 왜 '텐서별(per-tensor)'보다 더 나은가요?",
+    "options": [
+      "각 출력 채널을 개별적으로 양자화하며, 각 채널에 다른 스케일/영점(zero-point)을 사용하여 양자화 오차를 줄입니다",
+      "한 번에 하나의 색상 채널을 처리합니다",
+      "데이터 병렬화(Data Parallelism)의 일종입니다",
+      "채널마다 별도의 GPU를 사용합니다"
+    ],
+    "correct": 0,
+    "explanation": "텐서별(per-tensor) 양자화(Quantization)는 전체 가중치 행렬에 하나의 스케일 계수를 사용합니다. 채널별(per-channel) 양자화(Quantization)는 각 출력 채널(행)에 별도의 스케일을 사용합니다. 서로 다른 채널은 서로 다른 값 범위를 가지므로, 채널별 양자화(Quantization)가 이를 더 정확하게 포착합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "Llama 3 70B의 가중치(Weight) 중 95%가 -0.1과 +0.1 사이에 분포하는 이유는 무엇입니까?",
+    "options": [
+      "가중치(Weight)가 아직 수렴하지 않았습니다",
+      "학습 중 가중치 감쇠(Weight Decay)와 정규화(Normalization)가 가중치(Weight)를 작은 값으로 밀어내어, 전체 FP16 범위를 낭비하게 만듭니다",
+      "Llama 아키텍처에 특이한 현상입니다",
+      "모델이 잘 학습되지 않았습니다"
+    ],
+    "correct": 1,
+    "explanation": "가중치 감쇠(Weight Decay) 정규화(Normalization)는 가중치(Weight)를 0으로 수축시킵니다. 레이어 정규화(Normalization)는 활성화를 중심에 유지합니다. 이 두 가지가 결합되어 0 근처에 집중된 가중치(Weight) 분포를 생성하며, 이는 저정밀도 양자화(Quantization)를 효과적으로 만듭니다.",
+    "stage": "post"
+  }
+]
