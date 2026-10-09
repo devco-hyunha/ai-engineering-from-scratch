@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/29-end-to-end-coding-task-demo",
+  "title": "하네스(Harness)에서의 엔드투엔드 코딩 에이전트(Coding Agent)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "수업을 읽기 전에: 엔드투엔드 데모는 왜 LLM (대규모 언어 모델)(LLM (Large Language Model))를 결정론적 정책으로 대체합니까?",
+      "options": [
+        "결정론적 정책은 코딩 작업에서 항상 LLM (대규모 언어 모델)(LLM (Large Language Model))보다 성능이 좋습니다.",
+        "수업은 추론(Inference) 비용을 감당할 수 없습니다.",
+        "LLM (대규모 언어 모델)(LLM (Large Language Model))은 테스트에서 실행하기에는 너무 느립니다.",
+        "하네스(Harness)는 수업이 테스트하는 대상이며, 정책은 대체 가능한 접합점(seam)입니다."
+      ],
+      "correct": 3,
+      "explanation": "하네스(Harness) 계약은 정책이 LLM (대규모 언어 모델)(LLM (Large Language Model))인지 상태 기계(state machine)인지에 대해 신경 쓰지 않습니다. LLM (대규모 언어 모델)(LLM (Large Language Model))을 제거하면 네트워크와 변동성이 제거되어 수업을 재현 가능한 통합 테스트로 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "에이전트(Agent)의 상태 기계는 5개의 상태를 가집니다. 정상적인 패스(pass)에서 이 상태들은 어떤 순서로 실행됩니까?",
+      "options": [
+        "RUN_TESTS -> SURVEY -> INSPECT -> FIX -> VERIFY.",
+        "SURVEY -> RUN_TESTS -> INSPECT -> FIX -> VERIFY.",
+        "SURVEY -> FIX -> VERIFY -> RUN_TESTS -> INSPECT.",
+        "SURVEY -> INSPECT -> FIX -> RUN_TESTS -> VERIFY."
+      ],
+      "correct": 1,
+      "explanation": "에이전트(Agent)는 프로젝트를 조사(survey)하고, 테스트를 실행(run tests)하고, 실패한 테스트를 검사(inspect)하고, 버그를 수정(fix)한 후, 검증(verify)합니다. RUN_TESTS는 INSPECT보다 먼저 실행됩니다. 왜냐하면 테스트 실패는 정책이 읽는 신호이기 때문입니다."
+    },
+    {
+      "stage": "check",
+      "question": "번들된 픽스처(fixture)의 버그는 src/fizz.py의 오프-바이-원(off-by-one)입니다: range(1, n)이 range(1, n + 1)이어야 합니다. 정책은 어디에서 수정을 적용하기로 결정합니까?",
+      "options": [
+        "SURVEY 상태 내부에서, 파일 헤더를 읽음으로써.",
+        "상태 기계 외부에서, 게이트 체인(gate chain)에서.",
+        "VERIFY 상태 내부에서, 재실행(rerun) 후.",
+        "INSPECT 상태 내부에서, 테스트 실패가 예상된 출력(expected output)을 명시한 후."
+      ],
+      "correct": 3,
+      "explanation": "INSPECT는 정책이 실패한 테스트를 읽고 예상된 형태(expected shape)를 학습하는 곳입니다. 수정은 거기서 식별되며, 다음 FIX 상태에서 작성됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "모든 도구 호출(tool call)은 어떤 구성 요소의 체인을 순서대로 거칩니까?",
+      "options": [
+        "ObservationLedger -> GateChain -> Sandbox -> SpanBuilder.",
+        "SpanBuilder -> GateChain -> Sandbox -> ObservationLedger.",
+        "GateChain -> SpanBuilder -> Sandbox -> ObservationLedger.",
+        "Sandbox -> GateChain -> SpanBuilder -> ObservationLedger."
+      ],
+      "correct": 2,
+      "explanation": "먼저 게이트(gate) (허용/거부), 그 다음 스팬(span) (거부도 캡처되도록), 세 번째 샌드박스(sandbox) (허용된 경우에만), 마지막 레저(ledger) (성공한 경우에만). 수업 코드는 이 방식으로 연결합니다."
+    },
+    {
+      "stage": "post",
+      "question": "결정론적 정책을 실제 LLM (대규모 언어 모델)(LLM (Large Language Model))으로 교체합니다. 하네스(Harness)의 어떤 구성 요소가 변경됩니까?",
+      "options": [
+        "샌드박스(sandbox)는 seccomp로 강화되어야 합니다.",
+        "Prometheus 노출 형식(exposition format)이 호환되지 않게 됩니다.",
+        "게이트 체인(gate chain)은 LLM (대규모 언어 모델)(LLM (Large Language Model))의 확률성을 처리하도록 재작성되어야 합니다.",
+        "하네스(Harness)에는 아무것도 변하지 않습니다. 정책은 교체되는 유일한 부분입니다."
+      ],
+      "correct": 3,
+      "explanation": "수업의 요점: 하네스(Harness)는 정책-무관(policy-agnostic)합니다. 접합점(seam)은 next_action / observe 인터페이스입니다. LLM (대규모 언어 모델)(LLM (Large Language Model))은 게이트(gate), 샌드박스(sandbox), 레저(ledger), 스팬(spans)를 건드리지 않고 그 곳에 연결됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "데모는 에이전트(Agent)가 픽스처(fixture)를 12단계 미만으로 해결한다고 주장합니다. 결정론적 정책은 5단계를 사용합니다. 실제 LLM (대규모 언어 모델)(LLM (Large Language Model)) 에이전트(Agent)는 무엇을 할 가능성이 높으며, 하네스(Harness)는 이를 어떻게 처리합니까?",
+      "options": [
+        "LLM (대규모 언어 모델)(LLM (Large Language Model))은 이 하네스(Harness) 내부에서 실행할 수 없습니다.",
+        "LLM (대규모 언어 모델)(LLM (Large Language Model))도 5단계를 사용합니다. 하네스(Harness)는 변하지 않습니다.",
+        "하네스(Harness)는 예산(budget)을 조용히 확장합니다.",
+        "LLM (대규모 언어 모델)(LLM (Large Language Model))은 더 많은 단계를 사용할 수 있습니다. step_budget은 루프를 제한하며, 해결되지 않은 실행은 halted_reason과 함께 실패로 보고됩니다."
+      ],
+      "correct": 3,
+      "explanation": "단계 예산(step budget)은 명확하고 결정론적인 중지 기준입니다. 헤매는 LLM (대규모 언어 모델)(LLM (Large Language Model))은 상한이 적용되며, 보고서는 정확히 이유를 알려줍니다."
+    }
+  ]
+}
