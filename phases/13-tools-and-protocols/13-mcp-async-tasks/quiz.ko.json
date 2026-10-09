@@ -1,0 +1,78 @@
+{
+  "lesson": "13-mcp-async-tasks",
+  "title": "MCP Tasks 확장: 상태 비저장 코어에서의 내구성 있는 작업",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "상태 비저장 MCP 서버는 10분 동안 지속되는 작업을 어떻게 지원할 수 있나요?",
+      "options": [
+        "10분 동안 Mcp-Session-Id 연결을 유지합니다",
+        "진행 상황을 initialize 상태에만 저장합니다",
+        "모든 클라이언트가 스티키 로드 밸런싱을 사용하도록 요구합니다",
+        "애플리케이션 저장소에 백업된 명시적인 내구성 있는 작업 핸들을 반환합니다"
+      ],
+      "correct": 3,
+      "explanation": "상태 비저장은 프로토콜 요청 모델을 설명합니다. 내구성 있는 애플리케이션 상태는 명시적인 작업 ID와 공유 저장소로 표현됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "서버는 tools/call에서 resultType task를 언제 반환할 수 있나요?",
+      "options": [
+        "현재 요청이 확장을 광고하고 작업이 내구성 있게 읽을 수 있는 경우",
+        "이전 세션이 Tasks를 광고한 경우라면 언제든지",
+        "영속화하기 전에, 클라이언트가 낙관적으로 폴링할 수 있도록",
+        "params._meta.task.required가 true인 경우에만"
+      ],
+      "correct": 0,
+      "explanation": "작업 생성은 서버 주도적이지만, 현재 요청의 기능 지원 및 반환 전의 내구성 있는 생성이 필수입니다. 지원이 누락되면 data.requiredCapabilities와 함께 -32021을 반환합니다."
+    },
+    {
+      "stage": "check",
+      "question": "tasks/get 응답의 resultType이 complete이고 status가 working인 경우, 이는 무엇을 의미하나요?",
+      "options": [
+        "응답이 확장을 위반합니다",
+        "기저 작업이 완료되었습니다",
+        "작업이 취소되었습니다",
+        "폴링 RPC는 완료되었지만 작업은 여전히 실행 중입니다"
+      ],
+      "correct": 3,
+      "explanation": "resultType은 tasks/get RPC를 설명합니다. 작업 상태는 내구성 있는 작업을 독립적으로 설명합니다. status가 completed인 경우, 중첩된 CallToolResult는 자체 resultType complete와 serverInfo 메타데이터를 가집니다."
+    },
+    {
+      "stage": "check",
+      "question": "작업이 이미 존재하는 경우, 클라이언트는 input_required에 어떻게 응답하나요?",
+      "options": [
+        "answer 필드를 포함하여 tasks/result를 호출합니다",
+        "새로운 initialize 세션을 엽니다",
+        "동일한 id로 원래 tools/call을 재시도합니다",
+        "미해결 작업 키에 대한 inputResponses를 포함하여 tasks/update를 전송합니다"
+      ],
+      "correct": 3,
+      "explanation": "작업 생성 후의 작업 입력은 tasks/get에 의해 표시되며 tasks/update를 통해 충족됩니다. 원래 호출을 재시도하는 방식이 아닙니다."
+    },
+    {
+      "stage": "post",
+      "question": "성공적인 tasks/cancel 응답은 무엇을 보장하나요?",
+      "options": [
+        "서버가 취소 의도를 확인했습니다",
+        "결과가 삭제되었습니다",
+        "최종 작업 상태가 cancelled가 될 것입니다",
+        "워커가 이미 중단되었습니다"
+      ],
+      "correct": 0,
+      "explanation": "취소는 협력적이며 궁극적으로 일관됩니다. 확인 후에도 작업이 완료되거나 취소를 무시할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "현재 공식 Tasks 확장에 해당하는 메소드 집합은 무엇인가요?",
+      "options": [
+        "tools/task, notifications/task_result, roots/list",
+        "tasks/get, tasks/update, tasks/cancel",
+        "tasks/create, tasks/subscribe, tasks/delete",
+        "tasks/status, tasks/result, tasks/list"
+      ],
+      "correct": 1,
+      "explanation": "확장은 tasks/get, tasks/update, tasks/cancel을 사용합니다. 각 HTTP 요청은 Mcp-Name을 params.taskId로 설정합니다. 이전의 status, result, list 메소드는 마이그레이션 전용입니다."
+    }
+  ]
+}
