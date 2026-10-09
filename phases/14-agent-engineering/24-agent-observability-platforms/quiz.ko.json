@@ -1,0 +1,90 @@
+{
+  "lesson": "24-agent-observability-platforms",
+  "title": "에이전트 관측 가능성: Langfuse, Phoenix, Opik",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2025년 6월의 formerly commercial modules의 오픈소스화 이후 Langfuse는 어떤 라이선스로 배포됩니까?",
+      "options": [
+        "Apache 2.0",
+        "GPLv3",
+        "Elastic License 2.0",
+        "MIT"
+      ],
+      "correct": 3,
+      "explanation": "Langfuse는 MIT 라이선스를 따르며, LLM-as-a-judge, annotation queues, prompt experiments, Playground가 2025년 6월 이후 포함됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "교재에 따르면 Arize Phoenix가 가장 강점을 가진 영역은 무엇입니까?",
+      "options": [
+        "심층적인 에이전트 특화 평가: trace clustering, anomaly detection, RAG retrieval relevancy, OpenInference auto-instrumentation",
+        "자동화된 최적화 루프",
+        "Prompt versioning",
+        "코드의 정적 분석"
+      ],
+      "correct": 0,
+      "explanation": "Phoenix는 OpenInference auto-instrumentation을 통해 behavioral drift와 RAG evaluation에 집중합니다."
+    },
+    {
+      "stage": "check",
+      "question": "자동화된 prompt optimization과 가드레일(PII redaction, topical constraints) 및 LLM-judge hallucination detection을 결합하는 플랫폼은 무엇입니까?",
+      "options": [
+        "Langfuse",
+        "Phoenix",
+        "Jaeger",
+        "Opik"
+      ],
+      "correct": 3,
+      "explanation": "Opik은 optimization + guardrail 루프에 중심을 두고 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "교재는 prompt management를 포함한 올인원(all-in-one) 솔루션으로 어떤 플랫폼을 권장합니까?",
+      "options": [
+        "Opik",
+        "Datadog APM",
+        "Phoenix",
+        "Langfuse"
+      ],
+      "correct": 3,
+      "explanation": "Langfuse는 tracing + prompt management + evals + session replay를 end-to-end로 커버합니다."
+    },
+    {
+      "stage": "check",
+      "question": "교재는 벤더가 공개한 플랫폼 벤치마크에 대해 어떤 조언을 합니까?",
+      "options": [
+        "그것은 결정적입니다",
+        "방향성 지표로만 참고하고, 자체 코퍼스로 측정하십시오",
+        "Opik의 벤치마크만 신뢰할 수 있습니다",
+        "OpenTelemetry에 의해 금지되어 있습니다"
+      ],
+      "correct": 1,
+      "explanation": "Opik과 Langfuse 사이의 인용된 14배 차이조차도, 결정하기 전에 자체 데이터로 측정해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "평가(evaluation) 없는 tracing이 왜 비싼 로깅으로 간주됩니까?",
+      "options": [
+        "제공자가 spans에 대해 요금을 청구합니다",
+        "실행을 볼 수 있지만 점수를 매기지 못하므로, regression이 보이지 않고 bisection이 불가능합니다",
+        "디스크 비용이 CPU보다 더 높습니다",
+        "Spans는 replay할 수 없습니다"
+      ],
+      "correct": 1,
+      "explanation": "Evals는 traces를 실행 가능한 품질 신호로 전환하는 요소입니다."
+    },
+    {
+      "stage": "post",
+      "question": "교재는 자체 제작한 LLM-judges에 대해 어떤 경고를 합니까?",
+      "options": [
+        "CRITIC이 적용됩니다: judges는 사실적 검증을 위해 외부 grounding이 필요하며, 그렇지 않으면 rubber-stamp합니다",
+        "GPU에서 실행되어야 합니다",
+        "Apache 2.0에 의해 금지되어 있습니다",
+        "TypeScript에서만 작동합니다"
+      ],
+      "correct": 0,
+      "explanation": "외부 tool-grounded verification이 없으면, LLM-judges는 rubber-stamping으로 기울어집니다(CRITIC, Lesson 5)."
+    }
+  ]
+}
