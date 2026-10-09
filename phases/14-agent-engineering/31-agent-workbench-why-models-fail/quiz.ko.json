@@ -1,0 +1,90 @@
+{
+  "lesson": "31-agent-workbench-why-models-fail",
+  "title": "에이전트 워크벤치 엔지니어링: 유능한 모델이 여전히 실패하는 이유",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 교재는 실제 작업에서 에이전트 실패의 근본 원인을 무엇으로 지목합니까?",
+      "options": [
+        "오래된 학습 데이터",
+        "워크벤치 실패: 모델 주변 표면(surfaces)의 부재, LLM의 한계가 아님",
+        "느린 네트워크",
+        "불충분한 모델 매개변수"
+      ],
+      "correct": 1,
+      "explanation": "모델은 Python에 대해 틀린 것이 아닙니다. 작업에 대해 틀린 것입니다. 모델 주변의 표면(surfaces)이 빠져 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "이 교재가 명시한 7가지 워크벤치 표면(surfaces)은 무엇입니까?",
+      "options": [
+        "읽기, 쓰기, 실행, 포크, 종료, 대기, 종료(kill)",
+        "계획, 실행, 반성, 정제, 토론, 투표, 출시",
+        "지시문, 상태, 범위, 피드백, 검증, 리뷰, 핸드오프",
+        "학습, 평가, 배포, 모니터링, 재학습, 확장, 은퇴"
+      ],
+      "correct": 2,
+      "explanation": "7가지 표면은 지시문, 상태, 범위, 피드백, 검증, 리뷰, 핸드오프입니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 교재가 표면(surfaces)을 매핑한 8가지 분산 시스템 원시(primitives) 중 포함되지 않는 것은 무엇입니까?",
+      "options": [
+        "워커(Worker)",
+        "역전파(Backpropagation)",
+        "함수(Function)",
+        "트리거(Trigger)"
+      ],
+      "correct": 1,
+      "explanation": "8가지 원시(primitives)는 함수, 워커, 트리거, 런타임, HTTP/RPC, 큐, 세션 지속성, 권한 정책입니다."
+    },
+    {
+      "stage": "check",
+      "question": "Vercel이 보고한 하네스(harness) 변경은 성공률을 어디에서 어디로 이동시켰습니까?",
+      "options": [
+        "50%에서 70%로, RAG를 추가하여",
+        "20%에서 60%로",
+        "0%에서 100%로, 모델을 교체하여",
+        "80%에서 100%로, 에이전트 도구의 80%를 삭제하여"
+      ],
+      "correct": 3,
+      "explanation": "도구의 80%를 삭제한 것이 Vercel의 에이전트를 성공률 80%에서 100%로 이동시켰습니다."
+    },
+    {
+      "stage": "check",
+      "question": "Terminal Bench 2.0은 모델과 하네스(harness)에 대해 무엇을 보여줍니다?",
+      "options": [
+        "동일한 모델이 하네스만 변경하여 상위 30위 밖에서 5위로 이동",
+        "모델 단독이 순위를 결정한다",
+        "GPU만 중요하다",
+        "하네스 변경은 중요하지 않다"
+      ],
+      "correct": 0,
+      "explanation": "LangChain의 Anatomy of an Agent Harness: 동일한 모델, 하네스 변경, 25위 이상 순위 상승."
+    },
+    {
+      "stage": "post",
+      "question": "이 교재는 새로운 하네스(harness) 용어를 들었을 때 무엇을 권장합니까?",
+      "options": [
+        "거부한다",
+        "OpenAI가 표준화할 때까지 기다린다",
+        "용어를 그대로 채택한다",
+        "채택하기 전에 원시(primitives)(함수, 워커, 트리거, 런타임, HTTP/RPC, 큐, 지속성, 정책)로 번역한다"
+      ],
+      "correct": 3,
+      "explanation": "벤더 분류 체계가 아닌 원시(primitives)로부터 추론하십시오. 용어는 변하지만 엔지니어링은 변하지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "채팅 기록은 워크벤치에 대해 어디에 위치합니까?",
+      "options": [
+        "채팅이 기록 시스템(system of record)이다",
+        "채팅은 휘발성(volatile)이며, 저장소(repo)가 기록 시스템(system of record)이다",
+        "둘 다 동등하다",
+        "둘 다 중요하지 않다"
+      ],
+      "correct": 1,
+      "explanation": "루프(loop)는 채팅 기록이 아닌 상태 파일(state file)에서 닫힙니다."
+    }
+  ]
+}
