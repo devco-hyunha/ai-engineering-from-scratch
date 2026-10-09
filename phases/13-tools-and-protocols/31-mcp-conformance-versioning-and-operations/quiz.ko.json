@@ -1,0 +1,78 @@
+{
+  "lesson": "31-mcp-conformance-versioning-and-operations",
+  "title": "MCP 적합성 엔지니어링: 버전 관리, 증거, 운영",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SDK의 tools/list 호출이 한 번 성공하는 것만으로는 적합성 증거로 불충분한 이유는 무엇인가요?",
+      "options": [
+        "정규화된 값이 와이어 필드, 버전 동작, 프록시 변경 사항, 유효하지 않은 응답을 숨길 수 있습니다",
+        "SDK는 MCP 도구를 호출할 수 없습니다",
+        "성공적인 호출은 항상 레거시 에라를 선택합니다",
+        "적합성은 Registry 게시자에게만 적용됩니다"
+      ],
+      "correct": 0,
+      "explanation": "적합성은 원시 요청 및 응답, 선택된 버전 에라, 중간 매개체, SDK 변환을 검사해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "현대적 프로브가 JSON-RPC 오류 -32021을 반환하면, 폴백(fallback) 기능이 있는 클라이언트는 어떻게 해야 합니까?",
+      "options": [
+        "즉시 레거시 에라에 대한 initialize를 전송합니다",
+        "피어를 오프라인으로 취급합니다",
+        "현대적 에라를 유지하고 누락된 기능 선언을 수정하거나 보고합니다",
+        "오류를 무시하고 기능 없이 재시도합니다"
+      ],
+      "correct": 2,
+      "explanation": "인식된 현대적 오류는 현대적 동작을 증명합니다. 이는 다운그레이드를 허용하는 것이 아니라 수정 증거입니다."
+    },
+    {
+      "stage": "check",
+      "question": "resultType이 complete이고 낯선 추가 필드가 있는 결과를 현대적 클라이언트는 어떻게 처리해야 합니까?",
+      "options": [
+        "resultType을 input_required로 변경합니다",
+        "알 수 없는 키가 포함된 모든 결과를 거부합니다",
+        "알려진 결과 유형을 허용하고, 그 역할에 따라 추가 필드를 보존하거나 의도적으로 무시합니다",
+        "낯선 필드를 레거시 핸드셰이크로 취급합니다"
+      ],
+      "correct": 2,
+      "explanation": "추가 필드는 전방 호환성을 지원합니다. 이는 알 수 없는 라이프사이클 판별자와 다릅니다."
+    },
+    {
+      "stage": "check",
+      "question": "id가 없는 알림(notification)에 대한 필수 JSON-RPC 응답은 무엇인가요?",
+      "options": [
+        "server/discover 결과",
+        "JSON-RPC 응답 없음",
+        "콘텐츠가 null인 완전한 결과",
+        "id가 null인 오류"
+      ],
+      "correct": 1,
+      "explanation": "알림은 단방향입니다. 최종 전송 직렬화기는 JSON-RPC 성공 또는 오류를 내보내서는 안 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "프록시가 원본 프로토콜 오류를 보존했다는 것을 가장 잘 증명하는 증거는 무엇인가요?",
+      "options": [
+        "안정적인 다이제스트가 포함된 입력, 원본, 출력의 상태 및 본문 증거가 마스킹(redacted)된 것",
+        "게이트웨이 대시보드의 스크린샷",
+        "SDK 예외 클래스만",
+        "프록시 프로세스의 가동 시간"
+      ],
+      "correct": 0,
+      "explanation": "세 경계 증거는 상태 붕괴, 본문 재작성, 동작이 변경된 정확한 호프(hop)를 드러냅니다."
+    },
+    {
+      "stage": "post",
+      "question": "후보가 부정적 트랜스크립트(negative transcripts)에 실패하고 이전 버전에 수용(admission) 또는 헬스(evidence) 증거가 없다면, 릴리스 게이트는 어떻게 해야 합니까?",
+      "options": [
+        "최신 Registry 버전을 선택합니다",
+        "골든 트랜스크립트(golden transcripts)가 통과했으므로 승격합니다",
+        "latest로 태그된 패키지로 롤백합니다",
+        "적격한 롤백 대상이나 수정된 후보가 증명될 때까지 릴리스를 보류합니다"
+      ],
+      "correct": 3,
+      "explanation": "정확한 수용 및 헬스 증거가 없는 롤백은 또 다른 검증되지 않은 릴리스이므로, 안전한 조치는 보류하는 것입니다."
+    }
+  ]
+}
