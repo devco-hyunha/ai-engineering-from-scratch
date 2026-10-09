@@ -1,0 +1,78 @@
+{
+  "lesson": "05-constitutional-ai-rlaif",
+  "title": "헌법적 AI와 RLAIF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "표준 RLHF와 비교할 때 헌법적 AI의 핵심 대체 요소는 무엇인가요?",
+      "options": [
+        "보상 모델을 완전히 제거합니다",
+        "실제 프롬프트 대신 합성 프롬프트를 사용합니다",
+        "인간 선호 라벨러를 원칙 목록을 읽는 AI 라벨러로 대체합니다",
+        "PPO를 DPO로 대체합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "헌법적 AI의 첫 번째(SFT) 단계는 무엇을 수행하나요?",
+      "options": [
+        "라벨러의 코멘트를 클러스터링하여 합성 원칙을 생성합니다",
+        "초기 응답을 생성하고, 샘플링된 헌법 원칙에 따라 이를 비판한 후, 수정된 내용을 SFT 타깃으로 사용합니다",
+        "헌법에서 파생된 보상을 사용하여 PPO를 수행합니다",
+        "AI가 생성한 선호도만으로 보상 모델을 학습합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "두 번째(RLAIF) 단계는 무엇을 수행하나요?",
+      "options": [
+        "PPO를 생략하고 단일 지도 학습 손실을 적용합니다",
+        "피드백 모델로부터 AI가 생성한 선호도를 사용하여 보상 모델을 학습하고, 이를 대상으로 PPO를 실행합니다",
+        "인간이 SFT 출력에 다시 라벨을 붙입니다",
+        "헌법을 토크나이저에 증류(distill)합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic의 2026년 1월 4단계 Claude 헌법에서 계층 순서는 어떻게 되나요?",
+      "options": [
+        "유용성 > 광범위한 윤리 > 플랫폼 규칙 > 재앙 방지",
+        "재앙적 결과 방지 > Anthropic 지침 준수 > 광범위한 윤리 > 유용성과 솔직함",
+        "광범위한 윤리 > 유용성 > 플랫폼 규칙 > 재앙 방지",
+        "플랫폼 규칙 > 재앙 방지 > 유용성 > 광범위한 윤리"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "RLHF에서 RLAIF로 전환할 때 반드시 해결되지 않는 실패 모드(failure mode)는 무엇인가요?",
+      "options": [
+        "라벨러의 희소성",
+        "라벨러 비용",
+        "보상 해킹 / 굿하트의 법칙(Reward hacking / Goodhart's Law)",
+        "라벨러의 심리적 일관성 부족"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Constitutional Classifiers v1과 v2(2026) 간의 주요한 변화(headline shift)는 무엇인가요?",
+      "options": [
+        "v2는 컴퓨팅 오버헤드를 1%에서 23.7%로 증가시켰습니다",
+        "v2는 분류기를 제거하고 헌법에 의존했습니다",
+        "v2는 컴퓨팅 오버헤드를 23.7%에서 약 1%로 낮추면서 낮은 성공적 공격률을 유지했습니다",
+        "v2는 입력에서만 작동하고 출력에서는 작동하지 않습니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
