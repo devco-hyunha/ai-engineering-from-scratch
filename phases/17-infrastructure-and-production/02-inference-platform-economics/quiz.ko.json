@@ -1,0 +1,78 @@
+{
+  "lesson": "02-inference-platform-economics",
+  "title": "추론 플랫폼 경제학 — Fireworks, Together, Baseten, Modal, Replicate, Anyscale",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의는 2026년 추론 벤더를 조직하기 위해 어떤 세 가지 시장 세그먼트를 사용합니까?",
+      "options": [
+        "단일 테넌트, 다중 테넌트, 온프레미스",
+        "무료, 유료, 엔터프라이즈",
+        "오픈소스, 상용, 하이브리드",
+        "커스텀 실리콘, GPU 플랫폼, API 우선 마켓플레이스"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "분 단위 과금(Baseten, Modal)이 토큰 단위 과금(Fireworks, Together)보다 유리해지기 시작하는 지속 GPU 사용률은 대략 몇 %입니까?",
+      "options": [
+        "5%",
+        "90%",
+        "60%",
+        "30%"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "초기화(warming) 후 2-4초의 콜드 스타트와 초 단위 과금을 제공하는 Python 네이티브 서버리스 플랫폼은 무엇입니까?",
+      "options": [
+        "Anyscale",
+        "Baseten",
+        "Fireworks",
+        "Modal"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Fireworks의 주목할 만한 LoRA 가격 차별화 요소는 무엇입니까?",
+      "options": [
+        "LoRA 요청은 별도의 전용 GPU 계약이 필요합니다",
+        "LoRA로 제공되는 요청은 기본 모델의 토큰 단위 요금으로 청구됩니다",
+        "LoRA로 제공되는 요청은 기본 모델보다 비용이 더 높습니다",
+        "LoRA는 전혀 지원되지 않습니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "SOC 2 Type II, HIPAA 준비 상태, 전용 GPU가 필요한 규제 대상 헬스케어 고객에 적합한 플랫폼은 무엇입니까?",
+      "options": [
+        "Together",
+        "Anyscale",
+        "Baseten",
+        "Replicate"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의는 왜 플랫폼 계층에서의 커스텀 엔진 주장은 대부분 마케팅적 과장이라고 주장합니까?",
+      "options": [
+        "커스텀 엔진은 vLLM보다 성능이 결코 높지 않습니다",
+        "토큰 단위 과금이 유일한 실제 차별화 요소입니다",
+        "vLLM과 SGLang은 생산 오픈소스 추론의 약 80%를 차지하므로, 플랫폼 차별화는 엔진보다는 DX, 귀속, SLA에서 더 많이 옵니다",
+        "모든 커스텀 엔진은 TensorRT-LLM의 포크입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
