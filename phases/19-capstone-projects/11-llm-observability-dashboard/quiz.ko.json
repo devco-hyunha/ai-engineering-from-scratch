@@ -1,0 +1,90 @@
+{
+  "lesson": "11-llm-observability-dashboard",
+  "title": "캡스톤 11 — LLM 관측 가능성 및 평가 대시보드",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Langfuse, Phoenix, OpenLLMetry는 어떤 인제스트 스키마로 수렴합니까?",
+      "options": [
+        "Prometheus 노출 형식",
+        "OTLP HTTP를 통한 OpenTelemetry GenAI 시맨틱 컨벤션",
+        "벤더별 독점 JSON",
+        "평문 CSV 로그 파일"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "저장 계층에서 ClickHouse와 Postgres를 분리하는 이유는 무엇입니까?",
+      "options": [
+        "둘은 상호 교환 가능하며 하나가 무작위로 선택됩니다",
+        "스팬 인제스트에는 Postgres가 더 빠릅니다",
+        "ClickHouse는 스팬에 대한 컬럼형 분석을 처리하는 반면, Postgres는 사용자, 세션 및 앱 메타데이터를 보관합니다",
+        "ClickHouse는 문자열을 저장할 수 없습니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OpenTelemetry Collector의 테일 샘플링 프로세서는 무엇을 수행합니까?",
+      "options": [
+        "오류는 유지하고 성공은 샘플링하는 것과 같은 규칙을 사용하여, 트레이스가 완료된 후 유지 여부를 결정합니다",
+        "이전 트레이스를 Postgres로 재생합니다",
+        "모든 바이트를 무조건 스트리밍합니다",
+        "100ms 미만인 스팬을 잘라냅니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "대시보드는 주간 단위의 드리프트를 어떻게 감지합니까?",
+      "options": [
+        "고유 트레이스 ID를 계산합니다",
+        "풀링된 프롬프트 임베딩에 대해 PSI 또는 KL 발산을 계산하고 평가 점수 추이를 모니터링합니다",
+        "대시보드를 육안으로 확인합니다",
+        "최신 배포 타임스탬프를 읽습니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "주입된 PII 유출 회귀에 대한 산출물의 MTTR 목표는 무엇입니까?",
+      "options": [
+        "1시간 미만",
+        "24시간 이내",
+        "버그가 배포된 시점부터 Slack 알림까지 5분 미만",
+        "다음 온콜 교대 시간 이내"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "트레이스 커버리지 평가 기준을 충족하려면 어떤 SDK 계열이 표준 GenAI 스팬을 생성해야 합니까?",
+      "options": [
+        "OpenAI와 Anthropic만",
+        "SDK 중 하나만 충분합니다",
+        "vLLM만",
+        "최소 6개: OpenAI, Anthropic, Google GenAI, LangChain, LlamaIndex 및 vLLM"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "평가 결과는 원래 LLM 호출과 어떻게 연결됩니까?",
+      "options": [
+        "트레이스 ID가 없는 별도의 Postgres 테이블로",
+        "매일 밤 이메일로 전송되는 CSV로",
+        "Slack 메시지로만",
+        "ClickHouse에서 부모 트레이스의 자식으로 작성된 평가 스팬으로"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
