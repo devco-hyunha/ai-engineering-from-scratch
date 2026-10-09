@@ -1,0 +1,102 @@
+{
+  "lesson": "05-sentiment-analysis",
+  "title": "감정 분석",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "'The food was not great'가 단순 BoW 분류기에 어려운 이유는 무엇인가요?",
+      "options": [
+        "문장 부호를 포함하지 않기 때문",
+        "영어와 프랑스어가 섞여 있기 때문",
+        "토큰이 너무 적게 포함되기 때문",
+        "부정이 의미를 뒤집지만, BoW는 'not'과 'great' 사이의 연결을 버리기 때문"
+      ],
+      "correct": 3,
+      "explanation": "BoW는 'not'이 부정하는 단어를 바인딩할 수 없으므로, 분류기가 극성(polarity)의 뒤집힘을 놓칩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "고전적 감정 분석은 어떤 두 단계로 구성되나요?",
+      "options": [
+        "번역한 후 분류",
+        "표현(텍스트 벡터화) 및 분류(벡터에 대한 선형 모델)",
+        "검색한 후 랭킹",
+        "임베딩한 후 클러스터링"
+      ],
+      "correct": 1,
+      "explanation": "고전적 감정 분석은 특징 추출(feature extraction) 후 선형 분류기를 적용하는 것입니다."
+    },
+    {
+      "stage": "check",
+      "question": "'Naive' 독립성 가정에도 불구하고 Naive Bayes가 잘 작동하는 이유는 무엇인가요?",
+      "options": [
+        "Laplace smoothing이 의존성을 수정하기 때문",
+        "가정이 텍스트에 대해 실제로 참이기 때문",
+        "Naive Bayes가 비밀리에 상호작용을 학습하기 때문",
+        "희소한 텍스트 특징과 적당한 데이터에서는 분류기가 각 단어가 어느 쪽으로 기울어지는지(leaning-direction)에 주로 집중하며, 정확한 결합 확률에는 집중하지 않기 때문"
+      ],
+      "correct": 3,
+      "explanation": "독립성 가정이 틀렸더라도, 단어별 기울어짐 방향 정보만으로도 잘 분류할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "전처리 과정에서 'NOT_' 접두어가 붙은 토큰을 포함하는 이유는 무엇인가요?",
+      "options": [
+        "단어를 어간 추출(stem)하기 위해",
+        "어휘를 축소하기 위해",
+        "대소문자를 정규화하기 위해",
+        "'good'와 'NOT_good'를 분류기가 서로 다른 가중치를 줄 수 있는 별개의 특징으로 만들기 위해"
+      ],
+      "correct": 3,
+      "explanation": "부정 범위(negation scoping)는 부정된 형태를 별개의 특징으로 분리하여, BoW 분류기가 의미의 뒤집힘을 모델링할 수 있게 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "감정 분석에서 불용어(stopword)를 제거하는 것이 위험한 이유는 무엇인가요?",
+      "options": [
+        "불용어 제거가 토큰화를 깨뜨리기 때문",
+        "희소성(sparsity)을 증가시키기 때문",
+        "불용어 목록이 너무 길기 때문",
+        "부정어('not', 'no', 'never')는 보통 불용어로 취급되지만 감정 신호를 담고 있기 때문"
+      ],
+      "correct": 3,
+      "explanation": "기본 불용어 목록은 부정어 및 유사한 감정 신호 운반자를 제거합니다."
+    },
+    {
+      "stage": "post",
+      "question": "감정 클래스가 불균형할 때 보고해야 할 지표는 무엇인가요?",
+      "options": [
+        "정확도(Accuracy)만",
+        "Macro-F1 (클래스별 F1의 평균, 균등 가중치)",
+        "평균 제곱 오차(MSE)",
+        "Micro-F1만"
+      ],
+      "correct": 1,
+      "explanation": "Macro-F1은 소수 클래스가 고려되도록 강제합니다. 정확도나 Micro-F1은 이를 숨깁니다."
+    },
+    {
+      "stage": "post",
+      "question": "감정 분석에서 고전적 모델을 건너뛰고 트랜스포머(transformer)를 사용해야 하는 경우는 언제인가요?",
+      "options": [
+        "예제 수가 100개 미만일 때",
+        "아이러니(sarcasm) 탐지, 길고 변화하는 문서, 측면 기반(aspect-based) 감정, 저자원 언어",
+        "레이턴시(latency)가 중요할 때",
+        "설명 가능성(explainability)이 필요할 때"
+      ],
+      "correct": 1,
+      "explanation": "아이러니, 측면 기반, 다국어 감정 분석은 고전적 BoW 모델의 범위를 초과합니다."
+    },
+    {
+      "stage": "post",
+      "question": "텍스트에 대한 로지스틱 회귀에서 L2 정규화가 중요한 이유는 무엇인가요?",
+      "options": [
+        "행렬 역연산(matrix inversion)을 가속화하기 위해",
+        "ReLU 죽은 유닛(dead units)을 피하기 위해",
+        "희소하고 고차원적인 텍스트 특징은 모델이 학습 예제를 암기(memorize)하도록 허용하기 때문",
+        "기울기를 계산하기 위해 필수적이기 때문"
+      ],
+      "correct": 2,
+      "explanation": "L2는 텍스트의 희소 특징, 고차원 환경에서 과적합(overfitting)을 방지합니다."
+    }
+  ]
+}
