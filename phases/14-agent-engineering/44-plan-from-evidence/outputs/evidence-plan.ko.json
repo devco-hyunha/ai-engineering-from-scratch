@@ -1,0 +1,61 @@
+{
+  "status": "ready",
+  "issues": [],
+  "waves": [
+    [
+      "contract"
+    ],
+    [
+      "docs",
+      "implementation"
+    ],
+    [
+      "integration"
+    ]
+  ],
+  "items": [
+    {
+      "id": "contract",
+      "change": "중복 이메일 동작 정의",
+      "evidence": [
+        "tests/test_accounts.py:44"
+      ],
+      "depends_on": [],
+      "proof": "리뷰 계약"
+    },
+    {
+      "id": "implementation",
+      "change": "정규화된 중복 거부",
+      "evidence": [
+        "app/accounts.py:18"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "proof": "python3 -m unittest tests.test_accounts"
+    },
+    {
+      "id": "docs",
+      "change": "409 응답 문서화",
+      "evidence": [
+        "docs/api.md:72"
+      ],
+      "depends_on": [
+        "contract"
+      ],
+      "proof": "python3 scripts/check_links.py"
+    },
+    {
+      "id": "integration",
+      "change": "전체 수용 게이트 실행",
+      "evidence": [
+        "pyproject.toml:31"
+      ],
+      "depends_on": [
+        "implementation",
+        "docs"
+      ],
+      "proof": "python3 -m unittest"
+    }
+  ]
+}
