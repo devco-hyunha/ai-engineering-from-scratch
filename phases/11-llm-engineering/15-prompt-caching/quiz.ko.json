@@ -1,0 +1,66 @@
+{
+  "lesson": "15-prompt-caching",
+  "title": "프롬프트 캐싱 및 컨텍스트 캐싱",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "Anthropic은 캐시 읽기에 대해 기본 입력 요금 대비 몇 퍼센트의 할인을 적용합니까?",
+      "options": [
+        "25% 할인",
+        "90% 할인",
+        "75% 할인",
+        "50% 할인"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "동적 타임스탬프는 캐시 분할점 위에 위치하지 않고 그 아래에 위치해야 하는 이유는 무엇입니까?",
+      "options": [
+        "Anthropic은 캐시된 블록 내의 타임스탬프를 명시적으로 거부합니다",
+        "타임스탬프가 토크나이저를 혼란스럽게 만듭니다",
+        "정적 텍스트보다 더 많은 토큰을 소모합니다",
+        "캐시는 접두어가 바이트 단위로 동일할 때만 적중하므로, 변하는 타임스탬프는 그 이후의 모든 부분에 대해 매칭을 깨뜨립니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "OpenAI의 프롬프트 캐싱은 어떻게 구성됩니까?",
+      "options": [
+        "프로젝트별로 토글하는 시스템 레벨 플래그",
+        "구성 없이 자동 접두어 매칭",
+        "생성하고 참조하는 CachedContent API",
+        "명시적인 cache_control 마커"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic에서 1시간 연장 TTL은 기본 5분 TTL 대비 쓰기 프리미엄이 얼마나 됩니까?",
+      "options": [
+        "쓰기 프리미엄의 4배",
+        "쓰기 프리미엄의 2배 (기본 대비 50% 초과)",
+        "쓰기 프리미엄 없음",
+        "동일함"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic의 25% 쓰기 프리미엄을 상쇄(손익분기점)하려면 몇 번의 재사용이 필요합니까?",
+      "options": [
+        "5",
+        "10",
+        "1",
+        "2"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
