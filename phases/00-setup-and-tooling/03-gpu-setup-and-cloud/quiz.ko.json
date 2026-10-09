@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "신경망 학습 시 GPU가 CPU보다 더 빠른 이유는 무엇인가요?",
+      "options": [
+        "GPU가 CPU보다 클럭 속도가 높기 때문입니다",
+        "GPU가 수천 개의 병렬 행렬 연산을 동시에 수행할 수 있기 때문입니다",
+        "GPU가 더 효율적인 프로그래밍 언어를 사용하기 때문입니다",
+        "GPU가 CPU보다 RAM이 더 많기 때문입니다"
+      ],
+      "correct": 1,
+      "explanation": "GPU는 병렬 연산에 최적화된 수천 개의 코어를 갖추고 있어, 신경망 학습을 지배하는 행렬 곱셈에 이상적입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "VRAM은 무엇을 의미하나요?",
+      "options": [
+        "모든 장치에 걸쳐 사용 가능한 총 RAM",
+        "CPU 캐시 메모리의 일종",
+        "시스템 RAM과 분리된 GPU의 비디오 RAM",
+        "운영체제가 스왑 공간으로 사용하는 가상 RAM"
+      ],
+      "correct": 2,
+      "explanation": "VRAM (비디오 RAM)은 GPU에 전용된 메모리입니다. 이는 시스템의 메인 RAM과 분리되어 있으며, 학습 중 사용할 수 있는 모델의 크기와 배치 크기를 제한합니다."
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA GPU가 감지되었는지 확인하고 현재 상태를 표시하는 명령은 무엇인가요?",
+      "options": [
+        "torch.cuda.list_devices()",
+        "nvidia-smi",
+        "lspci | grep gpu",
+        "gpu --status"
+      ],
+      "correct": 1,
+      "explanation": "nvidia-smi (NVIDIA 시스템 관리 인터페이스)는 GPU 사용률, 메모리 사용량, 온도 및 실행 중인 프로세스를 표시합니다. GPU 가용성을 확인하는 표준 도구입니다."
+    },
+    {
+      "stage": "post",
+      "question": "GPU와 CPU의 행렬 곱셈을 벤치마킹할 때, GPU 시간을 측정하기 전에 torch.cuda.synchronize()를 호출해야 하는 이유는 무엇인가요?",
+      "options": [
+        "CPU에서 GPU 메모리로 데이터를 전송하기 위해",
+        "타이머를 멈추기 전에 모든 GPU 연산이 완료되었는지 보장하기 위해",
+        "사용되지 않은 GPU 메모리를 해제하기 위해",
+        "GPU 클럭 속도를 기본 주파수로 재설정하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "GPU 연산은 비동기적입니다. GPU가 아직 연산 중일 때 Python은 즉시 반환합니다. synchronize()는 모든 GPU 연산이 끝날 때까지 차단하므로 정확한 타이밍을 얻을 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "fp16 경험칙을 사용했을 때, 24 GB의 VRAM에 대략 몇 개의 매개변수가 들어갈 수 있나요?",
+      "options": [
+        "60억 개의 매개변수",
+        "240억 개의 매개변수",
+        "120억 개의 매개변수",
+        "480억 개의 매개변수"
+      ],
+      "correct": 2,
+      "explanation": "fp16에서는 각 매개변수가 2바이트를 사용합니다. 24 GB / 2바이트 = 120억 개의 매개변수입니다. 이는 대략적인 추정치이며, 실제 사용량에는 활성화, 기울기 및 옵티마이저 상태가 포함됩니다."
+    }
+  ]
+}
