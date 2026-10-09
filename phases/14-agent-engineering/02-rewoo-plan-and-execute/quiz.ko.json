@@ -1,0 +1,90 @@
+{
+  "lesson": "02-rewoo-plan-and-execute",
+  "title": "ReWOO와 Plan-and-Execute: 분리된 계획",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "ReAct의 프롬프트가 깊이에 따라 왜 2차적으로 증가합니까?",
+      "options": [
+        "각 단계가 모든 이전 생각과 관찰을 포함한 전체 이전 컨텍스트를 포함합니다",
+        "모델이 매 단계에서 자신을 토큰화합니다",
+        "도구 스키마가 호출마다 중복됩니다",
+        "제공자가 토큰이 아닌 바이트 단위로 과금합니다"
+      ],
+      "correct": 0,
+      "explanation": "ReAct는 각 단계에서 이전 생각과 관찰을 다시 포함하므로, 총 프롬프트 길이가 깊이의 제곱에 따라 증가합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "ReWOO를 정의하는 세 가지 역할 분리는 무엇입니까?",
+      "options": [
+        "Planner, Workers, Solver",
+        "Reader, Writer, Reviewer",
+        "Generator, Critic, Optimizer",
+        "Actor, Evaluator, Reflector"
+      ],
+      "correct": 0,
+      "explanation": "ReWOO는 DAG를 생성하는 Planner, 증거를 가져오는 Workers, 최종 답변을 구성하는 Solver로 분리합니다."
+    },
+    {
+      "stage": "check",
+      "question": "HotpotQA에서 ReWOO와 ReAct 비교 시 논문이 보고하는 주요 수치는 무엇입니까?",
+      "options": [
+        "토큰 10배 감소 및 정확도 -2",
+        "토큰 약 5배 감소 및 절대 정확도 +4",
+        "동일한 토큰 수 및 정확도 +1",
+        "토큰 약 2배 증가 및 정확도 +10"
+      ],
+      "correct": 1,
+      "explanation": "ReWOO는 ReAct 대비 HotpotQA에서 약 5배의 토큰 감소와 절대 정확도 +4를 보고합니다."
+    },
+    {
+      "stage": "check",
+      "question": "ReWOO 계획 노드 내의 #E1과 같은 플레이스홀더는 무엇을 의미합니까?",
+      "options": [
+        "이전 워커 노드의 출력으로 디스패치 시점에 대체되는 참조",
+        "Planner 버전 식별자",
+        "워커 1이 반환한 오류 코드",
+        "증거 가져오기를 위한 재시도 카운터"
+      ],
+      "correct": 0,
+      "explanation": "계획 노드는 #E1, #E2와 같은 증거 참조를 사용하며, 실행기는 이를 상류 워커의 출력으로 대체합니다."
+    },
+    {
+      "stage": "check",
+      "question": "ReWOO가 ReAct보다 실패를 더 잘 국소화하는 이유는 무엇입니까?",
+      "options": [
+        "Planner가 모든 오류 후 새로운 DAG를 다시 생성합니다",
+        "Workers가 어떤 오류에서도 실행을 중단합니다",
+        "ReWOO는 모든 실패한 호출을 최대 10번까지 재시도합니다",
+        "워커의 오류는 원본 계획과 함께 Solver가 보는 문자열이 되므로, 단계별이 아닌 노드별 저하가 발생합니다"
+      ],
+      "correct": 3,
+      "explanation": "원본 계획이 컨텍스트에 있는 노드별 실패는 Solver가 오류 중 스트림에서 추론하는 대신 우아한 저하(graceful degradation)를 수행할 수 있게 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "단순 ReWOO보다 Plan-and-Act에 가장 잘 맞는 작업 형태는 무엇입니까?",
+      "options": [
+        "순수 산술 질문",
+        "40단계 웹 또는 모바일 내비게이션 궤적",
+        "2단계 팩토이드 조회",
+        "단일 턴 분류"
+      ],
+      "correct": 1,
+      "explanation": "Plan-and-Act는 단일 ReAct 궤적이 일관성을 잃는 장기 하위(30단계 이상) 웹 및 모바일 에이전트를 위해 설계되었습니다."
+    },
+    {
+      "stage": "post",
+      "question": "ReWOO의 Planner 증류(distillation) 결과가 프로덕션 에이전트에 대해 시사하는 바는 무엇입니까?",
+      "options": [
+        "모든 단계에서 프론티어 모델을 사용해야 합니다",
+        "Planner는 관찰을 보지 않으므로, 작은 Planner(약 7B)가 큰 교사 모델을 매치할 수 있습니다",
+        "7B 파라미터 미만에서 계획 품질이 떨어집니다",
+        "증류는 기울기 기반 RL 데이터를 필요로 합니다"
+      ],
+      "correct": 1,
+      "explanation": "Planner는 관찰을 보지 않으므로, 큰 교사 모델의 계획 궤적은 작은 미세 조정된 Planner로 깔끔하게 전이됩니다."
+    }
+  ]
+}
