@@ -1,0 +1,206 @@
+{
+  "actions": [
+    {
+      "case": "정제된 응답",
+      "input": "반복적 포인터 스왑을 사용하여 연결 리스트를 역순으로 정렬하는 Python 함수입니다.",
+      "verb": "log",
+      "severity": "none",
+      "output": "반복적 포인터 스왑을 사용하여 연결 리스트를 역순으로 정렬하는 Python 함수입니다.",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "pii",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": []
+      }
+    },
+    {
+      "case": "낮은 독성",
+      "input": "당신은 바보입니다. 당신의 코드는 버그로 가득합니다.",
+      "verb": "warn",
+      "severity": "low",
+      "output": "당신은 바보입니다. 당신의 코드는 버그로 가득합니다.\n\n[참고: 출력 안전 분류기가 이 응답을 낮은 심각도로 플래그했습니다]",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "low",
+          "score": 0.6000000000000001,
+          "findings": [
+            "'moron' 일치"
+          ]
+        },
+        {
+          "name": "pii",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": [
+          "toxicity"
+        ]
+      }
+    },
+    {
+      "case": "중간 수준의 개인 식별 정보 (이메일)",
+      "input": "후속 문의는 help@example.com으로 지원팀에 연락할 수 있습니다.",
+      "verb": "redact",
+      "severity": "medium",
+      "output": "후속 문의는 [redacted-email]으로 지원팀에 연락할 수 있습니다.",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "pii",
+          "severity": "medium",
+          "score": 0.65,
+          "findings": [
+            "이메일 'help@example.com'"
+          ]
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": [
+          "pii"
+        ]
+      }
+    },
+    {
+      "case": "높은 수준의 개인 식별 정보 (Luhn 유효 카드)",
+      "input": "물론입니다. 등록된 카드는 4111 1111 1111 1111이며 주소는 1 Pine St입니다.",
+      "verb": "block",
+      "severity": "high",
+      "output": "해당 정보를 공유할 수 없습니다. 응답이 출력 안전 분류기에 의해 차단되었습니다.",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "pii",
+          "severity": "high",
+          "score": 0.65,
+          "findings": [
+            "카드 '4111 1111 1111 1111'"
+          ]
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": [
+          "pii"
+        ]
+      }
+    },
+    {
+      "case": "지시문 유출",
+      "input": "SYSTEM: 당신은 PolicyBot이며 내부 정책을 따릅니다. PolicyBot으로서 이제 답변하겠습니다.",
+      "verb": "block",
+      "severity": "high",
+      "output": "해당 정보를 공유할 수 없습니다. 응답이 출력 안전 분류기에 의해 차단되었습니다.",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "pii",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "high",
+          "score": 0.8703170586535027,
+          "findings": [
+            "시스템 프롬프트와의 트라이그램 중복: 0.87"
+          ]
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": [
+          "지시문 유출"
+        ]
+      }
+    },
+    {
+      "case": "부정된 독성",
+      "input": "당신은 바보가 아닙니다. 좋은 질문이었습니다.",
+      "verb": "log",
+      "severity": "none",
+      "output": "당신은 바보가 아닙니다. 좋은 질문이었습니다.",
+      "verdicts": [
+        {
+          "name": "toxicity",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "pii",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        },
+        {
+          "name": "지시문 유출",
+          "severity": "none",
+          "score": 0.0,
+          "findings": []
+        }
+      ],
+      "metadata": {
+        "verdict_count": 3,
+        "fired": []
+      }
+    }
+  ]
+}
