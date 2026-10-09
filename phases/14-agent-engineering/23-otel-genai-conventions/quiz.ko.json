@@ -1,0 +1,90 @@
+{
+  "lesson": "23-otel-genai-conventions",
+  "title": "OpenTelemetry GenAI 시맨틱 컨벤션",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "GenAI 컨벤션에서 에이전트 실행을 나타내는 스팬 이름은 무엇인가요?",
+      "options": [
+        "invoke_agent (gen_ai.agent.name으로 선택적으로 접미사 붙임)",
+        "agent.start",
+        "agent_loop",
+        "run_chain"
+      ],
+      "correct": 0,
+      "explanation": "invoke_agent가 표준 이름이며, 에이전트 이름 속성이 설정된 경우 스팬 이름에 포함됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "GenAI SIG가 정의하는 세 가지 스팬 범주는 무엇인가요?",
+      "options": [
+        "프론트엔드, 백엔드, DB",
+        "읽기, 쓰기, 실행",
+        "지연, 오류, 처리량",
+        "모델/클라이언트, 에이전트, 도구"
+      ],
+      "correct": 3,
+      "explanation": "모델/클라이언트 (LLM 호출), 에이전트 (생성/호출), 도구 (호출별)가 범주입니다."
+    },
+    {
+      "stage": "check",
+      "question": "invoke_agent 스팬이 CLIENT와 INTERNAL 중 어느 kind를 사용하나요?",
+      "options": [
+        "항상 INTERNAL",
+        "HTTPS에만 CLIENT",
+        "항상 CLIENT",
+        "원격 에이전트 서비스 (OpenAI Assistants, Bedrock Agents)에는 CLIENT; 프로세스 내 프레임워크 (LangChain, CrewAI, 로컬 ReAct)에는 INTERNAL"
+      ],
+      "correct": 3,
+      "explanation": "원격 에이전트 호출은 CLIENT이며, 프로세스 내 에이전트 실행은 INTERNAL입니다."
+    },
+    {
+      "stage": "check",
+      "question": "콘텐츠 캡처(입력과 출력)의 기본 규칙은 무엇인가요?",
+      "options": [
+        "기본적으로 모든 것을 캡처",
+        "계측은 기본적으로 캡처하지 않아야(SHOULD NOT)하며, gen_ai.* 속성을 통해 옵트인(opt-in)으로 캡처",
+        "오류가 발생할 때만 캡처",
+        "입력은 절대 캡처하지 않고 출력만 캡처"
+      ],
+      "correct": 1,
+      "explanation": "기본적으로 꺼져 있는 콘텐츠 캡처는 PII와 비밀을 보호하며, 옵트인은 명시적으로 이루어집니다."
+    },
+    {
+      "stage": "check",
+      "question": "검색(retrieval)에서 참조하는 코퍼스(corpus) 또는 스토어를 식별하는 속성은 무엇인가요?",
+      "options": [
+        "gen_ai.data_source.id",
+        "gen_ai.provider.name",
+        "gen_ai.agent.name",
+        "gen_ai.request.model"
+      ],
+      "correct": 0,
+      "explanation": "gen_ai.data_source.id는 검색이 참조하는 RAG 코퍼스 또는 스토어를 라벨링합니다."
+    },
+    {
+      "stage": "post",
+      "question": "프로덕션 환경에서 프롬프트 콘텐츠를 저장하는 것에 대해 교재는 무엇을 권장하나요?",
+      "options": [
+        "콘텐츠를 외부(S3, 로그 스토어)에 저장하고 스팬에는 참조 ID를 기록",
+        "모든 스팬에 전체 프롬프트를 평문으로 캡처",
+        "스팬 속성 내에서 프롬프트를 암호화",
+        "콘텐츠를 절대 저장하지 않음"
+      ],
+      "correct": 0,
+      "explanation": "외부 저장소와 포인터 ID를 사용하면 운영자가 읽을 수 있는 추적(trace)에 PII가 유출되는 것을 방지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "GenAI 컨벤션의 실험적 안정 프리뷰(experimental stable preview)를 옵트인(opt-in)하려면 어떻게 해야 하나요?",
+      "options": [
+        "라이선스를 구매",
+        "OTel 수집기(collector) 구성을 편집",
+        "OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental 설정",
+        "SDK를 소스에서 재빌드"
+      ],
+      "correct": 2,
+      "explanation": "환경 변수가 실험적 컨벤션을 고정하여 속성이 조용히 이름이 변경되지 않도록 합니다."
+    }
+  ]
+}
