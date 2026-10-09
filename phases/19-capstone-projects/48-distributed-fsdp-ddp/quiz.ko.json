@@ -1,0 +1,78 @@
+{
+  "lesson": "48-distributed-fsdp-ddp",
+  "title": "분산 데이터 병렬(Distributed Data Parallel) 및 FSDP를 처음부터 구현하기",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "처음부터 구현한 DDP 래퍼의 핵심이 되는 두 가지 집합 연산(collective ops)은 무엇인가요?",
+      "options": [
+        "reduce_scatter만 사용",
+        "barrier와 barrier",
+        "send와 recv",
+        "모든 랭크가 동일한 매개변수에서 시작하도록 생성 시 broadcast를 수행하고, 모든 랭크가 평균화된 기울기로 끝나도록 backward 후 all_reduce를 수행"
+      ],
+      "correct": 3,
+      "explanation": "초기화 시 broadcast는 랭크들이 0단계에서 동기화되도록 유지합니다. backward 후 all-reduce는 이후 모든 단계에서 랭크들이 동기화되도록 유지합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "이 강의는 CUDA 없이 CPU에서 왜 작동하나요?",
+      "options": [
+        "시뮬레이션된 텐서를 사용",
+        "torch.distributed를 전혀 사용하지 않음",
+        "torch.distributed는 일반 소켓을 통해 집합 연산을 실행하는 gloo 백엔드를 제공하므로, CPU의 torch.multiprocessing 워커들이 실제 프로세스 그룹을 형성합니다. GPU 머신에서는 device 태그만 변경됩니다",
+        "스텁(stub)임"
+      ],
+      "correct": 2,
+      "explanation": "Gloo는 CPU 집합 연산 백엔드입니다. GPU의 nccl에서도 동일한 호출 지점이 작동하며, API 표면은 동일합니다."
+    },
+    {
+      "stage": "check",
+      "question": "manual_all_reduce_matches_single_process 테스트는 무엇을 증명하나요?",
+      "options": [
+        "CUDA가 불필요하다는 것",
+        "옵티마이저가 수렴한다는 것",
+        "아무것도 증명하지 않음",
+        "랭크별 기울기를 합산하고 world_size로 나누면, 단일 프로세스가 연결된 입력(concatenated input)에 대해 계산한 기울기를 부동 소수점 오차 범위 내에서 복원한다는 것"
+      ],
+      "correct": 3,
+      "explanation": "전체 배치에 대한 교차 엔트로피 평균 감소는 랭크별 평균의 평균과 같습니다. 합산 후 나누는 것이 올바른 연산이며, 이 테스트는 이를 시각적으로 보여줍니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의의 FSDP 스케치(sketch)는 매 forward pass마다 매개변수에 대해 무엇을 수행하나요?",
+      "options": [
+        "해시를 계산",
+        "매개변수를 재초기화",
+        "아무것도 수행하지 않음",
+        "평탄화된 매개변수(flat parameter)를 world_size의 배수로 패딩하고, 슬라이스하며, 모든 랭크에서 슬라이스를 all_gather하고, 패딩을 제거한 후, 재구성된 결과가 원본과 일치하는지 검증"
+      ],
+      "correct": 3,
+      "explanation": "각 랭크는 모든 매개변수의 1/world_size를 소유합니다. gather는 연산을 위해 전체 텐서를 재구성합니다. 프로덕션 FSDP는 gather를 이전 레이어의 작업과 겹치게(overlap) 수행합니다."
+    },
+    {
+      "stage": "check",
+      "question": "매개변수 길이가 world_size로 나누어떨어지지 않을 때, gloo all_gather가 world_size개의 동일 크기 샤드(shards)로 크기가 정해지는 이유는 무엇인가요?",
+      "options": [
+        "네트워크 속도를 높이기 위해",
+        "무작위 선택",
+        "버그임",
+        "Gloo의 all_gather는 랭크별로 동일한 크기의 출력 텐서를 요구하므로, 슬라이스하기 전에 평탄화된 매개변수를 world_size의 배수로 오른쪽 패딩(right-padded)하고, gather 후 패딩을 제거합니다"
+      ],
+      "correct": 3,
+      "explanation": "Gloo(및 nccl)의 all_gather는 동일한 크기의 출력을 기대합니다. 패딩이 가장 저렴한 해결책이며, 스케치는 결과를 원본 길이로 잘라냅니다."
+    },
+    {
+      "stage": "post",
+      "question": "데모 출력에서 랭크 간 param_sum_spread가 0에 가깝다는 것은 무엇을 의미하나요?",
+      "options": [
+        "의미 있는 정보 없음",
+        "모든 랭크가 실행 종료 시 동일한 매개변수 값으로 끝났다는 의미이며, 이는 생성 시 broadcast와 모든 backward 후 all-reduce가 모두 정상적으로 작동했다는 것을 의미합니다. 둘 중 하나라도 고장 나면 spread는 단계가 진행됨에 따라 커질 것입니다",
+        "손실(loss)이 낮다는 것",
+        "네트워크가 빠르다는 것"
+      ],
+      "correct": 1,
+      "explanation": "DDP의 불변 조건(invariant)은 랭크 간 매개변수 일치입니다. spread는 감사(audit) 지표이며, 데모는 이것이 1e-3 미만으로 유지됨을 단언(assert)합니다."
+    }
+  ]
+}
