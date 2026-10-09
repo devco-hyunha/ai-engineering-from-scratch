@@ -1,0 +1,78 @@
+{
+  "lesson": "57-end-to-end-research-demo",
+  "title": "엔드투엔드 연구 데모",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의에서 데모의 역할은 무엇인가요?",
+      "options": [
+        "스케줄러를 기준선(baseline)과 비교하여 벤치마킹하는 것",
+        "각 분기(branch)에서 실제 언어 모델을 호출하는 것",
+        "이전 강의들을 단일한 새로운 프레임워크로 대체하는 것",
+        "이전 강의들의 구성 요소(primitives)를 순수 Python import로 조합하는 것"
+      ],
+      "correct": 3,
+      "explanation": "데모는 조합(composition) 테스트입니다. 각 단계는 각각의 강의에 존재합니다. 데모는 이를 import하여 보고서를 연결합니다. 새로운 프레임워크나 새로운 추상화는 없습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "이 강의는 왜 일반적인 패키지 import 대신 importlib를 통해 이전 강의들을 로드하나요?",
+      "options": [
+        "importlib가 더 빠르기 때문에",
+        "각 이전 강의는 설치된 패키지가 아닌 독립적인 code/ 폴더이며, importlib는 파일 경로로 로드하기 때문에",
+        "asyncio가 importlib를 요구하기 때문에",
+        "강의들이 모듈 이름을 공유하여 충돌이 발생하기 때문에"
+      ],
+      "correct": 1,
+      "explanation": "강의들은 설치된 패키지가 아닙니다. 각 강의는 자체 code/ 폴더 안에 main.py를 포함하고 있습니다. importlib.util.spec_from_file_location은 전역 모듈 네임스페이스를 오염시키지 않고 경로로 로드합니다."
+    },
+    {
+      "stage": "check",
+      "question": "두 개 이상의 분기가 논문을 트리거(trigger)했을 때, 최선 결과 선택기(picker)는 분기 간에 어떻게 결정하나요?",
+      "options": [
+        "평균 보상이 가장 높은 분기를 선택하며, 동점 시 분기 ID의 알파벳 순으로 결정합니다",
+        "실험을 가장 많이 수행한 분기를 선택합니다",
+        "공정성을 위해 무작위로 선택합니다",
+        "첫 번째로 트리거된 분기를 선택합니다"
+      ],
+      "correct": 0,
+      "explanation": "가장 높은 평균 보상이 승리합니다. 동점 시 분기 ID로 결정되므로 데모는 결정적(deterministic)입니다. 무작위 선택은 결정성 테스트를 무의미하게 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "스케줄러가 논문 트리거가 0개라고 보고할 때, 선택기(picker)는 어떤 오류를 발생시키나요?",
+      "options": [
+        "ValueError",
+        "None을 반환합니다",
+        "PaperValidationError",
+        "NoTriggerError, 이는 writer가 실행되기 전에 데모를 단축(short-circuit)합니다"
+      ],
+      "correct": 3,
+      "explanation": "NoTriggerError는 타입 지정된 실패 모드입니다. None을 반환하면 writer가 잘못된 입력으로 실행되어 나중에 덜 실행 가능한(actionable) 오류로 깨질 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "결정성 테스트에서 데모는 왜 동일한 seed로 두 번 실행하나요?",
+      "options": [
+        "메모리 누수를 잡기 위해",
+        "선택된 분기, 보상, 논문 섹션 ID가 실행 간에 동일함을 단언(assert)하기 위해",
+        "asyncio를 두 번 실행하기 위해",
+        "스케줄러가 공정함을 증명하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "결정성은 계약(contract)의 일부입니다. 동일한 seed로 두 번 실행하면 동일한 산출물이 생성되어야 합니다. 테스트는 이를 고정(pins)합니다."
+    },
+    {
+      "stage": "post",
+      "question": "성공적인 실행 후 데모 보고서에는 무엇이 포함되나요?",
+      "options": [
+        "최종 LaTeX 파일만",
+        "실험 개수와 상태 문자열만",
+        "모델 프롬프트와 완료(completion) 로그",
+        "scheduler_report, best_branch, best_reward, critic_result, paper_manifest, stop_reason"
+      ],
+      "correct": 3,
+      "explanation": "각 단계의 출력은 보존됩니다. 보고서는 상류(upstream) 출력의 조합이며, 변환된 요약이 아닙니다. 다운스트림(downstream) 도구는 manifest를 읽고, 디버거는 scheduler_report 내부의 trace를 읽습니다."
+    }
+  ]
+}
