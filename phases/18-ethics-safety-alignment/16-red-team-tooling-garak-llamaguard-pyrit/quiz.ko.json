@@ -1,0 +1,78 @@
+{
+  "lesson": "16-red-team-tooling-garak-llamaguard-pyrit",
+  "title": "레드 티밍 도구 - Garak, Llama Guard, PyRIT",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026년 전형적인 배포 환경에서 Llama Guard는 어떤 역할을 수행합니까?",
+      "options": [
+        "사고의 연쇄 (CoT)를 위한 추론 스캐폴더",
+        "RLHF (인간 피드백 기반 강화 학습)(RLHF (Reinforcement Learning from Human Feedback))를 위한 보상 모델",
+        "토큰화(Tokenization) 대안",
+        "MLCommons 위험 범주에 대한 입력 및/또는 출력 안전 분류기로, LLM (대규모 언어 모델)(LLM (Large Language Model))의 앞과 뒤에 배치됨"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Llama Guard 3는 대략 몇 개의 MLCommons 위험 범주를 다루합니까?",
+      "options": [
+        "3",
+        "40",
+        "14",
+        "7"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Garak의 아키텍처는 어떻게 조직되어 있습니까?",
+      "options": [
+        "프로브(공격 생성기), 디텍터(출력 점수 계산기), 하네스(캠페인 관리자)",
+        "임베딩(Embedding), 리트리버, 리랭커(Reranker)",
+        "도구, 리소스, 프롬프트",
+        "라우터, 에이전트(Agent), 큐"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PyRIT은 주로 무엇을 위해 설계되었으며, Garak과 어떻게 다릅니까?",
+      "options": [
+        "PyRIT은 깊은 다중 턴 캠페인(변환기 체인, Crescendo 및 TAP과 같은 오케스트레이터(Orchestration), 점수 계산)을 실행하는 반면, Garak은 수천 개의 단일 턴 프로브를 실행합니다",
+        "두 도구는 범위와 대상이 동일합니다",
+        "PyRIT은 Llama Guard 변형이며, Garak은 Prompt-Guard 변형입니다",
+        "PyRIT은 보상 모델 훈련 도구이며, Garak은 토큰화(Tokenization) 도구입니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2026년 권장되는 기본 레드 티밍(Red Teaming) 스택 구성은 무엇입니까?",
+      "options": [
+        "PAIR를 사용하여 모든 도구 대체",
+        "출시 시에만 Garak을 한 번 실행",
+        "LLM (대규모 언어 모델)(LLM (Large Language Model)) 평가를 수동 검토로만 대체",
+        "모델의 양쪽에 Llama Guard를 배치하고, 회귀 테스트(Regression Test)를 위해 Garak을 야간에 실행하며, 릴리스 전 캠페인을 위해 PyRIT을 실행"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Llama Guard, Garak, PyRIT에 공통적으로 존재하는 평가의 함정은 무엇입니까?",
+      "options": [
+        "백박스 접근이 필요합니다",
+        "영어에서만 작동합니다",
+        "GPU에서 실행할 수 없습니다",
+        "보고된 공격/방어율은 판정자(judge)의 정체성과 프로브의 신선도에 의존하므로, 판정자를 지정하고 모델이 패치(Patch)될 때마다 프로브를 갱신해야 합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
