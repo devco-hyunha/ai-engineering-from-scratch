@@ -1,0 +1,78 @@
+{
+  "lesson": "16-mcp-security-oauth-2-1",
+  "title": "MCP 인증: CIMD, 발급자 바인딩, PKCE 및 단계적 인증",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026-07-28 기준, 새로운 MCP OAuth 클라이언트 등록에 선호되는 메커니즘은 무엇인가요?",
+      "options": [
+        "URL에 포함된 액세스 토큰",
+        "Mcp-Session-Id",
+        "클라이언트 ID 메타데이터 문서",
+        "동적 클라이언트 등록"
+      ],
+      "correct": 2,
+      "explanation": "CIMD가 선호되며, DCR은 폐기되어 호환성 경로로만 유지됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "루프백 리다이렉트를 사용하는 데스크톱 클라이언트는 DCR 폴백 시 어떤 application_type을 선언해야 하나요?",
+      "options": [
+        "web",
+        "stateless",
+        "native",
+        "confidential"
+      ],
+      "correct": 2,
+      "explanation": "데스크톱, 모바일, 명령줄 및 루프백 클라이언트는 네이티브 애플리케이션입니다."
+    },
+    {
+      "stage": "check",
+      "question": "클라이언트는 인증 응답의 iss 값을 어떻게 처리해야 하나요?",
+      "options": [
+        "정규화하고 호스트 이름을 비교합니다",
+        "clientInfo로 저장합니다",
+        "PKCE가 성공하면 무시합니다",
+        "응답을 사용하기 전에 기록된 발급자와 정확히 비교합니다"
+      ],
+      "correct": 3,
+      "explanation": "RFC 9207의 발급자 검사는 발급자 간 인증 응답 혼동을 방지합니다."
+    },
+    {
+      "stage": "check",
+      "question": "클라이언트는 발급자가 생성한 OAuth 자격 증명 및 액세스 토큰을 어떻게 키(key)로 관리해야 하나요?",
+      "options": [
+        "발급자별 자격 증명 및 발급자+리소스별 토큰",
+        "모든 등록 및 토큰을 하나의 전역 클라이언트 이름 아래에",
+        "서버 표시 이름만으로",
+        "프로토콜 세션 식별자로"
+      ],
+      "correct": 0,
+      "explanation": "발급자 및 리소스 키는 생성된 자격 증명이 보안 기관이나 청중 간에 교차하는 것을 방지합니다. 자가 호스팅된 CIMD URL은 이식성이 유지됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "리소스가 scope notes:delete와 함께 403을 반환합니다. 올바른 다음 단계는 무엇인가요?",
+      "options": [
+        "인증 없이 로컬에 notes:delete를 추가합니다",
+        "스コー프를 설명하고, 동의를 얻고, 이를 인증한 후, 새로운 요청 ID로 재시도합니다",
+        "MCP 토큰을 다운스트림 API로 전송합니다",
+        "현재 토큰을 재사용하고 챌린지를 무시합니다"
+      ],
+      "correct": 1,
+      "explanation": "단계적 인증은 연산을 재시도하기 전에 새로 인증된 토큰을 획득합니다."
+    },
+    {
+      "stage": "post",
+      "question": "MCP 리소스 https://notes.example.com/mcp에 대한 RFC 9728 메타데이터 URL은 무엇인가요?",
+      "options": [
+        "https://notes.example.com/.well-known/oauth-protected-resource/mcp",
+        "https://auth.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/.well-known/oauth-protected-resource",
+        "https://notes.example.com/mcp/.well-known/oauth-protected-resource"
+      ],
+      "correct": 0,
+      "explanation": "RFC 9728은 well-known 세그먼트 뒤에 보호된 리소스 경로를 보존하므로 /mcp 접미사가 필요합니다."
+    }
+  ]
+}
