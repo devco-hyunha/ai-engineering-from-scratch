@@ -1,0 +1,78 @@
+{
+  "lesson": "76-collective-ops-from-scratch",
+  "title": "처음부터 구현하는 집단 연산",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "N개의 랭크(rank)에서 T 바이트 크기의 텐서에 대해 링(ring) 올리듀스(allreduce)의 랭크당 대역폭 비용은 얼마입니까?",
+      "options": [
+        "N * T 바이트",
+        "T log2(N) 바이트",
+        "T 바이트",
+        "2T(N-1)/N 바이트"
+      ],
+      "correct": 3,
+      "explanation": "링 올리듀스(ring allreduce)는 T/N 크기의 N-1개 청크(chunks)를 두 번 이동합니다(리듀스-스캐터(reduce-scatter) 후 올개더(allgather)). 랭크당 총 비용은 2T(N-1)/N이며, 클러스터 크기와 무관합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "이 강의의 큐(mesh) 메시가 실제 클러스터에서 NCCL의 정직한 대체 수단인 이유는 무엇입니까?",
+      "options": [
+        "하드웨어가 리듀션을 오프로드(offload)합니다",
+        "CUDA 코어에서 실행됩니다",
+        "링을 따라 순서대로 점-to-점(point-to-point) 전송하는 동일한 와이어 패턴(wire pattern)을 구현하며, 매체만 다릅니다",
+        "메시지를 압축합니다"
+      ],
+      "correct": 2,
+      "explanation": "알고리즘의 정확성은 매체가 아닌 와이어 패턴에 의존합니다. 큐 링은 NCCL 링 올리듀스(ring allreduce)와 동일한 레이스(race) 형태와 청크 스케줄을 노출합니다."
+    },
+    {
+      "stage": "check",
+      "question": "링 올리듀스(ring allreduce)의 리듀스-스캐터(reduce-scatter) 단계 이후, 랭크 r은 무엇을 보유합니까?",
+      "options": [
+        "하나의 청크에 대한 리듀스된 합계(텐서의 N분의 1)",
+        "두 청크에 대한 리듀스된 합계",
+        "리듀스되지 않은 전체 텐서",
+        "아무것도 없음"
+      ],
+      "correct": 0,
+      "explanation": "리듀스-스캐터(reduce-scatter)는 하나의 청크의 합계를 하나의 랭크에 배치합니다. 이후 올개더(allgather) 단계는 완성된 청크들을 링을 따라 회전시킵니다."
+    },
+    {
+      "stage": "check",
+      "question": "소스(source)에서 N-1개의 직접 전송(direct sends)을 사용하는 대신 트리(tree) 브로드캐스트(broadcast)를 사용하는 이유는 무엇입니까?",
+      "options": [
+        "PyTorch에서는 트리가 필수입니다",
+        "직접 전송은 패킷을 드롭(drops)합니다",
+        "트리는 라운드(round)당 보유자(holder) 집합을 두 배로 늘립니다. 깊이가 log2(N)이므로 지연(latency)은 N이 아닌 log로 스케일(scale)됩니다",
+        "트리는 메모리를 덜 사용합니다"
+      ],
+      "correct": 2,
+      "explanation": "홉(hop)당 지연이 병목인 경우 log2(N) 홉이 지배적입니다. N-1개의 순차적 전송은 그 지연 하한(latency floor)을 N번 지불해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "동일한 입력에 대해 torch.distributed gloo와 검증하는 이유는 무엇입니까?",
+      "options": [
+        "Gloo가 더 빠릅니다",
+        "Gloo는 집단 연산(collective)의 의미론(semantics)에 대한 합법적인 참조(reference)입니다. 바이트 단위 동일 출력은 실제 클러스터에서 실행하기 전에 알고리즘이 사양(spec)과 일치함을 증명합니다",
+        "Gloo는 설정이 필요 없습니다",
+        "Gloo는 JSONL을 자동으로 작성합니다"
+      ],
+      "correct": 1,
+      "explanation": "참조(reference)가 없으면, 원시(primitive)는 실제 훈련(run)의 10000번째 스텝(step)까지 올바른 것처럼 보일 수 있습니다. Gloo는 CPU에서 바이트 단위 동일한 ground truth를 제공합니다."
+    },
+    {
+      "stage": "post",
+      "question": "트리(tree) 올리듀스(allreduce)가 링(ring) 올리듀스(allreduce)보다 우월한 경우는 언제입니까?",
+      "options": [
+        "항상",
+        "메시지가 클 때",
+        "작은 메시지나 높은 지연(latency) 링크. log2(N) 홉 수(hop count)가 교차점(crossover) 아래에서 대역폭(bandwidth) 항 2T(N-1)/N을 이깁니다",
+        "절대"
+      ],
+      "correct": 2,
+      "explanation": "NCCL은 약 1 MB 이상에서는 링(ring)을, 그 이하에서는 트리(tree)를 선택합니다. 교차점(crossover)은 주어진 클러스터 토폴로지(topology)에서의 대역폭(bandwidth) 대 지연(latency)의 균형입니다."
+    }
+  ]
+}
