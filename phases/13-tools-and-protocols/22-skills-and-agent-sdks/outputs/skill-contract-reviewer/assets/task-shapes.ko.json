@@ -1,0 +1,57 @@
+[
+  {
+    "task": "Rewrite this paragraph once",
+    "primitives": [
+      "prompt"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  },
+  {
+    "task": "Apply the same release checklist across repositories",
+    "primitives": [
+      "Agent Skill"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  },
+  {
+    "task": "Use the release checklist and query a deployment API",
+    "primitives": [
+      "Agent Skill",
+      "MCP tool"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  },
+  {
+    "task": "Enforce formatting after every generated file",
+    "primitives": [
+      "hook"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  },
+  {
+    "task": "Normalize a known JSON schema deterministically",
+    "primitives": [
+      "ordinary code"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  },
+  {
+    "task": "Research an independent question in an isolated context",
+    "primitives": [
+      "subagent"
+    ],
+    "question": "",
+    "options": [],
+    "explanation": ""
+  }
+]
