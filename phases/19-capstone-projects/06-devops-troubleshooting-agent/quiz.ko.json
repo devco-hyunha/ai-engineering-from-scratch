@@ -1,0 +1,90 @@
+{
+  "lesson": "06-devops-troubleshooting-agent",
+  "title": "캡스톤 06 — Kubernetes용 DevOps 문제 해결 에이전트",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "문제 해결 에이전트의 RBAC 권한 범위에 대한 기본 권한 설정은 무엇인가요?",
+      "options": [
+        "자가 치유(self-heal)를 위해 클러스터 관리자 권한을 부여",
+        "기본적으로 읽기 전용이며, 파괴적인 동작은 별도의 서버와 인간 승인 뒤에 게이트로 제한",
+        "온콜(on-call) 엔지니어와 동일한 권한",
+        "영향을 받은 네임스페이스에서만 네임스페이스 관리자 권한"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "루트 원인 분석(RCA) 중 에이전트가 탐색하는 지식 그래프는 무엇인가요?",
+      "options": [
+        "노드는 K8s 객체와 텔레메트리 소스이며, 엣지는 소유권, 스케줄링, 관측을 인코딩",
+        "팀별로 조직화된 Prometheus 메트릭 이름",
+        "최근 재시작된 Pod의 평면 목록",
+        "GitHub 커밋 및 PR 리뷰의 그래프"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Slack 브리핑을 위해 루트 원인 가설은 어떻게 순위가 매겨지나요?",
+      "options": [
+        "알림 이름의 알파벳 순서",
+        "모델 로그 확률(log-probability)만 기준",
+        "생성된 순서",
+        "신뢰도, 구체성, 그래프 경로 길이, 인용 횟수를 결합한 증거 점수"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "감사 로그(audit log)는 에이전트가 실행한 명령뿐만 아니라 고려한 명령도 기록하는 이유는 무엇인가요?",
+      "options": [
+        "ArgoCD는 고려된 명령만 허용",
+        "리플레이 공격(replay attacks)은 두 목록 모두 필요",
+        "Slack API는 전달을 위해 두 목록 모두 필요",
+        "리뷰어가 에이전트가 파괴적인 명령을 거의 실행했던 근접 실패(near-misses)를 포착할 수 있도록"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "나쁜 배포(deploy)에 대해 에이전트가 일방적으로 롤백(rollback)하는 것을 방지하는 메커니즘은 무엇인가요?",
+      "options": [
+        "파괴적 도구는 Slack 카드의 승인 토큰 뒤에 있는 별도의 MCP 서버에 위치",
+        "PagerDuty가 배포를 자동으로 일시 중지",
+        "GitOps 저장소의 브랜치 보호",
+        "두 번째 LLM 심사위원이 롤백에 투표"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "루브릭(rubric)이 측정하는 가설 도달 시간(p50 time-to-hypothesis) 목표는 무엇인가요?",
+      "options": [
+        "1시간 미만",
+        "30초 미만",
+        "다음 온콜(on-call) 교대 시간 미만",
+        "알림부터 Slack 브리핑까지 5분 미만"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "RCA 정확도를 점수화하는 데 사용되는 합성 인시던트(suite)의 크기는 얼마나 되나요?",
+      "options": [
+        "5개 시나리오",
+        "OOMKill, DNS flap, HPA thrash, PVC fill 등을 포함하는 20개 시나리오",
+        "1개 스크립트 데모 인시던트",
+        "100개 랜덤 샘플링된 프로덕션 알림"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
