@@ -1,0 +1,78 @@
+{
+  "lesson": "28-mcp-tool-contracts-and-content",
+  "title": "MCP 도구 계약 및 콘텐츠",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "도구가 type이 array인 outputSchema를 게시합니다. 어떤 structuredContent 값이 유효합니까?",
+      "options": [
+        "outputSchema는 문서화 용도이므로 모든 JSON 값이 유효합니다",
+        "MCP 구조화 결과는 object 전용이므로 object만 유효합니다",
+        "게시된 schema의 항목 조건을 만족하는 array가 유효합니다",
+        "structuredContent가 없는 텍스트 블록이 유효합니다"
+      ],
+      "correct": 2,
+      "explanation": "structuredContent는 array를 포함하여 모든 JSON 값이 될 수 있지만, 도구가 outputSchema를 게시한 경우 해당 schema를 따라야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "tools/list 결과의 nextCursor가 빈 문자열입니다. 클라이언트는 어떻게 해야 합니까?",
+      "options": [
+        "빈 문자열을 페이지네이션의 끝으로 처리합니다",
+        "정확히 빈 문자열 커서를 사용하여 목록 요청을 다시 보냅니다",
+        "커서 0으로 대체합니다",
+        "다음 페이지 번호를 찾기 위해 디코딩합니다"
+      ],
+      "correct": 1,
+      "explanation": "커서 값은 불투명(opaque)합니다. 빈 문자열은 유효한 non-null 커서이며, 정확히 그대로 다시 보내야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "x-mcp-header로 표시된 매개변수 중, 엄격한 배포 정책이 거부해야 하는 것은 무엇입니까?",
+      "options": [
+        "Token으로 미러링된 string 토큰 필드",
+        "Shard로 미러링된 integer 샤드 필드",
+        "Region으로 미러링된 string 지역 필드",
+        "Dry-Run으로 미러링된 boolean dry_run 필드"
+      ],
+      "correct": 0,
+      "explanation": "프로토콜은 민감한 값의 미러링을 권장하지 않습니다. 엄격한 클라이언트 수용(admission) 정책은 token, password, secret, credential 및 PII 필드를 거부해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "resource_link 블록과 embedded resource 블록의 주요 차이점은 무엇입니까?",
+      "options": [
+        "resource link는 나중에 가져오는 데이터를 가리키며, embedded resource는 현재 데이터를 담습니다",
+        "resource link는 자동으로 영원히 승인됩니다",
+        "embedded resource는 resources/list에도 나타나야 합니다",
+        "resource link만 URI를 포함할 수 있습니다"
+      ],
+      "correct": 0,
+      "explanation": "link는 검색을 지연(defer)하며, 따라갈 때 승인이 필요합니다. embedded resource는 데이터를 현재 결과에 배치합니다."
+    },
+    {
+      "stage": "post",
+      "question": "tools/list 페이지에 잘못된 도구 descriptor가 하나 있을 때, 클라이언트는 어떻게 처리해야 합니까?",
+      "options": [
+        "해당 도구를 거부하되, 관련 없는 도구들의 평가는 계속 진행합니다",
+        "descriptor를 조용히 수리합니다",
+        "노출하되 모델 프롬프트에 경고를 추가합니다",
+        "모든 도구 실행을 JSON-RPC notification으로 취급합니다"
+      ],
+      "correct": 0,
+      "explanation": "descriptor 수용(admission)은 도구별로 수행됩니다. 하나의 잘못된 정의는 유효한 도구들을 사용할 수 없게 만들지 않으면서 제외해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "isError가 true인 도구 결과 대신 JSON-RPC error에 속하는 실패는 무엇입니까?",
+      "options": [
+        "보고 소스가 일시적으로 사용할 수 없습니다",
+        "하류(downstream) API가 조치 가능한 도구별 오류를 반환합니다",
+        "비즈니스 규칙이 요청된 날짜를 거부합니다",
+        "요청된 도구 이름이 존재하지 않습니다"
+      ],
+      "correct": 3,
+      "explanation": "알 수 없는 도구는 프로토콜 dispatch를 방지하므로 JSON-RPC error에 속합니다. 모델이 조치할 수 있는 실행 실패는 isError가 true인 도구 결과를 사용합니다."
+    }
+  ]
+}
