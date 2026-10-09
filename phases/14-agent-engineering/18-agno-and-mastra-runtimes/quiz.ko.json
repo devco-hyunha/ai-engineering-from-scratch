@@ -1,0 +1,90 @@
+{
+  "lesson": "18-agno-and-mastra-runtimes",
+  "title": "프로덕션 에이전트 런타임",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "각 런타임에 대해 강의가 권장하는 언어 조합은 무엇인가요?",
+      "options": [
+        "Agno는 TypeScript, Mastra는 Python",
+        "둘 다 Go 우선",
+        "Agno는 Python, Mastra는 TypeScript",
+        "둘 다 Rust 우선"
+      ],
+      "correct": 2,
+      "explanation": "Agno는 Python(FastAPI 형태)이며, Mastra는 TypeScript(Vercel AI SDK 형태)입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Agno가 권장하는 프로덕션 배포 형태는 무엇인가요?",
+      "options": [
+        "장기 실행되는 상태 유지 데몬",
+        "서버리스 크론 워커만 사용",
+        "요청마다 새로운 에이전트를 시작하는 상태 비저장 세션 범위 FastAPI 백엔드; 세션 상태는 DB에 저장",
+        "WebSocket 전용 서버"
+      ],
+      "correct": 2,
+      "explanation": "요청마다 상태 비저장 FastAPI를 사용하며, 세션 상태는 DB로 외부화됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "Mastra의 세 가지 기본 요소(primitives)는 무엇인가요?",
+      "options": [
+        "Node, Edge, State",
+        "Plan, Worker, Solver",
+        "Agents, Tools, Workflows",
+        "Actor, Message, Inbox"
+      ],
+      "correct": 2,
+      "explanation": "Agents(LLM + 역할), Tools(Zod 타입 지정), Workflows가 Mastra의 세 가지 기본 요소입니다."
+    },
+    {
+      "stage": "check",
+      "question": "Agno의 문서에 따르면 에이전트 인스턴스화 비용은 대략 어느 정도인가요?",
+      "options": [
+        "에이전트당 약 1초 및 1 GiB",
+        "에이전트당 약 2마이크로초 및 약 3.75 KiB",
+        "에이전트당 약 200밀리초 및 100 MiB",
+        "에이전트당 약 10분 및 4 GiB"
+      ],
+      "correct": 1,
+      "explanation": "Agno의 문서는 에이전트당 약 2마이크로초 및 약 3.75 KiB를 인용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "Mastra의 통합 모델 라우터(Unified Model Router)는 무엇을 제공하나요?",
+      "options": [
+        "벡터 DB 레이어",
+        "수많은 공급업체에 걸쳐 수천 개의 모델을 위한 단일 클라이언트 인터페이스",
+        "그래프 체크포인터",
+        "도구 호출용 큐"
+      ],
+      "correct": 1,
+      "explanation": "Mastra의 통합 모델 라우터는 94개 공급업체에 걸쳐 3,300개 이상의 모델을 인용합니다."
+    },
+    {
+      "stage": "post",
+      "question": "Agno를 선택하는 이유로 성능 자체를 내세우는 것이 부적절한 경우는 언제인가요?",
+      "options": [
+        "Langfuse를 사용할 때",
+        "작업 부하가 요청당 느린 에이전트 호출 한 번이며 오버헤드가 병목이 아닐 때",
+        "Python 3.13을 사용할 때",
+        "AWS에 배포할 때"
+      ],
+      "correct": 1,
+      "explanation": "2마이크로초는 채팅 팬인(fan-in) 규모에서는 중요하지만, 요청당 단일한 느린 호출에는 중요하지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "Mastra를 포크(fork)하기 전에 주의 깊게 읽어야 하는 라이선스 범위는 무엇인가요?",
+      "options": [
+        "라이선스 파일이 없음",
+        "ee/ 디렉터리는 Apache 2.0가 아닌 소스 공개(source-available)이며 상업적 사용을 제한함",
+        "Mastra 전체가 GPL임",
+        "Mastra는 CLA를 요구하지만 라이선스 검토는 불필요함"
+      ],
+      "correct": 1,
+      "explanation": "Mastra는 ee/를 제외하고 Apache 2.0이며, ee/는 소스 공개입니다. 포크하기 전에 제한 사항을 확인하십시오."
+    }
+  ]
+}
