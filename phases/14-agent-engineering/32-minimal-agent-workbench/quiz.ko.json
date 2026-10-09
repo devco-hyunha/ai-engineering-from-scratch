@@ -1,0 +1,90 @@
+{
+  "lesson": "32-minimal-agent-workbench",
+  "title": "최소 에이전트(Agent) 작업대",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "가장 작은 유용한 작업대를 구성하는 세 파일은 무엇인가요?",
+      "options": [
+        "model.py, prompts.py, tools.py",
+        "Dockerfile, Makefile, .gitignore",
+        "AGENTS.md (라우터), agent_state.json (상태), task_board.json (큐)",
+        "README.md, CHANGELOG.md, LICENSE"
+      ],
+      "correct": 2,
+      "explanation": "짧은 라우터, 내구성 있는 상태(Durable State), 그리고 작업 큐가 최소한의 기준입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "이 강의는 AGENTS.md를 어떻게 정의하나요?",
+      "options": [
+        "저장소 외부에 보관하는 비밀 문서",
+        "순수한 프롬프트 캐시(Prompt Cache) 키",
+        "더 깊은 문서, 상태, 그리고 작업 보드를 가리키는 짧은 라우터",
+        "3000줄의 온보딩 매뉴얼"
+      ],
+      "correct": 2,
+      "explanation": "AGENTS.md는 매뉴얼이 아니라 라우터입니다. 긴 매뉴얼은 무시되기 쉽습니다."
+    },
+    {
+      "stage": "check",
+      "question": "Augment Code의 데이터는 좋은 AGENTS.md에 대해 무엇을 말하나요?",
+      "options": [
+        "좋은 AGENTS.md는 Haiku에서 Opus로 업그레이드하는 것과 같은 품질 향상 효과를 주며, 나쁜 AGENTS.md는 파일이 없는 것보다 더 나쁩니다",
+        "길이가 길수록 항상 도움이 됩니다",
+        "Claude만 이 파일을 읽습니다",
+        "측정 가능한 효과가 없습니다"
+      ],
+      "correct": 0,
+      "explanation": "Augment Code의 측정 결과: 최고의 파일은 모델 업그레이드와 같은 효과를 주며, 최악의 파일은 파일이 없는 것보다 더 나쁜 결과를 낳습니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의는 왜 채팅 기록 기반 상태 대신 파일 기반 상태를 권장하나요?",
+      "options": [
+        "파일이 더 작기 때문에",
+        "디스크가 더 저렴하기 때문에",
+        "채팅 기록은 휘발성이 강하며, 파일은 세션 종료, 대화 잘라내기, 도구 초기화를 견디고 살아남기 때문에",
+        "SOC 2에서 요구하기 때문에"
+      ],
+      "correct": 2,
+      "explanation": "세션은 종료되고 채팅 기록은 잘려나갑니다. 파일이 내구성 있는 공식 기록 시스템입니다."
+    },
+    {
+      "stage": "check",
+      "question": "AGENTS.md에 상충하는 지시문이 포함되면 이 강의는 어떤 일이 발생한다고 설명하나요?",
+      "options": [
+        "비용이 약간 증가합니다",
+        "아무 일도 일어나지 않습니다",
+        "지연 시간이 감소합니다",
+        "상충하는 지시문이 에이전트를 인터랙티브 모드에서 탐욕(greedy) 모드로 조용히 전환시킵니다 (AMBIG-SWE: 해결률 48.8%에서 28%로 하락)"
+      ],
+      "correct": 3,
+      "explanation": "AMBIG-SWE는 모순이 나타날 때 해결률이 크게 하락하는 것을 측정했습니다. 모순을 피하고 우선순위를 명시하십시오."
+    },
+    {
+      "stage": "post",
+      "question": "이 강의는 왜 CLAUDE.md -> AGENTS.md와 같은 도구 간 심링크(Symlink)를 권장하나요?",
+      "options": [
+        "MIT 라이선스를 준수하기 위해",
+        "감사를 통과하기 위해",
+        "단일 진실 공급원(Single Source of Truth)이 모든 코딩 에이전트(Agent)에 분산되도록 하기 위해",
+        "바이트를 절약하기 위해"
+      ],
+      "correct": 2,
+      "explanation": "심링크(또는 Nx 스타일 생성기)는 Claude Code, Codex, Cursor, Copilot 등 모든 도구에서 하나의 표준 소스를 유지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "중첩된 AGENTS.md 파일은 어떤 패턴을 따르나요?",
+      "options": [
+        "루트 파일만 읽습니다",
+        "작업 파일에서 저장소 루트 방향으로 이동하며, 그 경로에서 발견되는 모든 AGENTS.md를 연결합니다 (가장 가까운 파일이 우선; 하위 디렉토리는 루트를 확장합니다)",
+        "무작위 선택",
+        "알파벳 순 병합"
+      ],
+      "correct": 1,
+      "explanation": "OpenAI는 주요 저장소에 88개의 AGENTS.md 파일을 배포합니다. 도구들은 가장 가까운 상위 트리의 파일을 연결하여 읽습니다."
+    }
+  ]
+}
