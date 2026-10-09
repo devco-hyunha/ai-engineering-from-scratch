@@ -1,0 +1,90 @@
+{
+  "lesson": "19-benchmarks-swebench-gaia",
+  "title": "벤치마크: SWE-bench, GAIA, AgentBench",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SWE-bench의 평가기는 후보 패치에 대해 무엇을 확인합니까?",
+      "options": [
+        "패치 길이가 200줄 미만",
+        "이전에 실패했던 테스트가 이제 통과(FAIL_TO_PASS)하고, 이전에 통과했던 테스트가 여전히 통과(PASS_TO_PASS)",
+        "참고 수정안 대비 BLEU 점수",
+        "패치가 별도의 LLM 심사자를 통과함"
+      ],
+      "correct": 1,
+      "explanation": "하네스는 테스트 전환을 기준으로 게이트를 설정합니다. 버그를 드러내는 테스트는 반드시 전환되어야 하며, 회귀 테스트는 계속 통과 상태를 유지해야 합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "SWE-bench Verified가 존재하는 이유는 무엇입니까?",
+      "options": [
+        "더 많은 언어를 포함하기 때문",
+        "더 빠르게 실행되기 때문",
+        "OpenAI의 500개 작업 인간 큐레이션 하위 집합은 모호한 이슈와 신뢰할 수 없는 테스트를 제거하기 때문",
+        "다른 패치 형식을 사용하기 때문"
+      ],
+      "correct": 2,
+      "explanation": "Verified는 신뢰할 수 있는 보고를 위한 더 깨끗한 하위 집합입니다."
+    },
+    {
+      "stage": "check",
+      "question": "SWE-bench+는 성공적인 패치에 대해 무엇을 발견했습니까?",
+      "options": [
+        "32.67%가 이슈에 솔루션 텍스트가 유출되었으며, 31.08%는 의심할 여지 없이 약한 테스트 커버리지를 가짐",
+        "패치는 항상 1000줄을 초과함",
+        "오염이 없음",
+        "모든 패치가 암기됨"
+      ],
+      "correct": 0,
+      "explanation": "SWE-bench+는 성공적인 패치의 상당한 비율에서 솔루션 유출과 약한 커버리지를 발견했습니다."
+    },
+    {
+      "stage": "check",
+      "question": "GAIA의 설계 철학은 무엇입니까?",
+      "options": [
+        "인간에게는 어렵고 AI에게는 쉬움",
+        "순수한 벡터 검색 벤치마크",
+        "단일 턴 질문만 포함",
+        "인간에게는 개념적으로 간단(약 92%)하지만 AI에게는 어려움(초기 GPT-4 플러그인 사용 시: 약 15%)"
+      ],
+      "correct": 3,
+      "explanation": "GAIA는 의도적으로 인간에게는 쉽고 AI에게는 어렵게 설계되어, 추론 + 도구 + 모달리티를 테스트합니다."
+    },
+    {
+      "stage": "check",
+      "question": "AgentBench의 환경 범주 중 NOT인 것은 무엇입니까?",
+      "options": [
+        "게임 (Alfworld, LTP)",
+        "웹 (WebShop, Mind2Web)",
+        "기울기 (RL, IRL)",
+        "코드 (Bash, DB, KG)"
+      ],
+      "correct": 2,
+      "explanation": "AgentBench는 코드, 게임, 웹 및 오픈 엔드 생성을 포함합니다. 기울기 범주는 없습니다."
+    },
+    {
+      "stage": "post",
+      "question": "교훈은 SWE-bench 수치를 보고하는 잘못된 방법으로 무엇을 식별합니까?",
+      "options": [
+        "저장소별 세부 보고",
+        "Verified 또는 SWE-bench+ 컨텍스트를 언급하지 않고 하나의 집계 수치만 보고",
+        "단계 수 보고",
+        "실시간(wall-clock) 보고"
+      ],
+      "correct": 1,
+      "explanation": "단일 수치에 집착하면 오염과 비용이 숨겨집니다. 항상 Verified와 분포별 컨텍스트를 보고하십시오."
+    },
+    {
+      "stage": "post",
+      "question": "이 벤치마크가 측정하지 않는 차원은 무엇입니까?",
+      "options": [
+        "테스트 전환",
+        "단계 수",
+        "작업별 성공",
+        "실제 운영 비용(토큰, 실시간), 적대적 안전성 및 자체 도메인"
+      ],
+      "correct": 3,
+      "explanation": "벤치마크는 집계합니다. 비용, 적대적 강건성, 또는 자체 도메인을 포착하지 못합니다."
+    }
+  ]
+}
