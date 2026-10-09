@@ -1,0 +1,78 @@
+{
+  "lesson": "11-mcp-sampling",
+  "title": "MCP 모델 입력: 샘플링 마이그레이션 및 상태 비저장 MRTR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "새로운 MCP 서버가 모델 추론(Inference)을 필요로 합니다. 2026-07-28 기준 기본 아키텍처는 무엇입니까?",
+      "options": [
+        "모델 제공자와 직접 통합",
+        "모든 도구 호출(tool call) 전에 sampling/createMessage를 전송",
+        "프로토콜 세션에 클라이언트의 모델 키를 저장",
+        "샘플링(Sampling)을 위해 영구 SSE 스트림을 열기"
+      ],
+      "correct": 0,
+      "explanation": "샘플링(Sampling)은 새로운 설계에서 폐기되었습니다. 서버가 모델 추론(Inference)을 필요로 할 경우, 제공자와의 직접 통합이 권장되는 기본값입니다."
+    },
+    {
+      "stage": "check",
+      "question": "2026-07-28 서버는 tools/call 중 호환성 샘플링(Sampling)을 어떻게 요청합니까?",
+      "options": [
+        "server/discover에 프롬프트를 기록",
+        "Mcp-Session-Id 헤더에 프롬프트를 배치",
+        "inputRequests에 sampling/createMessage를 포함하여 resultType input_required를 반환",
+        "동일한 연결에서 역방향 JSON-RPC 요청을 전송"
+      ],
+      "correct": 2,
+      "explanation": "MRTR는 역방향 요청 채널을 피하기 위해 input_required 결과 내부에 서버-클라이언트 요청을 전달합니다. 광고된 summarize_repo 도구는 먼저 유효한 inputSchema를 통해 결정적인 tools/list로 이용 가능해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MRTR 재시도(retry)가 독립적인 JSON-RPC 요청임을 증명하는 속성은 무엇입니까?",
+      "options": [
+        "요청별 메타데이터를 생략",
+        "원래 요청과 동일한 id를 사용",
+        "원래 메서드와 인수를 반복하면서 새로운 id를 사용",
+        "원래 도구 인수를 제거"
+      ],
+      "correct": 2,
+      "explanation": "클라이언트는 새로운 JSON-RPC id, 현재 inputResponses, 그리고 에코된 requestState를 사용하여 원래 작업을 반복합니다."
+    },
+    {
+      "stage": "check",
+      "question": "requestState가 리소스 접근에 영향을 미칠 때 무엇을 보호해야 합니까?",
+      "options": [
+        "주체(principal), 요청, 만료 기간에 바인딩된 HMAC 또는 인증된 암호화",
+        "Base64 인코딩만",
+        "clientInfo 이름",
+        "장기 지속되는 전송 세션"
+      ],
+      "correct": 0,
+      "explanation": "requestState는 신뢰할 수 없는 클라이언트를 통과합니다. 무결성 보호와 바인딩은 변조 및 요청 간 재플레이(replay)를 방지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "클라이언트가 요청별 capabilities에서 샘플링(Sampling)을 광고하지 않았습니다. 서버는 어떤 정확한 프로토콜 응답을 사용해야 합니까?",
+      "options": [
+        "임베디드 샘플링 요청을 어쨌든 전송",
+        "data.requiredCapabilities와 함께 -32021을 반환하거나, 샘플링(Sampling)이 아닌 경로를 선택",
+        "클라이언트 메타데이터에 capabilities를 추가",
+        "이전 요청에서 capabilities를 가정"
+      ],
+      "correct": 1,
+      "explanation": "서버는 현재 요청에서 클라이언트가 지원을 선언하지 않은 input 요청을 생성해서는 안 됩니다. 정확한 누락된 capabilities 코드는 -32021입니다."
+    },
+    {
+      "stage": "post",
+      "question": "프로토콜 계층에서 2라운드 호환성 루프를 상태 비저장(Stateless)으로 유지하는 마이그레이션은 무엇입니까?",
+      "options": [
+        "각 새로운 재시도(retry)마다 현재 라운드의 inputResponses와 서명된 phase state만 전달",
+        "Mcp-Session-Id 아래에 phase state를 저장",
+        "완료될 때까지 원래 요청 id를 재사용",
+        "숨겨진 세션에 모든 모델 응답을 누적"
+      ],
+      "correct": 0,
+      "explanation": "각 재시도(retry)는 자기 완결적입니다. 서명된 requestState는 검증된 중간 상태를 전달하며, inputResponses는 현재 라운드만 포함합니다."
+    }
+  ]
+}
