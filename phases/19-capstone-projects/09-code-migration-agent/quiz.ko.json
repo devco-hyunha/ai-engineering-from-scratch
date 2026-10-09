@@ -1,0 +1,90 @@
+{
+  "lesson": "09-code-migration-agent",
+  "title": "캡스톤 09 — 코드 마이그레이션 에이전트 (저장소 단위 언어/런타임 업그레이드)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "파이프라인이 왜 결정론적 서브스트레이트(deterministic substrate)와 에이전트 레이어를 결합하여 사용하며, 둘 중 하나만 사용하지 않는 것입니까?",
+      "options": [
+        "에이전트 단독이 레시피보다 더 빠릅니다",
+        "OpenRewrite나 libcst는 기계적 재작성의 70-80%를 안전하고 저렴하게 처리하며, 모호한 롱 테일(long tail)은 에이전트에 맡깁니다",
+        "결정론은 빌드 시스템에만 필요합니다",
+        "결정론적 레시피는 LLM보다 느립니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "파이프라인은 성공적인 마이그레이션의 기준(true ground truth)으로 어떤 신호를 사용합니까?",
+      "options": [
+        "채점 기준(rubric)에 대한 에이전트의 자체 채점",
+        "PR에 대한 리뷰어의 승인",
+        "하드 리미트(hard limit) 미만의 diff 크기",
+        "샌드박스에서의 Green CI 및 작은 임계값을 초과하지 않는 커버리지 회귀"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "에이전트 루프는 저장소별로 어떤 예산 상한(budget caps)을 강제합니까?",
+      "options": [
+        "30분 벽시계 시간(wall-clock), $8 비용, 20 에이전트 턴",
+        "1시간 벽시계 시간 및 100 턴",
+        "무제한 시간 및 비용; 오류 시에만 중단",
+        "턴 제한 없음, $100 상한"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "마이그레이션 후 커버리지가 약 2% 이상 감소하면 어떤 게이트(gate)가 발동합니까?",
+      "options": [
+        "결정론적 서브스트레이트가 레시피를 재생합니다",
+        "깨끗한 PR을 열지 않고 저장소가 coverage_regression 실패 클래스로 분류됩니다",
+        "에이전트가 자동으로 force-push하여 수정합니다",
+        "리뷰어가 우회됩니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "실패 분류 체계(failure taxonomy)가 부수적 산출물이 아닌 전달물(deliverable)로 취급되는 이유는 무엇입니까?",
+      "options": [
+        "테스트 스위트를 대체합니다",
+        "GitHub 브랜치 보호 규칙에 의해 요구됩니다",
+        "컴플라이언스 체크리스트를 충족합니다",
+        "실패한 저장소를 클래스별로 그룹화하여 향후 레시피 작성자가 주요 실패 모드에 집중할 수 있도록 합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 캡스톤은 Java 8에서 17로의 마이그레이션을 위해 어떤 공개 벤치마크를 목표로 합니까?",
+      "options": [
+        "MMLU-Pro",
+        "Amazon의 MigrationBench",
+        "ViDoRe v3",
+        "SWE-bench Pro"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "에이전트 통합 채점 기준(rubric)은 수정 사항의 분포에 대해 무엇을 측정합니까?",
+      "options": [
+        "고정된(pinned) 의존성의 수",
+        "저장소별 force-push 횟수",
+        "OpenRewrite가 처리한 수정 사항과 에이전트 레이어가 작성한 수정 사항의 비율",
+        "소스 파일의 토큰화 속도"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
