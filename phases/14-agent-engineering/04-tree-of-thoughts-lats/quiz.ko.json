@@ -1,0 +1,90 @@
+{
+  "lesson": "04-tree-of-thoughts-lats",
+  "title": "Tree of Thoughts와 LATS: 의도적 탐색",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Chain-of-Thought(CoT)가 '24 게임(Game of 24)'에서 어려움을 겪는 이유는 무엇인가요?",
+      "options": [
+        "선형적인 진행은 초기 단계가 틀렸을 때 되돌아갈 수 없으므로, 이후 단계에서 오류가 누적됩니다",
+        "CoT는 GPT-4가 lacks하는 계산기 도구를 필요로 합니다",
+        "모델이 정수를 곱할 수 없습니다",
+        "프롬프트가 너무 짧습니다"
+      ],
+      "correct": 0,
+      "explanation": "분기(branching)가 없으면, 잘못된 초기 부분 표현이 체인의 나머지 부분을 오염시킵니다. 논문에서는 CoT의 정확도가 4퍼센트임을 측정했습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Tree of Thoughts(TOT) 탐색에서 노드(node)는 무엇인가요?",
+      "options": [
+        "런타임에 등록된 도구",
+        "미세 조정(Fine-tuning) 중의 가중치 업데이트",
+        "모델이 생성한 토큰",
+        "K개의 가능한 자식 확장(child expansions)을 가진 일관된 중간 단계 또는 생각(thought)"
+      ],
+      "correct": 3,
+      "explanation": "ToT는 추론을 트리(tree)로 Treat하며, 각 노드는 K개의 자식으로 확장될 수 있는 중간 생각입니다."
+    },
+    {
+      "stage": "check",
+      "question": "LATS가 LLM에 부여하는 세 가지 역할 중, 다음 중 NOT인 것은 무엇인가요?",
+      "options": [
+        "실패에 대한 반성(reflections)을 작성하는 Self-reflector",
+        "롤아웃(rollouts) 사이에 모델 가중치를 업데이트하는 Optimizer",
+        "부분 궤적(partial trajectories)을 점수화하는 Value function",
+        "다음 행동을 제안하는 Policy"
+      ],
+      "correct": 1,
+      "explanation": "LATS는 gradient-free입니다. 세 가지 LLM 역할은 policy, value, self-reflector입니다. 가중치 업데이트는 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "교재에서 나열한 MCTS의 네 단계를 이름 지어 보세요.",
+      "options": [
+        "Sample, Score, Sort, Submit",
+        "Plan, Execute, Reflect, Stop",
+        "Select, Expand, Simulate, Backpropagate",
+        "Search, Synthesize, Synthesize-Again, Stop"
+      ],
+      "correct": 2,
+      "explanation": "MCTS는 각 반복(iteration)마다 select, expand, simulate, backpropagate로 진행됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "UCT에서 탐색 상수(exploration constant) c의 역할은 무엇인가요?",
+      "options": [
+        "가치 추정치 Q를 스케일링합니다",
+        "최대 트리 깊이를 설정합니다",
+        "롤아웃의 수를 제어합니다",
+        "탐색 항 sqrt(ln N / n)을 활용 항 Q에 대해 가중치를 부여합니다"
+      ],
+      "correct": 3,
+      "explanation": "c는 활용(exploitation, Q)과 탐색(exploration) 항 사이의 균형을 맞춥니다. 작업별로 튜닝(tune)합니다."
+    },
+    {
+      "stage": "post",
+      "question": "단일 궤적(single trajectory)과 비교할 때, 탐색(search)이 능동적으로 해로운(harmful) 경우는 언제인가요?",
+      "options": [
+        "토큰이 저렴할 때",
+        "작업이 코드 생성일 때",
+        "작업이 여러 개의 정답을 포함할 때",
+        "평가자(evaluator)가 noisy하고 단일 정답이 존재하여, 탐색이 좋은 점수를 받은 잘못된 답으로 수렴(converge)할 때"
+      ],
+      "correct": 3,
+      "explanation": "Noisy한 value function과 단일 정답이 존재하는 상황은 탐색이 noise에 과적합(overfit)되는 정확한 조건입니다."
+    },
+    {
+      "stage": "post",
+      "question": "'24 게임(Game of 24)'에서 CoT와 비교하여 ToT에 대해 대략 얼마나 더 많은 토큰 사용량(token usage)을 예산(budget)해야 하나요?",
+      "options": [
+        "100배에서 1000배",
+        "가지치기(pruning) 때문에 CoT보다 적습니다",
+        "약 2배",
+        "약 10배"
+      ],
+      "correct": 0,
+      "explanation": "교재는 '24 게임'에서 ToT의 토큰 비용이 CoT 대비 100-1000배라고 인용합니다."
+    }
+  ]
+}
