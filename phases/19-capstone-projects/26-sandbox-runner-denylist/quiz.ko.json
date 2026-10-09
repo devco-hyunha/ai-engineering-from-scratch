@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/26-sandbox-runner-denylist",
+  "title": "거부 목록 및 경로 격리(Jail)가 있는 샌드박스 실행기",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "수업을 읽기 전에: python3 -c와 같은 인터프리터 호출에 대해 샌드박스가 argv 형태를 확인하는 가장 강력한 이유는 무엇입니까?",
+      "options": [
+        "인터프리터는 샌드박스화할 수 없습니다.",
+        "인터프리터는 느려서 에이전트 예산을 낭비합니다.",
+        "-c 옵션이 있는 인터프리터는 다른 이름의 셸 호출이며, 실행 파일 거부 목록을 우회합니다.",
+        "모델은 이 옵션 없이 더 좋은 코드를 작성합니다."
+      ],
+      "correct": 2,
+      "explanation": "python3 -c, bash -c, node -e 및 유사한 옵션은 모델에 셸을 제공하는 것과 기능적으로 동일합니다. 실행 파일 이름을 차단하는 것만으로는 충분하지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "샌드박스가 project_root=/work로 설정되어 있습니다. 경로 인자가 ./src/main.py로 도착합니다. 격리(Jail) 체크는 어떻게 수행됩니까?",
+      "options": [
+        "결합된 절대 경로의 os.path.realpath이 /work 접두사를 포함하는지 확인합니다.",
+        "샌드박스는 모든 상대 경로를 거부합니다.",
+        "/work에 대한 문자열 접두사 일치 확인을 수행합니다.",
+        "샌드박스가 하위 프로세스를 실행한 후 작업 디렉터리를 사후에 확인합니다."
+      ],
+      "correct": 0,
+      "explanation": "realpath는 심볼릭 링크를 해석합니다. 문자열 접두사 확인은 프로젝트 루트 내부에서 외부로 가리키는 심볼릭 링크에 의해 우회될 수 있습니다. realpath와 접두사 또는 동일성 확인이 안전한 체크입니다."
+    },
+    {
+      "stage": "check",
+      "question": "SandboxResult가 denied=True, timed_out=False, exit_code=-100으로 반환됩니다. 표준적인 해석은 무엇입니까?",
+      "options": [
+        "샌드박스가 하위 프로세스를 실행하지 않았으며, exec 전에 호출이 거부되었습니다.",
+        "하위 프로세스가 -100을 명시적으로 반환했습니다.",
+        "하위 프로세스가 시작되어 SIGKILL로 종료되었습니다.",
+        "벽 시계(wall-clock) 타임아웃이 발생했습니다."
+      ],
+      "correct": 0,
+      "explanation": "sentinel exit_code -100과 denied=True의 조합은 샌드박스가 subprocess.run이 호출되기 전에 단락(short-circuit)되었음을 의미합니다."
+    },
+    {
+      "stage": "check",
+      "question": "샌드박스가 기본적으로 shell=False를 선호하고 셸 메타문자를 거부하는 이유는 무엇입니까?",
+      "options": [
+        "macOS의 subprocess는 shell=True를 허용하지 않습니다.",
+        "테스트 스위트가 더 단순해집니다.",
+        "셸 파싱은 샌드박스가 축소하려는 표면인 셸 DSL 전체를 모델에 노출합니다.",
+        "CPython에서 shell=True는 더 느립니다."
+      ],
+      "correct": 2,
+      "explanation": "shell=True는 argv를 셸이 해석하는 문자열로 변환합니다. 파이프, 리다이렉트, 명령어 치환 및 글로빙이 모두 사용 가능해집니다. 셸 파싱이 실행되면 샌드박스는 페이로드를 의미 있게 거부할 수 없습니다."
+    },
+    {
+      "stage": "post",
+      "question": "샌드박스에 프로세스별 메모리 제한을 추가하려고 합니다. 수업의 샌드박스는 이를 구현하지 않았습니다. 올바른 다음 단계는 무엇입니까?",
+      "options": [
+        "생략합니다: 메모리 폭탄에 대해 거부 목록만으로도 충분합니다.",
+        "보상하기 위해 벽 시계 타임아웃을 늘립니다.",
+        "subprocess.run에 전달되는 preexec_fn에서 os.setrlimit(RLIMIT_AS)를 사용합니다.",
+        "거부 목록에 문자열로 제한을 추가합니다."
+      ],
+      "correct": 2,
+      "explanation": "subprocess.run은 preexec_fn (POSIX) 또는 유사한 메커니즘을 허용합니다. setrlimit(RLIMIT_AS)는 자식 프로세스의 주소 공간을 제한합니다. 이 수업의 샌드박스는 이를 제공하지 않으며, 29번째 수업의 엔드투엔드 데모는 컨테이너 수준 제한을 그 위에 계층화하는 방법을 논의합니다."
+    },
+    {
+      "stage": "post",
+      "question": "모델이 argv=['cat', 'src/../src/main.py']로 샌드박스를 호출합니다. 파일은 project_root 아래에 존재합니다. 이 호출은 경로 격리(Jail)를 통과해야 합니까?",
+      "options": [
+        "사용자가 root인지 여부에 따라 다릅니다.",
+        "예: realpath는 src/../src를 src로 축약하며, 해석된 경로는 project_root 내부에 있습니다.",
+        "아니요: argv는 샌드박스가 보기 전에 정규식 게이트에 의해 거부됩니다.",
+        "아니요, 경로에 ..가 있으면 자동으로 거부됩니다."
+      ],
+      "correct": 1,
+      "explanation": "realpath는 경로를 정규화합니다. 샌드박스는 .. 토큰을 무조건 거부하지 않으며, 해석된 대상을 확인합니다. 이는 의도된 것입니다: 합법적인 경로는 때때로 ..를 통해 합법적으로 이동합니다."
+    }
+  ]
+}
