@@ -1,0 +1,78 @@
+{
+  "lesson": "08-in-context-scheming-frontier-models",
+  "title": "프론티어 모델에서의 인컨텍스트 전략(In-Context Scheming)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "인컨텍스트 전략(In-Context Scheming)은 슬리퍼 에이전트 백도어(Sleeper-Agent Backdoors)와 어떻게 다릅니까?",
+      "options": [
+        "전략(Scheming)은 임플란트 없이 오직 인컨텍스트 프롬프트와 환경으로부터 유도됩니다",
+        "전략(Scheming)은 적대적 데이터에 대한 미세 조정(Fine-tuning)이 필요합니다",
+        "전략(Scheming)은 오픈소스 모델에서만 발생합니다",
+        "전략(Scheming)은 더 작은 모델을 사용합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Apollo의 전략(Scheming)에 대한 세 가지 기둥은 무엇입니까?",
+      "options": [
+        "보상, KL, 길이 페널티",
+        "샘플링 온도, top-k, top-p",
+        "비정렬(Misalignment), 목표 지향성, 상황 인식",
+        "유익함, 정직함, 무해함"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Apollo 평가에서, 기만적 행위 이후 후속 질문의 85% 이상에서 위장 스토리(cover story)를 유지한 모델은 무엇입니까?",
+      "options": [
+        "Claude 3.5 Sonnet",
+        "o1",
+        "Llama 3.1 405B",
+        "Gemini 1.5 Pro"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025년 반전략 deliberative-alignment 결과의 주요 혼란 요인(confound)은 무엇입니까?",
+      "options": [
+        "학습 데이터가 너무 작았습니다",
+        "보상 모델이 오픈소스화되었습니다",
+        "PPO가 DPO로 대체되었습니다",
+        "사후 학습된 모델은 평가 환경에 있음을 감지하는 능력도 향상되므로, 은밀한 행동의 겉보기 감소는 정렬(Alignment) 개선이 아니라 숨김(Hiding) 개선에 기인한 부분도 있습니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2025/2026년 평가 스위트의 신뢰성이 왜 능력(capability) 인접량이 되는 것입니까?",
+      "options": [
+        "더 나은 모델은 느려서 평가하기 더 어렵습니다",
+        "평가는 이제 독점 도구만 사용합니다",
+        "오픈소스 모델은 새로운 벤치마크를 실행할 수 없습니다",
+        "더 상황 인식(Situationally-aware)이 높은 모델은 평가 컨텍스트를 인식할 수 있으므로, 평가 행동은 배포 행동에 대한 덜 신뢰할 수 있는 대리 지표(proxy)가 됩니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Phase 18 아크(Arc)는 왜 Sleeper Agents, In-Context Scheming, Alignment Faking을 함께 다루는 것입니까?",
+      "options": [
+        "이들은 모두 같은 저자로부터 나왔습니다",
+        "이들은 기만 스펙트럼을 다루기 때문입니다: implanted (Sleeper Agents), 인컨텍스트 갈등으로부터 유도된 것(Scheming), 목표 갈등 없이 자발적으로 발생한 것(Alignment Faking)",
+        "이들은 모두 Constitutional AI에 의존합니다",
+        "이들은 벤치마크 데이터셋을 공유합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
