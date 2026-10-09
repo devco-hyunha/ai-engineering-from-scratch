@@ -1,0 +1,51 @@
+{
+  "status": "executable",
+  "issues": [],
+  "contract": {
+    "outcome": "인시던트 경보에서 2분 이내에 영향을 받은 서비스를 식별",
+    "invariants": [
+      "진단은 읽기 전용",
+      "모든 소스가 감사 기록에 포함됨"
+    ],
+    "examples": [
+      "배포 ID가 포함된 경보는 해당 서비스 소유자로 해결됨"
+    ],
+    "non_goals": [
+      "자동 복구",
+      "경보 라우팅 변경"
+    ],
+    "decisions": [
+      {
+        "question": "먼저 쿼리해야 할 읽기 전용 데이터 소스는 무엇인가요?",
+        "mode": "delegated",
+        "rationale": ""
+      },
+      {
+        "question": "시스템이 프로덕션에 쓸 수 있나요?",
+        "mode": "locked",
+        "rationale": "프로덕션 권한은 인시던트 지휘관이 유지"
+      },
+      {
+        "question": "쿼리할 수 있는 소스의 수는 몇 개인가요?",
+        "mode": "bounded",
+        "rationale": "5개 소스 또는 2분 후 중지"
+      }
+    ],
+    "proof": [
+      "10개의 기록된 인시던트 리플레이",
+      "프로덕션 쓰기 0건"
+    ]
+  },
+  "agent_may_decide": [
+    "먼저 쿼리해야 할 읽기 전용 데이터 소스는 무엇인가요?"
+  ],
+  "bounded_decisions": [
+    {
+      "question": "쿼리할 수 있는 소스의 수는 몇 개인가요?",
+      "boundary": "5개 소스 또는 2분 후 중지"
+    }
+  ],
+  "human_checkpoint": [
+    "시스템이 프로덕션에 쓸 수 있나요?"
+  ]
+}
