@@ -1,0 +1,90 @@
+{
+  "lesson": "03-realtime-voice-assistant",
+  "title": "캡스톤 03 — 실시간 음성 어시스턴트 (ASR에서 LLM, TTS로)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "음성 에이전트(Agent)를 세 개의 차단(blocking) REST 호출을 이어 붙여 구축할 수 없는 이유는 무엇인가요?",
+      "options": [
+        "REST 엔드포인트에는 30초의 하드 타임아웃이 있습니다",
+        "REST는 WebRTC와 호환되지 않습니다",
+        "JSON 직렬화는 오디오 데이터에 대해 너무 느립니다",
+        "800ms 미만의 엔드투엔드 지연을 달성하려면 모든 단계에서 파이프라인 스트리밍이 필요합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "VAD와 함께 턴 디텍터(turn-detector)의 역할은 무엇인가요?",
+      "options": [
+        "출력 스트림에 배경 음악을 혼합합니다",
+        "다자간 통화에서 누가 말하는지 감지합니다",
+        "부분적인 전사(transcript)를 읽고 사용자가 발화를 실제로 완료했는지 점수를 매깁니다",
+        "에이전트(Agent)용 맞춤형 음성 클론을 학습합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "에이전트(Agent)가 응답 중일 때 사용자가 말하기 시작하면, 바지인(barge-in)이 자연스럽게 느껴지려면 어떤 일이 일어나야 하나요?",
+      "options": [
+        "TTS는 양보하기 전에 현재 문장을 끝까지 완료합니다",
+        "에이전트(Agent)는 우선권을 주장하기 위해 TTS 볼륨을 높입니다",
+        "TTS가 즉시 취소되고, 남은 LLM 출력은 버려지며, ASR은 다시 준비 상태를 갖습니다",
+        "파이프라인은 TTS가 완료될 때까지 사용자 오디오를 버퍼링합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "도구가 약 300ms를 초과할 때 \"1초만 기다려 주세요, 확인 중입니다\"와 같은 짧은 필러(filler)가 방출되는 이유는 무엇인가요?",
+      "options": [
+        "대체 ASR 모델을 트리거합니다",
+        "사이드 채널(side-channel) 도구가 실행되는 동안 대화가 멈추지 않도록 침묵을 피합니다",
+        "다음 발화에 대한 WER(단어 오류율)을 개선합니다",
+        "WebRTC 지터 버퍼를 리셋합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "첫 번째 오디오 청크(chunk)는 첫 번째 LLM 토큰(Token)이 생성된 후 대략 얼마나 빨리 서버를 떠나야 하나요?",
+      "options": [
+        "200ms",
+        "800ms",
+        "2초",
+        "20ms"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "부적절한 바지인(barge-in)이나 과도한 턴 종료(turn closure)를 직접적으로 측정하는 지표는 무엇인가요?",
+      "options": [
+        "MOS",
+        "거짓 컷오프율(False-cutoff rate)",
+        "수락률(Acceptance rate)",
+        "WER(단어 오류율)"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "3% 미만의 패킷 손실 조건에서 파이프라인은 어떤 두 가지 적응적 동작에 의존하나요?",
+      "options": [
+        "더 큰 LLM으로 전환하고 TTS를 비활성화합니다",
+        "부분 전사(transcript)를 유지하고 VAD 음성 게이트 임계값을 높입니다",
+        "LiveKit 룸을 재시작합니다",
+        "PSTN 오디오 코덱으로 폴백합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
