@@ -1,0 +1,90 @@
+{
+  "lesson": "11-planning-htn-and-evolutionary",
+  "title": "HTN과 진화적 탐색을 활용한 계획",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "HTN은 자유 형식의 LLM 계획(Plan)에 비해 무엇을 추가합니까?",
+      "options": [
+        "더 나은 임베딩(Embedding)",
+        "더 저렴한 추론(Inference)",
+        "연산자 전제 조건과 효과가 강제될 때 증명 가능한 정확성",
+        "더 짧은 프롬프트(Prompt)"
+      ],
+      "correct": 2,
+      "explanation": "HTN의 전제 조건과 효과를 가진 기호 연산자는 구성에 의해 건전성을 보장합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "AlphaEvolve는 어떤 문제 클래스를 위해 만들어졌습니까?",
+      "options": [
+        "다중 턴 채팅 메모리(Memory)",
+        "자유 형식 산문 생성",
+        "벡터 검색 순위 매기기",
+        "기계적으로 검증 가능한 결정적 피트니스 함수가 있는 최적화"
+      ],
+      "correct": 3,
+      "explanation": "진화적 탐색은 결정적 평가자가 필요합니다. AlphaEvolve는 그런 평가자가 존재하는 영역을 목표로 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "ChatHTN은 LLM을 사용하면서 계획의 건전성을 어떻게 보존합니까?",
+      "options": [
+        "벡터 데이터베이스(Vector Database)를 사용합니다",
+        "LLM 제안은 후보 분해로만 입력되며 연산자 스키마에 대해 검증되고, 기호 계층이 정확성을 소유합니다",
+        "그렇지 않습니다. 건전성은 최선의 노력(best-effort)입니다",
+        "HTN 추적(Trace)에 대해 LLM을 미세 조정(Fine-tuning)합니다"
+      ],
+      "correct": 1,
+      "explanation": "LLM은 방법 라이브러리를 확장할 수 있지만, 연산자 전제 조건과 효과를 우회할 수 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "교훈은 AlphaEvolve의 어떤 결과를 인용합니까?",
+      "options": [
+        "56년 만에 4x4 복소 행렬 곱셈에 대해 Strassen보다 개선된 첫 결과",
+        "P=NP의 첫 증명",
+        "HumanEval에서 GPT-4를 능가함",
+        "Gemini 추론(Inference)의 10배 속도 향상"
+      ],
+      "correct": 0,
+      "explanation": "AlphaEvolve는 4x4 복소 행렬 곱셈에 대해 48개의 스칼라 곱셈을 발견했으며, 이는 56년 만에 Strassen에 대한 첫 개선입니다."
+    },
+    {
+      "stage": "check",
+      "question": "HTN의 어떤 요소가 전제 조건과 효과를 가진 직접 실행 가능한 원시 동작입니까?",
+      "options": [
+        "상태(State)",
+        "태스크(Task)",
+        "메소드(Method)",
+        "연산자(Operator)"
+      ],
+      "correct": 3,
+      "explanation": "연산자는 원시 동작이며, 메소드는 복합 태스크를 분해하고, 상태는 사실의 집합입니다."
+    },
+    {
+      "stage": "post",
+      "question": "실제 평가자(Evaluator)가 없는 AlphaEvolve에 대한 교훈의 경고는 무엇입니까?",
+      "options": [
+        "느립니다",
+        "GPU에서 실행할 수 없습니다",
+        "LLM에게 코드가 더 나은지 묻는 것은 피트니스 함수가 아닙니다. 평가자는 결정적이고 빨라야 합니다",
+        "Apache 2.0을 위반합니다"
+      ],
+      "correct": 2,
+      "explanation": "결정적 평가자가 없으면 탐색이 수렴할 신호가 없습니다."
+    },
+    {
+      "stage": "post",
+      "question": "HTN이나 AlphaEvolve 대신 ReAct나 ReWOO를 사용해야 하는 시점은 언제입니까?",
+      "options": [
+        "절대. HTN이 엄격히 더 좋습니다",
+        "형식적 건전성이나 기계적으로 검증 가능한 피트니스가 필요하지 않을 때. 대부분의 에이전트 태스크가 여기에 해당합니다",
+        "GPU 클러스터를 사용할 수 있을 때",
+        "지연(Latency)이 100 ms 미만일 때"
+      ],
+      "correct": 1,
+      "explanation": "교훈은 과잉 설계를 명시적으로 경고합니다. 대부분의 태스크는 형식적 계획이나 진화적 탐색을 필요로 하지 않습니다."
+    }
+  ]
+}
