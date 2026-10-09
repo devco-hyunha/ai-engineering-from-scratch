@@ -1,0 +1,62 @@
+[
+  {
+    "question": "PyTorch와 JAX의 근본적인 설계 차이는 무엇인가요?",
+    "options": [
+      "PyTorch가 더 빠릅니다",
+      "PyTorch는 텐서를 즉시 변경(eager mutation)하는 반면, JAX는 사이드 이펙트(side effects)가 없는 순수 함수를 컴파일합니다",
+      "PyTorch는 자동 미분(automatic differentiation)을 지원하지 않습니다",
+      "JAX는 GPU를 지원하지 않습니다"
+    ],
+    "correct": 1,
+    "explanation": "PyTorch는 가변 상태(mutable state)를 사용하는 즉시 실행(eager execution)을 사용하며(예: tensor.grad가 제자리에서 수정됨), JAX는 함수형 프로그래밍을 채택합니다. 즉, 함수는 순수(pure)하고, 상태는 명시적(explicit)이며, jit 컴파일은 전체 계산 그래프를 최적화합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "jax.jit은 무엇을 수행하나요?",
+    "options": [
+      "드롭아웃(Dropout) 정규화를 추가합니다",
+      "Python 함수를 인터프리팅된 Python보다 훨씬 빠르게 실행되는 최적화된 XLA 코드로 컴파일합니다",
+      "기울기(gradient)를 계산합니다",
+      "모델 가중치(weights)를 초기화합니다"
+    ],
+    "correct": 1,
+    "explanation": "jax.jit은 함수를 추적(trace)하여 XLA (Accelerated Linear Algebra) 기계어 코드로 컴파일합니다. 첫 번째 호출은 느리지만(컴파일), 이후 호출은 최적화된 컴파일된 버전을 실행합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "jax.vmap은 무엇을 수행하나요?",
+    "options": [
+      "2차 기울기(second-order gradients)를 계산합니다",
+      "GPU 메모리를 관리합니다",
+      "모델 아키텍처를 검증합니다",
+      "명시적인 루프를 작성하지 않고 배치 차원(batch dimension)에 대해 함수를 벡터화(vectorize)합니다"
+    ],
+    "correct": 3,
+    "explanation": "jax.vmap은 단일 예제에 대해 작성된 함수를 전체 배치(batch)를 처리하도록 자동으로 벡터화합니다. 하나의 샘플에 대한 코드를 작성하면 vmap이 배칭(batching)을 처리하며, 이는 종종 수동 배치 루프보다 더 효율적입니다.",
+    "stage": "post"
+  },
+  {
+    "question": "JAX는 모델 상태(weights)를 PyTorch와 어떻게 다르게 처리하나요?",
+    "options": [
+      "JAX는 명시적인 상태 전달을 요구합니다. 가중치는 함수 인자이며, 가변적인 객체 속성이 아닙니다",
+      "JAX와 PyTorch는 상태를 동일하게 처리합니다",
+      "JAX는 학습 가능한 가중치를 지원하지 않습니다",
+      "JAX는 가중치를 CPU에만 저장합니다"
+    ],
+    "correct": 0,
+    "explanation": "PyTorch에서는 가중치가 nn.Module 객체 내부에 있으며 제자리에서 변경됩니다. JAX에서는 가중치가 함수 인자로 명시적으로 전달되고 새로운 값으로 반환됩니다. 변경(mutation)이 없고, 숨겨진 상태(hidden state)도 없습니다.",
+    "stage": "post"
+  },
+  {
+    "question": "PyTorch 대신 JAX를 선택하는 경우는 언제인가요?",
+    "options": [
+      "가장 큰 사전 학습된 모델 생태계가 필요할 때",
+      "모바일 장치에 배포할 때",
+      "소규모 모델의 빠른 프로토타이핑이 필요할 때",
+      "TPU 팟(pod)에서 대규모로 학습할 때, 컴파일과 함수형 변환이 상당한 속도 향상을 제공하기 때문입니다"
+    ],
+    "correct": 3,
+    "explanation": "JAX는 대규모(scale) 환경에서 우수합니다. jit 컴파일은 Python 오버헤드를 제거하고, pmap은 다중 장치 병렬 처리를 자연스럽게 처리하며, 전체 계산 그래프에 걸친 XLA 최적화는 TPU 클러스터에서 상당한 속도 향상을 제공합니다.",
+    "stage": "post"
+  }
+]
