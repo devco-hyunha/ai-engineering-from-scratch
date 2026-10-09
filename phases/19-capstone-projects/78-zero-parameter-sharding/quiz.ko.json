@@ -1,0 +1,78 @@
+{
+  "lesson": "78-zero-parameter-sharding",
+  "title": "ZeRO 옵티마이저 상태 샤딩",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "ZeRO는 왜 매개변수(Parameter)가 아닌 옵티마이저(Optimizer) 상태를 먼저 샤딩하는가?",
+      "options": [
+        "옵티마이저 상태는 가장 큰 메모리 항목이며, 스텝(step) 중에만 사용되고 순전파(forward)나 역전파(backward) 중에는 사용되지 않기 때문",
+        "DeepSpeed가 이를 강제하기 때문",
+        "옵티마이저가 더 중요하기 때문",
+        "매개변수가 더 쉽기 때문"
+      ],
+      "correct": 0,
+      "explanation": "혼합 정밀도(Mixed Precision)에서 Adam의 경우 fp32 마스터 가중치와 두 모멘트(moments)는 랭크(rank)당 12P 바이트인 반면, fp16 매개변수와 기울기(Gradient)는 4P 바이트입니다. 가장 큰 항목을 먼저 샤딩하면 단위 복잡도당 가장 많은 메모리를 절약할 수 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "ZeRO 스테이지(stage) 1의 스텝별 통신 패턴은 무엇인가?",
+      "options": [
+        "없음",
+        "브로드캐스트(broadcast) 한 번",
+        "올리듀스(allreduce) 한 번",
+        "기울기에 대한 리듀스 스캐터(reduce_scatter) 한 번과 업데이트된 매개변수에 대한 올개더(allgather) 한 번"
+      ],
+      "correct": 3,
+      "explanation": "리듀스 스캐터는 각 랭크에 기울기 샤드(shard)만 전달합니다. 올개더는 업데이트된 매개변수 샤드를 다시 분배합니다. 총 전송 바이트는 올리듀스와 동일하며, 메모리는 N으로 나뉩니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 스텝별 대역폭이 DDP와 동일한가?",
+      "options": [
+        "동일하지 않다",
+        "마법(magic)",
+        "ZeRO는 압축(compression)을 사용한다",
+        "올리듀스는 리듀스 스캐터와 올개더의 대역폭 합과 같으며, ZeRO는 이를 서로 다른 데이터에 대한 두 부분으로 나눈다"
+      ],
+      "correct": 3,
+      "explanation": "링(ring) 올리듀스는 리듀스 스캐터 후 올개더로 구현됩니다. ZeRO는 동일한 두 연산을 수행하지만, 올개더는 합산된 기울기가 아닌 업데이트된 매개변수를 회전(rotates)시킵니다."
+    },
+    {
+      "stage": "check",
+      "question": "8개 랭크에서 혼합 정밀도(Mixed Precision) Adam을 사용하는 7B 모델의 경우, 바닐라(vanilla) DDP 대비 메모리 감소율은 얼마인가?",
+      "options": [
+        "99%",
+        "0%",
+        "10%",
+        "약 65% (바닐라 16P vs ZeRO-1 4P + 12P/N = 5.5P)"
+      ],
+      "correct": 3,
+      "explanation": "바닐라: 2P + 2P + 4P + 4P + 4P = 16P. ZeRO-1: 2P + 2P + (4P+4P+4P)/8 = 5.5P. 감소율은 (16-5.5)/16 = 65.6%입니다."
+    },
+    {
+      "stage": "check",
+      "question": "ZeRO-2는 ZeRO-1에 무엇을 추가하는가?",
+      "options": [
+        "옵티마이저를 제거한다",
+        "리듀스 스캐터(reduce_scatter) 후 샤드되지 않은 기울기를 버려 랭크별 기울기 메모리를 해방한다. 대역폭은 동일하다",
+        "아무것도 추가하지 않는다",
+        "백엔드를 NCCL로 전환한다"
+      ],
+      "correct": 1,
+      "explanation": "ZeRO-2는 리듀스 스캐터 후 샤드되지 않은 기울기 부분을 0으로 만듭니다. ZeRO-1과 대역폭은 동일하지만 기울기 메모리가 더 낮습니다."
+    },
+    {
+      "stage": "post",
+      "question": "ZeRO는 왜 옵티마이저 상태 체크포인트(Checkpoint)에 어느 랭크가 어느 샤드를 소유하는지 기록해야 하는가?",
+      "options": [
+        "기록할 필요가 없다",
+        "미관상(cosmetic) 이유",
+        "압축(compression) 때문",
+        "랭크별 소유권 기록이 없으면 재시작 시 저장된 상태를 읽을 수 없으며, 동일한 월드(world) 크기로 재개하려면 올바른 샤드를 올바른 랭크에 다시 배치해야 하기 때문"
+      ],
+      "correct": 3,
+      "explanation": "Lesson 80은 ZeRO 실행이 동일한 토폴로지(topology)에서 재개할 수 있도록 샤딩된 체크포인트 매니페스트(manifest)를 정확히 구축합니다."
+    }
+  ]
+}
