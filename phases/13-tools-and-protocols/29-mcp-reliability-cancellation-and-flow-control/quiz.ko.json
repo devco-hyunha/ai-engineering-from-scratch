@@ -1,0 +1,78 @@
+{
+  "lesson": "29-mcp-reliability-cancellation-and-flow-control",
+  "title": "MCP 신뢰성, 취소 및 흐름 제어",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "변형(mutation) 응답이 유실되어 클라이언트가 새로운 JSON-RPC id로 재시도합니다. 재시도를 안전하게 만드는 요소는 무엇인가요?",
+      "options": [
+        "새로운 JSON-RPC id가 변형(mutation)을 자동으로 중복 제거합니다",
+        "도구(descriptor)에 idempotentHint가 포함되어 있습니다",
+        "동일한 인자(arguments)와 함께 재사용되는 내구성 있는(durable) 애플리케이션 멱등성 키(idempotency key)가 있습니다",
+        "재시도가 동일한 HTTP 연결을 사용합니다"
+      ],
+      "correct": 2,
+      "explanation": "JSON-RPC id는 메시지를 상관관계 지시(correlate)합니다. 비즈니스 멱등성(business idempotency)은 내구성 있는 키(durable key), 인자 지문(argument fingerprint), 그리고 저장된 커밋된 결과(stored committed result)를 필요로 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MCP 2026-07-28에서 클라이언트는 stdio를 통해 진행 중인(in-flight) 요청을 어떻게 취소하나요?",
+      "options": [
+        "JSON-RPC id에 대해 tasks/cancel을 호출합니다",
+        "활성 요청 id와 함께 notifications/cancelled를 전송합니다",
+        "요청별 SSE 스트림을 닫습니다",
+        "MCP 엔드포인트에 DELETE 요청을 전송합니다"
+      ],
+      "correct": 1,
+      "explanation": "stdio에는 요청별 응답 스트림이 없으므로, 클라이언트는 fire-and-forget 방식의 notifications/cancelled 알림을 전송합니다."
+    },
+    {
+      "stage": "check",
+      "question": "클라이언트는 진행 중인(in-flight) Streamable HTTP 요청을 어떻게 취소하나요?",
+      "options": [
+        "해당 요청의 SSE 응답 스트림을 닫습니다",
+        "MCP 엔드포인트에 notifications/cancelled를 POST합니다",
+        "서버가 notifications/cancelled를 보내기를 기다립니다",
+        "Last-Event-ID를 빈 값으로 전송합니다"
+      ],
+      "correct": 0,
+      "explanation": "최신 Streamable HTTP에서는 요청별 응답 스트림을 닫는 것이 취소 신호입니다."
+    },
+    {
+      "stage": "check",
+      "question": "모든 유휴(idle) 시간 초과(timeouts) 전에 진행 상황(progress)이 계속 도착합니다. 폭주하는(runaway) 요청을 종료해야 하는 마감 기한(deadline)은 무엇인가요?",
+      "options": [
+        "요청 시작부터 측정된 절대 최대 시간 초과(absolute maximum timeout)",
+        "다음 페이지네이션 커서(pagination cursor) 만료",
+        "프록시 keepalive 간격",
+        "Task 폴링(polling) 간격"
+      ],
+      "correct": 0,
+      "explanation": "유효한 진행 상황(progress)은 유휴 시계(idle clock)를 리셋할 수 있지만, 절대 최대 마감 기한(absolute maximum deadline)은 계속 효력을 유지해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "tasks/cancel 응답이 성공하면 무엇을 증명하나요?",
+      "options": [
+        "내구성 있는(durable) 결과가 삭제되었습니다",
+        "워커(worker)가 이미 중단되었습니다",
+        "서버가 취소 의도(cancellation intent)를 승인했습니다",
+        "Task가 결국 cancelled 상태가 되어야 합니다"
+      ],
+      "correct": 2,
+      "explanation": "Task 취소는 협력적(cooperative)입니다. Task는 계속 작업 중일 수 있고, 먼저 완료될 수 있으며, 워커 체크포인트(worker checkpoint) 이후 cancelled 상태에 도달할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "구독(subscription) SSE 스트림이 몇몇 진행 상황(progress) 이벤트 후 끊어졌습니다. MCP 2026-07-28에 적합한 복구 계획은 무엇인가요?",
+      "options": [
+        "Last-Event-ID에서 재개(resume)하고 모든 진행 중인(in-flight) 변형(mutation)을 재생(replay)합니다",
+        "GET 이벤트 스트림을 열고 Mcp-Session-Id를 복원합니다",
+        "이전 요청 id를 유지하고 업데이트가 유실되지 않았다고 가정합니다",
+        "새로운 listen 요청을 열고, 권위 있는(authoritative) 상태를 다시 가져오며, 안전하지 않은 변형(mutation) 재생(replay)을 피합니다"
+      ],
+      "correct": 3,
+      "explanation": "최신 MCP 스트림은 Last-Event-ID로 재개(resume)할 수 없습니다. 복구는 새로운 요청과 권위 있는(authoritative) 상태 재 가져오기(refetch), 그리고 명시적인 재시도 안전성(explicit retry safety)을 사용합니다."
+    }
+  ]
+}
