@@ -1,0 +1,90 @@
+{
+  "lesson": "24-plan-execute-control-flow",
+  "title": "계획-실행 제어 흐름",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "계획-실행 에이전트에서 계획자(planner)의 책임은 무엇인가요?",
+      "options": [
+        "JSON-RPC 전송을 처리하는 것",
+        "실행자(executor)가 실행할 타입이 지정된 단계들의 순서 있는 목록을 생성하는 것",
+        "타임아웃을 강제하는 것",
+        "각 단계마다 디스패처를 호출하는 것"
+      ],
+      "correct": 1,
+      "explanation": "계획자는 구조화된 계획을 생성합니다. 실행자는 이를 실행합니다. 두 역할을 혼합하는 것은 이 교재가 벗어나려는 사고의 연쇄(CoT) 함정입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "실행자가 expected_outcome을 확인하지 않음에도 Step 구조에 expected_outcome이 포함된 이유는 무엇인가요?",
+      "options": [
+        "재계획자(replanner)와 트레이서(tracer)가 읽을 수 있는 명시된 성공 조건을 제공하기 때문에",
+        "모델이 이를 학습하기 때문에",
+        "디스패처가 이를 캐시 키로 사용하기 때문에",
+        "레지스트리가 이를 요구하기 때문에"
+      ],
+      "correct": 0,
+      "explanation": "재계획자는 수정 시 이를 읽습니다. 트레이서는 타임라인에 이를 렌더링합니다. 이는 단계에 대한 사람이 읽을 수 있는 계약입니다."
+    },
+    {
+      "stage": "check",
+      "question": "단계가 실패하고 재계획자가 새로운 계획을 반환할 때, 실행자는 이벤트 스트림에 무엇을 방출하나요?",
+      "options": [
+        "status=failed인 session.complete",
+        "session.start에 이어지는 tool.error",
+        "removed/added/revised 단계 id를 포함하는 plan.diff",
+        "아무것도 방출하지 않음 — 재계획은 조용히 진행됨"
+      ],
+      "correct": 2,
+      "explanation": "plan.diff는 수정을 가시화합니다. 조용한 재작성은 우리가 피하려는 버그입니다."
+    },
+    {
+      "stage": "check",
+      "question": "max_steps와 max_replans를 각각 별도의 예산으로 설정한 이유는 무엇인가요?",
+      "options": [
+        "디스패처가 무제한 계획을 거부하기 때문에",
+        "레지스트리가 재계획을 계산하기 때문에",
+        "asyncio가 둘 다 필요하기 때문에",
+        "둘이 서로 다른 단위를 측정하기 때문입니다. steps는 총 실행을 제한하고, replans는 계획자가 호출되는 횟수를 제한합니다."
+      ],
+      "correct": 3,
+      "explanation": "max_replans는 동일한 깨진 계획을 계속 반환하는 계획자를 잡아냅니다. max_steps는 계속 커지는 폭주하는 계획을 잡아냅니다."
+    },
+    {
+      "stage": "check",
+      "question": "계획자가 첫 호출에서 빈 목록을 반환할 때 반환되는 reason은 무엇인가요?",
+      "options": [
+        "replan_budget",
+        "step_budget",
+        "no_plan",
+        "goal_met"
+      ],
+      "correct": 2,
+      "explanation": "계획이 없으면 실행도 없습니다. 세션은 reason=no_plan, status=failed로 종료됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "PlanDiff.revised에는 무엇이 포함되나요?",
+      "options": [
+        "계획자가 건너뛰기를 요청한 단계 id",
+        "수정(revision) 간에 tool_name 또는 args가 변경된 단계 id",
+        "새 계획에 있고 이전 계획에는 없었던 단계 id",
+        "이전 계획에 있고 새 계획에는 없는 단계 id"
+      ],
+      "correct": 1,
+      "explanation": "revised는 수정(revision)에 걸쳐 (tool_name, args) 시그니처가 변경된 id의 집합입니다."
+    },
+    {
+      "stage": "post",
+      "question": "실행자가 max_replans를 소진하면 resulting SessionResult.reason은 무엇인가요?",
+      "options": [
+        "step_budget",
+        "replan_budget",
+        "no_plan",
+        "goal_met"
+      ],
+      "correct": 1,
+      "explanation": "replan_budget입니다. status는 failed입니다. History는 실행된 모든 단계, 즉 재계획을 유발한 실패들을 포함합니다."
+    }
+  ]
+}
