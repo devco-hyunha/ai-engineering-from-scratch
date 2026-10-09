@@ -1,0 +1,78 @@
+{
+  "lesson": "03-direct-preference-optimization-family",
+  "title": "직접 선호 최적화(DPO) 계열",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "직접 선호 최적화(DPO)가 명시적인 보상 모델을 학습하지 않을 수 있는 이유는 무엇인가요?",
+      "options": [
+        "선호 데이터는 스칼라 보상을 필요로 하지 않습니다",
+        "DPO는 두 번째 최적화 루프에서 자체 보상 모델을 암묵적으로 학습합니다",
+        "RLHF의 폐형식 최적해는 정책을 로그 비율로 보상을 표현할 수 있게 하며, 이를 Bradley-Terry 손실 함수에 대입할 수 있습니다",
+        "Bradley-Terry 선호는 보상 함수에 대해 불변입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "IPO (Azar et al., 2024)는 DPO의 어떤 주요 실패 모드에 대응하나요?",
+      "options": [
+        "쌍 데이터의 요구",
+        "참조 정책의 의존성",
+        "선택된 응답의 길이 편향",
+        "매우 작은 선호 확률로 인한 무한한 암묵적 보상 격차"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "DPO 대신 KTO를 선택하는 경우는 언제인가요?",
+      "options": [
+        "단일 레이블(원하는 것 / 원하지 않는 것)의 쌍이 아닌 데이터를 가지고 있고, 손실 회피 유틸리티를 사용하고자 할 때",
+        "강한 마진을 가진 쌍 데이터만 가지고 있을 때",
+        "암묵적 보상 드리프트가 0임을 보장해야 할 때",
+        "KL 페널티를 완전히 제거하고 싶을 때"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SimPO가 DPO와 비교하여 가지는 고유한 특성은 무엇인가요?",
+      "options": [
+        "참조 정책을 제거하고 시퀀스 길이로 로그 우도(log-likelihood)를 정규화합니다",
+        "NLL과 함께 오즈비(odds-ratio) 손실을 사용합니다",
+        "Bradley-Terry 로그 시그모이드를 항등 매핑으로 대체합니다",
+        "참조 정책을 유지하고 마진을 추가합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "BPO가 목표로 하는 DPO의 'Degraded Chosen Response' 문제는 무엇인가요?",
+      "options": [
+        "선택된 응답이 추론 시 낮은 확률로 샘플링됩니다",
+        "선택된 응답이 거부된 응답보다 길어집니다",
+        "거부된 응답의 로그 확률이 더 빠르게 떨어지는 한, DPO는 선택된 응답의 절대 로그 확률을 낮출 수 있습니다",
+        "선택된 응답이 참조 정책의 지원 범위(support)에 포함되지 않습니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Rafailov et al. (NeurIPS 2024)의 직접 정렬 알고리즘에 대한 스케일링 법칙은 다음을 보여줍니다:",
+      "options": [
+        "DPO는 과최적화되지만 IPO와 SimPO는 과최적화되지 않습니다",
+        "DAA는 설계상 Goodhart의 법칙을 제거합니다",
+        "쌍 데이터가 10만 예제를 초과하면 과최적화가 사라집니다",
+        "DAA는 골드 보상(gold reward)에 대해 Gao et al.이 발견한 것과 동일한 피크-붕괴 과최적화 형태를 보입니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
