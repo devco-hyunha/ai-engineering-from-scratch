@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/28-observability-otel-traces",
+  "title": "관측 가능성: OTel GenAI 스팬과 Prometheus 메트릭",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "수업을 읽기 전에: 하네스의 스팬을 OTel GenAI 속성 형식으로 작성하는 실용적인 이점은 무엇인가요?",
+      "options": [
+        "모든 OTel 호환 백엔드가 맞춤형 파서 없이 이를 읽을 수 있습니다.",
+        "OTel은 Python 전용 표준이므로 하네스가 타입 힌트를 얻습니다.",
+        "HIPAA에서 요구합니다.",
+        "OTel 스팬은 디스크에서 더 잘 압축됩니다."
+      ],
+      "correct": 0,
+      "explanation": "이 규약은 더 넓은 생태계와의 계약입니다. Honeycomb, Grafana Tempo, Jaeger, Datadog는 모두 gen_ai.* 속성을 기본으로 파싱합니다."
+    },
+    {
+      "stage": "check",
+      "question": "SpanBuilder.span() 컨텍스트 내에서 예외가 발생합니다. 수업의 빌더는 무엇을 기록하나요?",
+      "options": [
+        "상태는 UNSET으로 유지되며 예외는 조용히 무시됩니다.",
+        "추적(tracing)을 오염시키지 않도록 스팬이 버려집니다.",
+        "status=ERROR, status_message에 예외 유형과 메시지가 포함되며, 'exception' 이벤트가 추가됩니다.",
+        "스팬이 'error'로 이름이 변경됩니다."
+      ],
+      "correct": 2,
+      "explanation": "ERROR 상태와 예외 이벤트는 OTel 사양과 일치합니다. 예외는 호출자 코드가 반응할 수 있도록 다시 발생합니다."
+    },
+    {
+      "stage": "check",
+      "question": "히스토그램의 Prometheus 노출(exposition)에는 _bucket, _sum, _count 줄이 포함됩니다. 왜 버킷 개수는 누적(cumulative)인가요 (각 le 버킷이 모든 더 작은 버킷을 포함)?",
+      "options": [
+        "누적 개수는 부동 소수점 오차를 줄입니다.",
+        "누적 개수를 통해 스크래퍼는 모든 관측치를 저장하지 않고도 뺄셈으로 버킷별 개수를 계산할 수 있습니다.",
+        "누적 개수는 Grafana가 지원하는 유일한 형식입니다.",
+        "누적되지 않습니다. 수업의 노출은 비표준입니다."
+      ],
+      "correct": 1,
+      "explanation": "Prometheus의 설계 선택입니다: 백엔드는 누적 개수를 읽고 버킷별 차이를 계산합니다. 이를 통해 시계열은 버킷당 단순한 단조 증가 카운터가 됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "하네스는 도구 실행을 스팬으로 감쌉니다. GenAI 규약에서 이를 도구 호출로 식별하는 속성 키는 무엇인가요?",
+      "options": [
+        "operation + tool.name.",
+        "agent.harness.tool + agent.harness.call.",
+        "gen_ai.system + gen_ai.request.model.",
+        "gen_ai.tool.name + gen_ai.tool.call.id."
+      ],
+      "correct": 3,
+      "explanation": "gen_ai.tool.name과 gen_ai.tool.call.id는 GenAI 규약에서 도구 실행을 위한 표준 키입니다."
+    },
+    {
+      "stage": "post",
+      "question": "'read_file 호출의 p95 지연 시간은 얼마인가?'를 쿼리하고 싶다면, 어떤 아티팩트를 쿼리해야 하나요?",
+      "options": [
+        "스팬의 status_message 필드.",
+        "카운터 tools_called_total을 시간 창으로 나눈 값.",
+        "시간 창에 걸쳐 스크래핑된 Prometheus 히스토그램 tool_latency_ms{tool=\"read_file\"}.",
+        "traces.jsonl의 각 스팬 duration_ms를 스크립트로 파싱한 값."
+      ],
+      "correct": 2,
+      "explanation": "백분위수(percentile)에는 히스토그램이 적합한 도구입니다. 카운터는 개수만 세며, 추적(trace)에는 원시 스팬이 포함되지만 사전에 집계되지 않았습니다."
+    },
+    {
+      "stage": "post",
+      "question": "리뷰어가 왜 수업이 opentelemetry-sdk를 가져오지 않고 직접 구현(hand-rolls)하는지 묻습니다. 어떤 답변이 올바른가요?",
+      "options": [
+        "직접 구현은 와이어 형식을 가르쳐 주며, SDK는 나중에 동일한 속성 키로 끼워 넣을 수 있습니다.",
+        "직접 구현은 런타임에 더 빠릅니다.",
+        "SDK는 가져오기(import) 시 네트워크 연결을 요구합니다.",
+        "SDK는 GenAI 규약을 지원하지 않습니다."
+      ],
+      "correct": 0,
+      "explanation": "규약은 구현 전반에 걸쳐 안정적입니다. 직접 구현된 버전은 명확성을 위해 존재하며, 프로덕션에서는 SDK를 연결하고 동일한 gen_ai.* 키를 재사용합니다."
+    }
+  ]
+}
