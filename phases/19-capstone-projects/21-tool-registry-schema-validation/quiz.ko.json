@@ -1,0 +1,78 @@
+{
+  "lesson": "21-tool-registry-schema-validation",
+  "title": "스키마 검증이 포함된 도구 레지스트리",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "도구의 스키마를 핸들러와 별도로 등록하는 이유는 무엇인가요?",
+      "options": [
+        "핸들러가 JSON을 반환할 수 없기 때문에",
+        "검증기는 순수한 데이터로 유지되고, 핸들러는 불투명한 코드로 유지되기 때문에",
+        "스키마는 컴파일되어야 하기 때문에",
+        "스키마는 YAML에 있어야 하기 때문에"
+      ],
+      "correct": 1,
+      "explanation": "스키마는 데이터로, 핸들러는 코드로 분리하면 검증기가 스키마 트리에 대한 순수 함수가 될 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의에서 구현한 하위 집합에 의도적으로 포함되지 않은 키워드는 무엇인가요?",
+      "options": [
+        "items, enum",
+        "oneOf, anyOf, $ref, allOf",
+        "minLength, maxLength, pattern",
+        "type, properties, required"
+      ],
+      "correct": 1,
+      "explanation": "생략된 키워드는 순환과 참조 해석을 추가합니다. 하위 집합을 선형으로 유지하여 검증기가 단일 재귀 순회로 유지되도록 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "register()는 왜 기본적으로 중복을 거부하나요?",
+      "options": [
+        "스키마를 다시 검증할 수 없기 때문에",
+        "침묵하는 덮어쓰기는 프로덕션 도구 카탈로그 드리프트의 원인입니다",
+        "레지스트리가 이름당 하나의 레코드만 저장할 수 없기 때문에",
+        "핸들러를 교체할 수 없기 때문에"
+      ],
+      "correct": 1,
+      "explanation": "override=True를 강제하면 두 코드 부분이 동일한 도구 이름을 소유하려는 경우를 드러냅니다."
+    },
+    {
+      "stage": "check",
+      "question": "스키마가 type integer를 지정했는데 값 True가 들어오면 검증기는 어떻게 처리하나요?",
+      "options": [
+        "암묵적으로 integer로 변환합니다",
+        "1로 간주하고 통과시킵니다",
+        "처리되지 않은 예외를 발생시킵니다",
+        "이 검증기에서는 bool가 integer가 아니므로 타입 오류를 반환합니다"
+      ],
+      "correct": 3,
+      "explanation": "Python의 bool은 int의 하위 클래스이지만, 검증기는 integer 검사에서 bool를 제외합니다. JSON의 boolean과 integer는 구별됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "입력 객체가 {'user': {'email': 0}}이고 스키마가 user.email을 string으로 요구할 때, 오류 경로는 무엇인가요?",
+      "options": [
+        "/user",
+        "/user/email",
+        "/",
+        "user.email"
+      ],
+      "correct": 1,
+      "explanation": "JSON 포인터는 user를 거쳐 email로 내려가는 경로를 /user/email로 인코딩합니다."
+    },
+    {
+      "stage": "post",
+      "question": "레지스트리가 보안 경계가 아닌 이유는 무엇인가요?",
+      "options": [
+        "핸들러가 async이기 때문에",
+        "검증이 통과한 후에도 핸들러가 여전히 오작동할 수 있기 때문에",
+        "레지스트리가 프로세스 내부에 있기 때문에",
+        "스키마가 JSON이기 때문에"
+      ],
+      "correct": 1,
+      "explanation": "레지스트리는 형태(shape)를 검사합니다. 동작, 시간 초과, 격리는 디스패처와 샌드박스의 영역입니다."
+    }
+  ]
+}
