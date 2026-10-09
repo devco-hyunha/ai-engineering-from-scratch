@@ -1,0 +1,90 @@
+{
+  "lesson": "01-managed-llm-platforms",
+  "title": "관리형 LLM 플랫폼 — Bedrock, Vertex AI, Azure OpenAI",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 수업을 듣기 전, 고객이 Claude, Llama, Cohere를 하나의 API로 사용해야 한다면 어떤 플랫폼을 먼저 선택하시겠습니까?",
+      "options": [
+        "AWS Bedrock",
+        "Vertex AI",
+        "Anthropic API 직접 사용",
+        "Azure OpenAI Service"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "시장(marketplace)이 아닌 독점 파트너십으로 설명되는 하이퍼스케일러의 전략은 무엇입니까?",
+      "options": [
+        "Vertex AI",
+        "AWS Bedrock",
+        "OCI Generative AI",
+        "Azure OpenAI"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Llama 3.1 405B 동등 모델에서 Azure OpenAI(PTU 사용)와 Bedrock 온디맨드 간 측정된 중앙값 TTFT 격차는 대략 얼마입니까?",
+      "options": [
+        "~250 ms",
+        "~5 ms",
+        "~100 ms",
+        "~25 ms"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Bedrock의 2025년 기능 중 CloudWatch에서 제품별 비용 귀속을 가장 명확하게 네이티브로 제공하는 것은 무엇입니까?",
+      "options": [
+        "Bedrock Agents",
+        "Bedrock Knowledge Bases",
+        "Application Inference Profiles",
+        "Bedrock Guardrails"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Azure PTU는 온디맨드 대비 어느 지속적 사용률 구간에서 보통 손익분기점을 달성합니까?",
+      "options": [
+        "40-60%",
+        "80-95%",
+        "5-10%",
+        "20-30%"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 수업이 권장하는 2026년 정책이 제품 핵심 LLM 호출에 대해 최소 두 개의 공급자를 요구하는 이유는 무엇입니까?",
+      "options": [
+        "경쟁사도 사용해야만 하이퍼스케일러가 BAA를 체결하지 않기 때문",
+        "단일 공급자 가격은 항상 더 비싸기 때문",
+        "SOC 2 Type II에서 요구하기 때문",
+        "프론티어 모델의 리더십이 매월 바뀌므로, 단일 공급자 락인은 프론티어의 3분의 2를 배제하기 때문"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "세 플랫폼에 걸친 FinOps 측면을 가장 잘 설명하는 진술은 무엇입니까?",
+      "options": [
+        "세 플랫폼 모두 동일한 요청 단위 귀속을 노출한다",
+        "Bedrock은 네이티브로 가장 명확하고, Vertex는 BigQuery를 통해 가장 유연하며, Azure는 계측(instrumentation) 없이는 가장 불투명하다",
+        "Vertex에는 귀속 측면이 전혀 없다",
+        "Azure가 네이티브로 가장 명확하고, Bedrock은 불투명하다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
