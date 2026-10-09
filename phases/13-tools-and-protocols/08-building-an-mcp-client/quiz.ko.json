@@ -1,0 +1,78 @@
+{
+  "lesson": "08-building-an-mcp-client",
+  "title": "MCP 클라이언트 구축: 발견, 라우팅 및 이중 시대 폴백",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이중 시대 stdio 클라이언트는 무엇을 먼저 전송해야 합니까?",
+      "options": [
+        "Mcp-Session-Id",
+        "server/discover",
+        "initialize",
+        "HTTP GET"
+      ],
+      "correct": 1,
+      "explanation": "발견 프로브는 현대적 요청별 메타데이터와 레거시 초기화 사이의 명확한 경계를 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "발견 프로브가 상호 지원되는 버전으로 -32022를 반환하면 클라이언트는 무엇을 해야 합니까?",
+      "options": [
+        "지원되는 버전에서 현대적 발견을 재시도",
+        "initialize 전송",
+        "HTTP GET 열기",
+        "서버 무시"
+      ],
+      "correct": 0,
+      "explanation": "-32022는 인식된 현대적 증거이므로, 클라이언트는 현대적 상태를 유지하며 재시도합니다."
+    },
+    {
+      "stage": "check",
+      "question": "레거시 시대를 선택하기에 충분한 조건은 무엇입니까?",
+      "options": [
+        "임의의 -32601 오류",
+        "피어가 레거시 허용 목록에 있음",
+        "피어가 허용 목록에 있고, 제한된 initialize 프로브가 유효한 지원되는 레거시 결과를 반환함",
+        "발견 시간 초과 자체"
+      ],
+      "correct": 2,
+      "explanation": "허용 목록은 프로브를 허용하지만, 설정된 레거시 개정판에 대한 구조적으로 유효한 양의 initialize 결과만 레거시 시대를 증명합니다."
+    },
+    {
+      "stage": "check",
+      "question": "클라이언트는 'search'라는 이름의 두 도구를 어떻게 처리해야 합니까?",
+      "options": [
+        "하하나를 조용히 덮어쓰기",
+        "시작 순서를 신뢰",
+        "선언된 정책에 따라 접두사를 붙이거나 거부",
+        "프로토콜 세션 생성"
+      ],
+      "correct": 2,
+      "explanation": "명시적인 접두사 또는 거부는 라우팅을 가시적이고 결정적으로 유지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "클라이언트가 레거시 시대를 협상한 후 레거시 결과가 resultType을 생략하면 어떻게 해석됩니까?",
+      "options": [
+        "input_required로",
+        "complete로",
+        "전송 오류로",
+        "server/discover로"
+      ],
+      "correct": 1,
+      "explanation": "클라이언트는 이전 프로토콜 버전에서 누락된 resultType을 complete로 취급합니다."
+    },
+    {
+      "stage": "post",
+      "question": "현대적 전송 손실 후 라우팅이 재개되기 전에 무엇이 일어나야 합니까?",
+      "options": [
+        "재연결, 재발견 및 재목록",
+        "Last-Event-ID로 재개",
+        "Mcp-Session-Id 에코",
+        "이전 연결 메타데이터 재사용"
+      ],
+      "correct": 0,
+      "explanation": "클라이언트는 피어 장부를 재구축하고 새로운 요청 ID로 안전한 작업만 재시도합니다."
+    }
+  ]
+}
