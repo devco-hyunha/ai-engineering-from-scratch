@@ -1,0 +1,78 @@
+{
+  "lesson": "14-ascii-art-visual-jailbreaks",
+  "title": "ASCII 아트와 시각적 제일브레이크",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "토큰 수준 및 의미론적 수준의 안전 필터가 ArtPrompt 스타일의 공격을 놓치는 이유는 무엇인가요?",
+      "options": [
+        "ArtPrompt는 항상 base64 인코딩을 사용합니다",
+        "ArtPrompt는 모델의 미세 조정을 요구합니다",
+        "ArtPrompt는 시각적 인식 수준에서 작동합니다: 필터는 무해한 문장 부호를 보지만, 모델은 렌더링된 문자를 단어로 읽습니다",
+        "ArtPrompt는 멀티모달 모델에서만 효과적입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Jiang et al. (ACL 2024)에서 설명한 ArtPrompt의 두 단계는 무엇인가요?",
+      "options": [
+        "토크나이저 불일치, 그 다음 컨텍스트 절단",
+        "랜덤 검색, 그 다음 퍼플렉시티 부스팅",
+        "프랑스어 번역, 그 다음 역번역",
+        "안전 관련 토큰의 단어 식별, 그 다음 ASCII 아트 치환 및 은폐된 프롬프트 생성"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "퍼플렉시티 필터(PPL) 방어는 ArtPrompt에 대해 왜 실패하나요?",
+      "options": [
+        "퍼플렉시티 필터는 기본적으로 비활성화되어 있습니다",
+        "ASCII 아트에서는 퍼플렉시티를 측정할 수 없습니다",
+        "은폐된 입력에서는 퍼플렉시티가 항상 0입니다",
+        "ASCII 아트는 높은 퍼플렉시티를 가지지만, 모든 합법적인 구조화된 입력도 마찬가지입니다; 공격을 차단하는 임계값은 합법적인 콘텐츠도 차단합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "ViTC 벤치마크는 무엇을 측정하나요?",
+      "options": [
+        "모델의 학습 데이터 독성",
+        "모델의 도구 호출 정확도",
+        "모델이 비의미론적 시각적 프롬프트(ASCII 아트, 윙딩, 유사한 인코딩된 텍스트)를 읽는 능력",
+        "모델이 비전 데이터를 압축하는 능력"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "StructuralSleight는 ArtPrompt를 무엇으로 일반화하나요?",
+      "options": [
+        "이미지 입력만",
+        "긴 컨텍스트 샷 스태핑",
+        "기울기 검색을 통한 적대적 토큰 접미사",
+        "드문 텍스트 인코딩 구조(UTES): 트리, 그래프, 중첩 JSON, JSON 내 CSV, diff 스타일 코드 등"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "ViTC 결과가 시사하는 능력-안전 트레이드오프는 무엇인가요?",
+      "options": [
+        "더 큰 컨텍스트 윈도우는 ArtPrompt의 성공을 줄입니다",
+        "시각적 인식은 ArtPrompt의 성공과 무관합니다",
+        "모델이 비의미론적 시각적 텍스트를 잘 읽을수록, ArtPrompt 스타일의 공격이 그 모델에 대해 더 효과적입니다",
+        "더 작은 모델은 항상 더 안전합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
