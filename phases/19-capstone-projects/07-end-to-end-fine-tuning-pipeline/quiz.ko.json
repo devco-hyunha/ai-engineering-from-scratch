@@ -1,0 +1,90 @@
+{
+  "lesson": "07-end-to-end-fine-tuning-pipeline",
+  "title": "캡스톤 07 — 엔드투엔드 미세 조정 파이프라인 (데이터부터 SFT, DPO, 서빙까지)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "데이터 준비 과정에서 오염 검사(contamination check)는 무엇을 방지합니까?",
+      "options": [
+        "SFT 및 DPO 단계 간의 토크나이저 드리프트",
+        "MMLU-Pro 및 MT-Bench-v2와 같은 공개 벤치마크의 테스트셋이 학습 데이터로 유입되는 누수",
+        "학습 및 서빙 간의 GPU 드라이버 불일치",
+        "llama.cpp 빌드 간의 GGUF 버전 편차"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "파이프라인이 DPO 단독이 아닌 SFT를 먼저 수행한 후 DPO(또는 GRPO)를 구성하는 이유는 무엇입니까?",
+      "options": [
+        "DPO는 양자화된 가중치에서 실행할 수 없습니다",
+        "Axolotl은 DPO를 구현하지 않습니다",
+        "SFT는 레이블이 지정된 완성(completions)에 기반하여 도메인 거동을 확립하며, DPO 또는 GRPO는 선호 쌍(preference pairs) 또는 검증 가능한 보상(verifiable rewards)에 대해 모델을 정렬합니다",
+        "DPO는 별도의 기본 모델 아키텍처를 필요로 합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EAGLE-3는 vLLM 서빙 단계에서 무엇을 기여합니까?",
+      "options": [
+        "도구 호출에 대한 OPA 정책",
+        "자동 데이터 중복 제거 단계",
+        "새로운 프롬프트 캐싱 레이어",
+        "N개 토큰을 미리 예측하는 초안 헤드(draft heads); 타겟 모델이 한 번의 패스로 검증하여 2-3배의 처리량을 달성합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "추론적 디코딩(speculative-decoding) 초안이 타겟 모델과 얼마나 잘 정렬되는지를 보고하는 지표는 무엇입니까?",
+      "options": [
+        "수락률(Acceptance rate)",
+        "퍼플렉시티(Perplexity)",
+        "PSI",
+        "커버리지 델타(Coverage delta)"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "파이프라인은 배포 유연성을 위해 어떤 세 가지 양자화(quant) 형식을 제공합니까?",
+      "options": [
+        "GPTQ-INT4-Marlin, AWQ-INT4, GGUF-Q4_K_M",
+        "FP32, FP16, BF16",
+        "세 가지 런타임에 걸쳐 INT8만",
+        "ONNX, CoreML, TFLite"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 캡스톤에서 2026년 모델 카드는 어떤 프레임워크 관례를 따릅니까?",
+      "options": [
+        "HuggingFace YAML 프론트 매터만",
+        "OpenAI의 모델 카드 형식",
+        "데이터셋 명세서(Datasheets for Datasets)",
+        "데이터, 학습, 평가, 안전성, 라이선스 및 재현성을 다루는 모델 개방성 프레임워크(MOF) 2026 템플릿"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "서빙 복제본(replicas)을 자동 확장하기 위해 어떤 HPA 지표가 사용됩니까?",
+      "options": [
+        "GPU 온도",
+        "CPU 사용률",
+        "대기 시간(Queue-wait time)",
+        "네트워크 아웃바운드 바이트"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
