@@ -1,0 +1,78 @@
+{
+  "lesson": "14-model-context-protocol",
+  "title": "MCP (모델 컨텍스트 프로토콜)(MCP (Model Context Protocol))",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP 2026-07-28에서 클라이언트는 프로토콜 버전과 기능을 어디에 전송합니까?",
+      "options": [
+        "HTTP 쿠키에만",
+        "initialize 요청에만",
+        "모든 요청의 params._meta에",
+        "서버 측 세션 레코드에"
+      ],
+      "correct": 2,
+      "explanation": "최신 MCP는 상태 비저장(Stateless)입니다. 각 요청은 params._meta에 프로토콜 버전과 클라이언트 기능을 포함합니다."
+    },
+    {
+      "stage": "check",
+      "question": "최신 MCP 서버는 사전에 버전 및 기능 발견을 위해 무엇을 구현해야 합니까?",
+      "options": [
+        "server/discover",
+        "sessions/create",
+        "logging/setLevel",
+        "initialize"
+      ],
+      "correct": 0,
+      "explanation": "server/discover는 지원되는 버전, 서버 기능 및 서버 식별자를 광고합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MCP 2026-07-28에서 현재 사용 중인 Streamable HTTP 형태는 무엇입니까?",
+      "options": [
+        "모든 도구 호출 후 DELETE 요청",
+        "Mcp-Session-Id로 식별되는 WebSocket 세션",
+        "JSON-RPC 메시지당 하나의 POST; 요청 POST는 JSON 또는 요청 범위 SSE를 수신",
+        "GET 스트림과 별도의 POST 엔드포인트"
+      ],
+      "correct": 2,
+      "explanation": "현재 전송 계층은 하나의 POST 엔드포인트를 사용합니다. 요청 POST는 JSON 또는 요청 범위 SSE를 수신하며, 승인된 알림 POST는 본문 없이 HTTP 202를 수신합니다."
+    },
+    {
+      "stage": "check",
+      "question": "서버는 누락된 프로토콜 버전 메타데이터와 잘 형성되었지만 지원되지 않는 버전을 어떻게 구분해야 합니까?",
+      "options": [
+        "두 경우 모두 -32022를 반환",
+        "누락된 버전에는 HTTP 301을 반환하고 지원되지 않는 버전에는 Mcp-Session-Id를 발급",
+        "누락되거나 문자열이 아닌 메타데이터에는 -32602를 반환하고, 지원되지 않는 문자열에는 지원/요청된 버전과 함께 -32022를 반환",
+        "누락된 버전을 허용하고 지원되지 않는 버전에는 -32601을 반환"
+      ],
+      "correct": 2,
+      "explanation": "누락되거나 타입이 잘못된 필수 필드는 잘못된 JSON-RPC params입니다. UnsupportedProtocolVersionError는 제공된 버전 문자열이 구현되지 않은 경우에만 적용됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "다단계 도구는 호출 간에 연속성이 필요합니다. 최신 MCP 설계는 무엇입니까?",
+      "options": [
+        "clientInfo에 변경 가능한 상태를 저장",
+        "이 도구에 대해서만 Mcp-Session-Id를 복원",
+        "불투명 핸들(opaque handle)을 발급하고 이후 도구 인자로 요구",
+        "TCP 연결 뒤에 상태를 저장"
+      ],
+      "correct": 2,
+      "explanation": "호출 간 상태는 명시적인 애플리케이션 상태입니다. 서버가 발급한 핸들은 일반적이고 승인된 인자로 전달됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "최신 서버는 도구 작업 중에 사용자, 모델 또는 루트 입력을 어떻게 요청합니까?",
+      "options": [
+        "질문을 stderr에 기록",
+        "두 번째 SSE 연결을 열기",
+        "input_required를 반환하고 클라이언트가 inputResponses로 재시도",
+        "독립적인 서버-클라이언트 JSON-RPC 요청을 전송"
+      ],
+      "correct": 2,
+      "explanation": "MRTR (다중 왕복 요청)(Multi Round-Trip Request (MRTR)) 패턴은 input_required 결과에 inputRequests를 포함하고 원본 작업을 재시도합니다."
+    }
+  ]
+}
