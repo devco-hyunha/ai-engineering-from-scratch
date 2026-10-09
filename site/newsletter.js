@@ -5,6 +5,27 @@
   let dialog;
   let trigger;
 
+  function currentLang() {
+    if (typeof window.AIFS_currentLang === 'function') return window.AIFS_currentLang();
+    try {
+      const fromQuery = new URLSearchParams(location.search).get('lang') || '';
+      if (fromQuery) return fromQuery;
+    } catch (_) {}
+    try {
+      return localStorage.getItem('lang') || 'en';
+    } catch (_) {
+      return 'en';
+    }
+  }
+
+  function tHome(key, fallback) {
+    const catalog = window.AIFS_UI_I18N || {};
+    const lang = currentLang();
+    const home = (catalog[lang] && catalog[lang].home) || {};
+    const en = (catalog.en && catalog.en.home) || {};
+    return home[key] || en[key] || fallback;
+  }
+
   function signupSection(variant) {
     const lesson = variant === 'lesson';
     const id = variant === 'dialog' ? 'newsletter-modal' : 'newsletter';
@@ -13,29 +34,36 @@
     section.className = 'newsletter-section newsletter-' + variant;
     if (variant === 'home') section.classList.add('container');
     section.setAttribute('aria-labelledby', id + '-title');
+    section.dataset.newsletterVariant = variant;
+    const title = lesson
+      ? tHome('newsletterLessonTitle', 'AI Engineering Newsletter')
+      : tHome('newsletterHomeTitle', 'Learn AI from scratch. Stay ahead of what’s next.');
+    const body = lesson
+      ? tHome('newsletterLessonBody', 'Practical lessons and updates on AI, DevOps, and cloud native. One email a week.')
+      : tHome('newsletterHomeBody', 'Practical lessons, tools worth trying, and the week’s key developments across AI, DevOps, and cloud native. One free email, every week.');
     section.innerHTML = `<div class="newsletter-strip">
       <div class="newsletter-copy">
-        <h2 id="${id}-title">${lesson ? 'AI Engineering Newsletter' : 'Learn AI from scratch. Stay ahead of what’s next.'}</h2>
-        <p>${lesson ? 'Practical lessons and updates on AI, DevOps, and cloud native. One email a week.' : 'Practical lessons, tools worth trying, and the week’s key developments across AI, DevOps, and cloud native. One free email, every week.'}</p>
+        <h2 id="${id}-title">${title}</h2>
+        <p>${body}</p>
       </div>
       <div class="newsletter-signup">
         <form action="${publicationUrl}/subscribe" method="get" aria-describedby="${id}-note">
-          <label class="newsletter-email-label" for="${id}-email">Email address</label>
+          <label class="newsletter-email-label" for="${id}-email">${tHome('newsletterEmailLabel', 'Email address')}</label>
           <div class="newsletter-input-row">
-            <input id="${id}-email" name="email" type="email" placeholder="Your email address" autocomplete="email" required>
-            <button type="submit">Subscribe free <span aria-hidden="true">↗</span></button>
+            <input id="${id}-email" name="email" type="email" placeholder="${tHome('newsletterEmailPlaceholder', 'Your email address')}" autocomplete="email" required>
+            <button type="submit">${tHome('newsletterSubscribe', 'Subscribe free')} <span aria-hidden="true">↗</span></button>
           </div>
         </form>
-        <p id="${id}-note" class="newsletter-note">Free. Unsubscribe anytime. Finish signup on Substack.</p>
+        <p id="${id}-note" class="newsletter-note">${tHome('newsletterNote', 'Free. Unsubscribe anytime. Finish signup on Substack.')}</p>
       </div>
     </div>`;
     return section;
   }
 
-  function newsletterLink(label = 'Newsletter') {
+  function newsletterLink(label) {
     const link = document.createElement('a');
     link.href = publicationUrl + '/subscribe';
-    link.textContent = label;
+    link.textContent = label || tHome('navNewsletter', 'Newsletter');
     link.dataset.newsletterOpen = '';
     if (typeof HTMLDialogElement !== 'undefined' && HTMLDialogElement.prototype.showModal) {
       link.setAttribute('aria-haspopup', 'dialog');
@@ -59,8 +87,8 @@
     const close = document.createElement('button');
     close.type = 'button';
     close.className = 'newsletter-modal-close';
-    close.textContent = 'Close ×';
-    close.setAttribute('aria-label', 'Close newsletter signup');
+    close.textContent = tHome('newsletterClose', 'Close ×');
+    close.setAttribute('aria-label', tHome('newsletterCloseAria', 'Close newsletter signup'));
     close.autofocus = true;
     close.addEventListener('click', function () { element.close(); });
     element.append(close, signupSection('dialog'));
@@ -121,12 +149,13 @@
     const callout = document.createElement('aside');
     callout.id = 'newsletter-cta';
     callout.className = 'newsletter-callout ' + container;
-    callout.setAttribute('aria-label', 'AI Engineering Newsletter');
+    callout.setAttribute('aria-label', tHome('newsletterAria', 'AI Engineering Newsletter'));
+    callout.dataset.newsletterMessage = message;
     const row = document.createElement('div');
     row.className = 'newsletter-callout-row';
     const copy = document.createElement('p');
     copy.textContent = message;
-    row.append(copy, newsletterLink('Get the free newsletter →'));
+    row.append(copy, newsletterLink(tHome('newsletterCta', 'Get the free newsletter →')));
     callout.append(row);
     target[position](callout);
   }
@@ -148,6 +177,68 @@
     observer.observe(content, { childList: true, subtree: true });
   }
 
+  function applyLanguage() {
+    document.querySelectorAll('a[data-newsletter-open]').forEach(function (link) {
+      if (link.closest('.newsletter-callout')) {
+        link.textContent = tHome('newsletterCta', 'Get the free newsletter →');
+      } else {
+        link.textContent = tHome('navNewsletter', 'Newsletter');
+      }
+    });
+
+    document.querySelectorAll('.newsletter-section').forEach(function (section) {
+      const variant = section.dataset.newsletterVariant || (section.classList.contains('newsletter-lesson') ? 'lesson' : 'home');
+      const lesson = variant === 'lesson';
+      const title = section.querySelector('h2');
+      const body = section.querySelector('.newsletter-copy p');
+      const label = section.querySelector('.newsletter-email-label');
+      const input = section.querySelector('input[type="email"]');
+      const button = section.querySelector('button[type="submit"]');
+      const note = section.querySelector('.newsletter-note');
+      if (title) {
+        title.textContent = lesson
+          ? tHome('newsletterLessonTitle', 'AI Engineering Newsletter')
+          : tHome('newsletterHomeTitle', 'Learn AI from scratch. Stay ahead of what’s next.');
+      }
+      if (body) {
+        body.textContent = lesson
+          ? tHome('newsletterLessonBody', 'Practical lessons and updates on AI, DevOps, and cloud native. One email a week.')
+          : tHome('newsletterHomeBody', 'Practical lessons, tools worth trying, and the week’s key developments across AI, DevOps, and cloud native. One free email, every week.');
+      }
+      if (label) label.textContent = tHome('newsletterEmailLabel', 'Email address');
+      if (input) input.placeholder = tHome('newsletterEmailPlaceholder', 'Your email address');
+      if (button) {
+        button.innerHTML = tHome('newsletterSubscribe', 'Subscribe free') + ' <span aria-hidden="true">↗</span>';
+      }
+      if (note) {
+        note.textContent = tHome('newsletterNote', 'Free. Unsubscribe anytime. Finish signup on Substack.');
+      }
+    });
+
+    const callout = document.getElementById('newsletter-cta');
+    if (callout) {
+      callout.setAttribute('aria-label', tHome('newsletterAria', 'AI Engineering Newsletter'));
+      const cta = callout.querySelector('a[data-newsletter-open]');
+      if (cta) cta.textContent = tHome('newsletterCta', 'Get the free newsletter →');
+    }
+
+    if (dialog) {
+      const close = dialog.querySelector('.newsletter-modal-close');
+      if (close) {
+        close.textContent = tHome('newsletterClose', 'Close ×');
+        close.setAttribute('aria-label', tHome('newsletterCloseAria', 'Close newsletter signup'));
+      }
+    }
+
+    const colophon = document.querySelector('.colophon p');
+    if (colophon && /No paywall, no (signup|account required)\./.test(colophon.textContent)) {
+      const koNote = tHome('colophonNoPaywall', 'No paywall, no account required.');
+      colophon.textContent = colophon.textContent
+        .replace(/No paywall, no signup\./, koNote)
+        .replace(/No paywall, no account required\./, koNote);
+    }
+  }
+
   function initialize() {
     if (!document.querySelector('.site-header') || document.querySelector('[data-newsletter-open]')) return;
     addNavigation();
@@ -156,13 +247,22 @@
     if (readers) {
       readers.before(signupSection('home'));
       const colophon = document.querySelector('.colophon p');
-      if (colophon) colophon.textContent = colophon.textContent.replace('No paywall, no signup.', 'No paywall, no account required.');
+      if (colophon) {
+        colophon.textContent = colophon.textContent.replace(
+          'No paywall, no signup.',
+          tHome('colophonNoPaywall', 'No paywall, no account required.')
+        );
+      }
     } else {
       addPagePlacement();
       addLessonPlacement();
     }
+    applyLanguage();
     revealAnchor();
   }
+
+  document.addEventListener('aifs:lang', applyLanguage);
+  window.AIFS_applyNewsletterLang = applyLanguage;
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize);
   else initialize();

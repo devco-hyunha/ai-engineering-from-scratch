@@ -77,6 +77,7 @@
     buildLookups();
     computePositions();
     computeProgress();
+    applyStaticTranslations();
     renderStageNavigation();
     renderJumpOptions();
     renderHeroStats();
@@ -148,6 +149,41 @@
     return Object.keys(reached).length === PHASES.length;
   }
 
+  function getLang() {
+    if (typeof window.AIFS_currentLang === 'function') return window.AIFS_currentLang();
+    try {
+      var saved = localStorage.getItem('lang');
+      if (saved) return saved;
+    } catch (_) {}
+    return document.documentElement.lang || 'en';
+  }
+
+  function getI18n() {
+    var lang = getLang();
+    var bundle = (window.AIFS_UI_I18N && window.AIFS_UI_I18N[lang]) || (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en) || {};
+    return bundle.roadmap || {};
+  }
+
+  function getLocalizedPhaseName(phaseId, fallback) {
+    var lang = getLang();
+    var bundle = (window.AIFS_UI_I18N && window.AIFS_UI_I18N[lang]) || (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en) || {};
+    if (bundle.phaseNames && bundle.phaseNames[phaseId]) return bundle.phaseNames[phaseId];
+    return fallback;
+  }
+
+  function getLocalizedPhaseDesc(phaseId, fallback) {
+    var lang = getLang();
+    var bundle = (window.AIFS_UI_I18N && window.AIFS_UI_I18N[lang]) || (window.AIFS_UI_I18N && window.AIFS_UI_I18N.en) || {};
+    if (bundle.phaseDescs && bundle.phaseDescs[phaseId]) return bundle.phaseDescs[phaseId];
+    return fallback;
+  }
+
+  function getLocalizedStageName(stageId, fallback) {
+    var i18n = getI18n();
+    if (i18n.stageNames && i18n.stageNames[stageId]) return i18n.stageNames[stageId];
+    return fallback;
+  }
+
   function buildLookups() {
     for (var i = 0; i < PHASES.length; i++) {
       var phase = PHASES[i];
@@ -204,11 +240,14 @@
   function renderStageNavigation() {
     var nav = document.getElementById('roadmapStageNav');
     if (!nav) return;
+    var i18n = getI18n();
+    var zonePrefix = i18n.zonePrefix || 'Zone';
     var html = '';
     for (var i = 0; i < STAGES.length; i++) {
       var stage = STAGES[i];
+      var stageName = getLocalizedStageName(stage.id, stage.name);
       html += '<button class="roadmap-stage-jump" type="button" data-stage-target="' + stage.id + '">' +
-        '<span>Zone ' + stage.number + '</span><strong>' + escapeHtml(stage.name) + '</strong>' +
+        '<span>' + zonePrefix + ' ' + stage.number + '</span><strong>' + escapeHtml(stageName) + '</strong>' +
       '</button>';
     }
     nav.innerHTML = html;
@@ -217,10 +256,13 @@
   function renderJumpOptions() {
     var select = document.getElementById('roadmapJump');
     if (!select) return;
-    var html = '<option value="">Jump to a phase</option>';
+    var i18n = getI18n();
+    var defaultOption = i18n.findPhaseLabel || 'Jump to a phase';
+    var html = '<option value="">' + escapeHtml(defaultOption) + '</option>';
     for (var i = 0; i < PHASES.length; i++) {
       var phase = PHASES[i];
-      html += '<option value="' + phase.id + '">' + formatPhase(phase.id) + ' · ' + escapeHtml(phase.name) + '</option>';
+      var localizedName = getLocalizedPhaseName(phase.id, phase.name);
+      html += '<option value="' + phase.id + '">' + formatPhase(phase.id) + ' · ' + escapeHtml(localizedName) + '</option>';
     }
     select.innerHTML = html;
   }
@@ -237,7 +279,9 @@
     setText('roadmapLessonCount', String(totalLessons));
     setText('roadmapProgressCount', completedLessons + ' / ' + totalLessons);
     var recommendation = recommendedPhase();
-    setText('roadmapNextPhase', recommendation ? 'Phase ' + formatPhase(recommendation.id) : 'Complete');
+    var i18n = getI18n();
+    var completeLabel = i18n.stateComplete || 'Complete';
+    setText('roadmapNextPhase', recommendation ? 'Phase ' + formatPhase(recommendation.id) : completeLabel);
   }
 
   function renderGraph() {
@@ -350,8 +394,11 @@
   }
 
   function renderStageBands(layer) {
+    var i18n = getI18n();
+    var zonePrefix = i18n.zonePrefix || 'ZONE';
     for (var i = 0; i < STAGES.length; i++) {
       var stage = STAGES[i];
+      var stageName = getLocalizedStageName(stage.id, stage.name);
       var startY = Math.max(18, PAD_Y + stage.startTier * TIER_GAP - 28);
       var endY = Math.min(SVG_H - 18, PAD_Y + stage.endTier * TIER_GAP + NODE_H + 28);
       layer.appendChild(svgEl('rect', {
@@ -362,10 +409,10 @@
         height: endY - startY
       }));
       var number = svgEl('text', { class: 'roadmap-stage-band-number', x: 32, y: startY + 18 });
-      number.textContent = 'ZONE ' + stage.number;
+      number.textContent = zonePrefix + ' ' + stage.number;
       layer.appendChild(number);
       var label = svgEl('text', { class: 'roadmap-stage-band-label', x: 90, y: startY + 18 });
-      label.textContent = stage.name;
+      label.textContent = stageName;
       layer.appendChild(label);
     }
   }
@@ -374,12 +421,13 @@
     var pos = positions[phase.id];
     var progress = phaseProgress[phase.id] || { done: 0, total: 0, percent: 0 };
     var state = phaseState(phase.id);
+    var localizedName = getLocalizedPhaseName(phase.id, phase.name);
     var narration = phaseNarration(phase, state, progress);
     var group = svgEl('g', {
       class: 'roadmap-node',
       'data-phase': phase.id,
       'data-tts-read': '',
-      'data-tts-section': 'Phase ' + formatPhase(phase.id) + ': ' + phase.name,
+      'data-tts-section': 'Phase ' + formatPhase(phase.id) + ': ' + localizedName,
       'data-tts-label': narration,
       transform: 'translate(' + pos.x + ',' + pos.y + ')',
       tabindex: '-1',
@@ -408,7 +456,7 @@
     stateText.textContent = state.label;
     surface.appendChild(stateText);
 
-    var lines = splitName(phase.name);
+    var lines = splitName(localizedName);
     for (var i = 0; i < lines.length; i++) {
       var title = svgEl('text', {
         class: 'roadmap-node-title',
@@ -419,8 +467,10 @@
       surface.appendChild(title);
     }
 
+    var i18n = getI18n();
+    var completeUpper = i18n.completeUpper || 'COMPLETE';
     var meta = svgEl('text', { class: 'roadmap-node-meta', x: NODE_W - 14, y: 68, 'text-anchor': 'end' });
-    meta.textContent = progress.done + '/' + progress.total + ' COMPLETE';
+    meta.textContent = progress.done + '/' + progress.total + ' ' + completeUpper;
     surface.appendChild(meta);
     surface.appendChild(svgEl('rect', { class: 'roadmap-node-progress-track', x: 14, y: 74, width: NODE_W - 28, height: 4 }));
     surface.appendChild(svgEl('rect', {
@@ -997,13 +1047,22 @@
 
   function renderEmptyInspector(animate) {
     var recommendation = recommendedPhase();
-    var recommendationHtml = recommendation
-      ? '<div class="roadmap-recommendation"><span>Recommended next</span><button type="button" data-route-phase="' + recommendation.id + '">Phase ' + formatPhase(recommendation.id) + ' · ' + escapeHtml(recommendation.name) + '</button></div>'
-      : '';
+    var i18n = getI18n();
+    var emptyEyebrow = i18n.inspectorEmptyEyebrow || 'Route inspector';
+    var emptyTitle = i18n.inspectorEmptyTitle || 'Choose a phase';
+    var emptyCopy = i18n.inspectorEmptyCopy || 'Select a node to illuminate the exact route into it, every phase it unlocks, and the best lesson to continue from your local progress.';
+    var recNextLabel = i18n.recNextLabel || 'Recommended next';
+
+    var recommendationHtml = '';
+    if (recommendation) {
+      var recName = getLocalizedPhaseName(recommendation.id, recommendation.name);
+      recommendationHtml = '<div class="roadmap-recommendation"><span>' + escapeHtml(recNextLabel) + '</span><button type="button" data-route-phase="' + recommendation.id + '">Phase ' + formatPhase(recommendation.id) + ' · ' + escapeHtml(recName) + '</button></div>';
+    }
+
     updateInspector(
-      '<span class="roadmap-inspector-eyebrow">Route inspector</span>' +
-      '<h2>Choose a phase</h2>' +
-      '<p class="roadmap-inspector-copy">Select a node to illuminate the exact route into it, every phase it unlocks, and the best lesson to continue from your local progress.</p>' +
+      '<span class="roadmap-inspector-eyebrow">' + escapeHtml(emptyEyebrow) + '</span>' +
+      '<h2>' + escapeHtml(emptyTitle) + '</h2>' +
+      '<p class="roadmap-inspector-copy">' + escapeHtml(emptyCopy) + '</p>' +
       recommendationHtml,
       !!animate
     );
@@ -1020,27 +1079,44 @@
     var directUnlocks = children[id] || [];
     var lesson = nextLessonForPhase(phase);
     var lessonLink = lesson ? lessonPageUrl(lesson) : '';
-    var actionLabel = progress.done === progress.total && progress.total > 0 ? 'Review phase' : (progress.done > 0 ? 'Continue phase' : 'Start phase');
+
+    var i18n = getI18n();
+    var actionReview = i18n.btnReviewPhase || 'Review phase';
+    var actionContinue = i18n.btnContinuePhase || 'Continue phase';
+    var actionStart = i18n.btnStartPhase || 'Start phase';
+    var actionGithub = i18n.btnViewGithub || 'View phase on GitHub';
+    var yourProgressLabel = i18n.inspectorYourProgress || 'Your progress';
+    var allPrereqsLabel = i18n.inspectorAllPrereqs || 'All prerequisites';
+    var phasesUnlockedLabel = i18n.inspectorPhasesUnlocked || 'Phases unlocked';
+    var directPrereqsTitle = i18n.inspectorDirectPrereqs || 'Direct prerequisites';
+    var directUnlocksTitle = i18n.inspectorDirectUnlocks || 'Immediately unlocks';
+    var startPointMsg = i18n.startPointMsg || 'This is the starting point.';
+    var finalDestMsg = i18n.finalDestMsg || 'This is a final destination.';
+
+    var actionLabel = progress.done === progress.total && progress.total > 0 ? actionReview : (progress.done > 0 ? actionContinue : actionStart);
+    var localizedName = getLocalizedPhaseName(phase.id, phase.name);
+    var localizedDesc = getLocalizedPhaseDesc(phase.id, phase.desc || '');
+
     updateInspector(
       '<span class="roadmap-inspector-eyebrow">Phase ' + formatPhase(id) + '</span>' +
-      '<h2>' + escapeHtml(phase.name) + '</h2>' +
+      '<h2>' + escapeHtml(localizedName) + '</h2>' +
       '<span class="roadmap-inspector-state">' + state.label + '</span>' +
-      '<p class="roadmap-inspector-copy">' + escapeHtml(phase.desc || '') + '</p>' +
+      '<p class="roadmap-inspector-copy">' + escapeHtml(localizedDesc) + '</p>' +
       '<div class="roadmap-inspector-progress">' +
-        '<div class="roadmap-inspector-progress-head"><span>Your progress</span><strong>' + progress.done + ' / ' + progress.total + '</strong></div>' +
+        '<div class="roadmap-inspector-progress-head"><span>' + escapeHtml(yourProgressLabel) + '</span><strong>' + progress.done + ' / ' + progress.total + '</strong></div>' +
         '<div class="roadmap-inspector-progress-bar" aria-hidden="true"><span style="--inspector-progress:' + (progress.percent / 100) + '"></span></div>' +
       '</div>' +
       '<div class="roadmap-inspector-context">' +
-        '<div class="roadmap-inspector-stat"><strong>' + Object.keys(ancestors).length + '</strong><span class="roadmap-inspector-stat-label">All prerequisites</span></div>' +
-        '<div class="roadmap-inspector-stat"><strong>' + Object.keys(descendants).length + '</strong><span class="roadmap-inspector-stat-label">Phases unlocked</span></div>' +
+        '<div class="roadmap-inspector-stat"><strong>' + Object.keys(ancestors).length + '</strong><span class="roadmap-inspector-stat-label">' + escapeHtml(allPrereqsLabel) + '</span></div>' +
+        '<div class="roadmap-inspector-stat"><strong>' + Object.keys(descendants).length + '</strong><span class="roadmap-inspector-stat-label">' + escapeHtml(phasesUnlockedLabel) + '</span></div>' +
       '</div>' +
       '<div class="roadmap-route-sections">' +
-        renderRouteSection('Direct prerequisites', directPrereqs, 'This is the starting point.') +
-        renderRouteSection('Immediately unlocks', directUnlocks, 'This is a final destination.') +
+        renderRouteSection(directPrereqsTitle, directPrereqs, startPointMsg) +
+        renderRouteSection(directUnlocksTitle, directUnlocks, finalDestMsg) +
       '</div>' +
       '<div class="roadmap-actions">' +
-        (lessonLink ? '<a class="roadmap-action roadmap-action-primary" href="' + lessonLink + '">' + actionLabel + '</a>' : '') +
-        '<a class="roadmap-action" href="' + phaseGithubUrl(phase) + '" target="_blank" rel="noopener">View phase on GitHub</a>' +
+        (lessonLink ? '<a class="roadmap-action roadmap-action-primary" href="' + lessonLink + '">' + escapeHtml(actionLabel) + '</a>' : '') +
+        '<a class="roadmap-action" href="' + phaseGithubUrl(phase) + '" target="_blank" rel="noopener">' + escapeHtml(actionGithub) + '</a>' +
       '</div>',
       animate !== false
     );
@@ -1053,7 +1129,8 @@
     for (var i = 0; i < ids.length; i++) {
       var phase = phaseMap[ids[i]];
       if (!phase) continue;
-      html += '<button class="roadmap-route-button" type="button" data-route-phase="' + phase.id + '"><span>' + formatPhase(phase.id) + '</span>' + escapeHtml(phase.name) + '</button>';
+      var locName = getLocalizedPhaseName(phase.id, phase.name);
+      html += '<button class="roadmap-route-button" type="button" data-route-phase="' + phase.id + '"><span>' + formatPhase(phase.id) + '</span>' + escapeHtml(locName) + '</button>';
     }
     return html + '</div></section>';
   }
@@ -1061,15 +1138,27 @@
   function announceSelection(id) {
     var ancestors = Object.keys(getAncestors(id)).length;
     var descendants = Object.keys(getDescendants(id)).length;
-    setText('roadmapGraphStatus', 'Phase ' + formatPhase(id) + ' selected. ' + ancestors + ' prerequisite phases and ' + descendants + ' downstream phases highlighted.');
+    var i18n = getI18n();
+    var lang = getLang();
+    if (lang === 'ko') {
+      setText('roadmapGraphStatus', 'Phase ' + formatPhase(id) + ' 선택됨. ' + ancestors + '개 선수 단계 및 ' + descendants + '개 후속 해금 단계가 강조 표시되었습니다.');
+    } else {
+      setText('roadmapGraphStatus', 'Phase ' + formatPhase(id) + ' selected. ' + ancestors + ' prerequisite phases and ' + descendants + ' downstream phases highlighted.');
+    }
   }
 
   function phaseState(id) {
     var progress = phaseProgress[id] || { done: 0, total: 0 };
-    if (progress.total > 0 && progress.done === progress.total) return { label: 'Complete' };
-    if (progress.done > 0) return { label: 'In progress' };
-    if (prerequisitesComplete(id)) return { label: 'Ready' };
-    return { label: 'Upcoming' };
+    var i18n = getI18n();
+    var lblComplete = i18n.stateComplete || 'Complete';
+    var lblInProgress = i18n.stateInProgress || 'In progress';
+    var lblReady = i18n.stateReady || 'Ready';
+    var lblUpcoming = i18n.stateUpcoming || 'Upcoming';
+
+    if (progress.total > 0 && progress.done === progress.total) return { label: lblComplete };
+    if (progress.done > 0) return { label: lblInProgress };
+    if (prerequisitesComplete(id)) return { label: lblReady };
+    return { label: lblUpcoming };
   }
 
   function prerequisitesComplete(id) {
@@ -1190,7 +1279,105 @@
 
   function showDataError() {
     var wrap = document.getElementById('roadmapGraphWrap');
-    if (wrap) wrap.innerHTML = '<p>Roadmap data could not be loaded. Rebuild the site and refresh this page.</p>';
+    var i18n = getI18n();
+    var errMsg = i18n.dataLoadError || 'Roadmap data could not be loaded. Rebuild the site and refresh this page.';
+    if (wrap) wrap.innerHTML = '<p>' + escapeHtml(errMsg) + '</p>';
+  }
+
+  // Handle dynamic language switch from lang-picker
+  if (typeof window !== 'undefined') {
+    window.AIFS_onRoadmapLangChange = function (newLang) {
+      document.documentElement.lang = newLang;
+      applyStaticTranslations();
+      renderStageNavigation();
+      renderJumpOptions();
+      renderHeroStats();
+      renderGraph();
+      if (selectedId !== null) {
+        renderInspector(selectedId, false);
+      } else {
+        renderEmptyInspector(false);
+      }
+    };
+    if (typeof window.AIFS_onLangChange === 'function') {
+      var prevHandler = window.AIFS_onLangChange;
+      window.AIFS_onLangChange = function (l) {
+        prevHandler(l);
+        if (window.AIFS_onRoadmapLangChange) window.AIFS_onRoadmapLangChange(l);
+      };
+    } else {
+      window.AIFS_onLangChange = function (l) {
+        if (window.AIFS_onRoadmapLangChange) window.AIFS_onRoadmapLangChange(l);
+      };
+    }
+  }
+
+  function applyStaticTranslations() {
+    var i18n = getI18n();
+    if (!i18n.heroTitle) return;
+
+    var navLinks = document.querySelectorAll('.header-nav > a');
+    if (navLinks.length >= 5) {
+      if (i18n.navContents) navLinks[0].textContent = i18n.navContents;
+      if (i18n.navCatalog) navLinks[1].textContent = i18n.navCatalog;
+      if (i18n.navRoadmap) navLinks[2].textContent = i18n.navRoadmap;
+      if (i18n.navGlossary) navLinks[3].textContent = i18n.navGlossary;
+      if (i18n.navAbout) navLinks[4].textContent = i18n.navAbout;
+    }
+
+    var eyebrow = document.querySelector('.roadmap-eyebrow');
+    if (eyebrow && i18n.heroEyebrow) eyebrow.textContent = i18n.heroEyebrow;
+    var title = document.getElementById('roadmapTitle');
+    if (title && i18n.heroTitle) title.textContent = i18n.heroTitle;
+    var lede = document.querySelector('.roadmap-lede');
+    if (lede && i18n.heroLede) lede.textContent = i18n.heroLede;
+
+    var statLabels = document.querySelectorAll('.roadmap-hero-stat-label');
+    if (statLabels.length >= 4) {
+      if (i18n.statPhases) statLabels[0].textContent = i18n.statPhases;
+      if (i18n.statLessons) statLabels[1].textContent = i18n.statLessons;
+      if (i18n.statProgress) statLabels[2].textContent = i18n.statProgress;
+      if (i18n.statNext) statLabels[3].textContent = i18n.statNext;
+    }
+
+    var stageCopy = document.querySelector('.roadmap-stage-index-copy');
+    if (stageCopy) {
+      var strong = stageCopy.querySelector('strong');
+      var span = stageCopy.querySelector('span');
+      if (strong && i18n.zonesTitle) strong.textContent = i18n.zonesTitle;
+      if (span && i18n.zonesSub) span.textContent = i18n.zonesSub;
+    }
+
+    var mapTitle = document.getElementById('learningMapTitle');
+    if (mapTitle && i18n.mapTitle) mapTitle.textContent = i18n.mapTitle;
+    var mapGuide = document.querySelector('.roadmap-toolbar-copy > p');
+    if (mapGuide && i18n.mapGuide) mapGuide.textContent = i18n.mapGuide;
+    var keyboardHelp = document.getElementById('roadmapKeyboardHelp');
+    if (keyboardHelp && i18n.keyboardHelp) keyboardHelp.textContent = i18n.keyboardHelp;
+
+    var jumpLabel = document.querySelector('.roadmap-jump-label');
+    if (jumpLabel && i18n.findPhaseLabel) jumpLabel.textContent = i18n.findPhaseLabel;
+
+    var zoomOut = document.getElementById('roadmapZoomOut');
+    if (zoomOut && i18n.zoomOut) zoomOut.setAttribute('aria-label', i18n.zoomOut);
+    var zoomIn = document.getElementById('roadmapZoomIn');
+    if (zoomIn && i18n.zoomIn) zoomIn.setAttribute('aria-label', i18n.zoomIn);
+
+    var clearBtn = document.getElementById('roadmapClear');
+    if (clearBtn && i18n.backToFull) clearBtn.textContent = i18n.backToFull;
+
+    var legendItems = document.querySelectorAll('.roadmap-legend-item');
+    if (legendItems.length >= 2) {
+      if (i18n.legendPrereqs) {
+        legendItems[0].innerHTML = '<span class="roadmap-legend-line"></span> ' + escapeHtml(i18n.legendPrereqs);
+      }
+      if (i18n.legendUnlocks) {
+        legendItems[1].innerHTML = '<span class="roadmap-legend-line is-unlock"></span> ' + escapeHtml(i18n.legendUnlocks);
+      }
+    }
+
+    var scrollHint = document.querySelector('.roadmap-graph-hint');
+    if (scrollHint && i18n.scrollHint) scrollHint.textContent = i18n.scrollHint;
   }
 
   function escapeHtml(value) {

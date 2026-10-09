@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Build script for AI Engineering from Scratch website.
- * Parses README.md, ROADMAP.md, and glossary/terms.md from the repo root
- * and generates data.js with all phase/lesson/glossary data.
+ * Parses README.md, ROADMAP.md, glossary/terms.md, and glossary/terms.ko.md
+ * from the repo root and generates data.js (GLOSSARY + GLOSSARY_KO).
  *
  * Run: node site/build.js
  * Called automatically by GitHub Actions on every push.
@@ -16,6 +16,7 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const README_PATH = path.join(REPO_ROOT, 'README.md');
 const ROADMAP_PATH = path.join(REPO_ROOT, 'ROADMAP.md');
 const GLOSSARY_PATH = path.join(REPO_ROOT, 'glossary', 'terms.md');
+const GLOSSARY_KO_PATH = path.join(REPO_ROOT, 'glossary', 'terms.ko.md');
 const OUTPUT_PATH = path.join(__dirname, 'data.js');
 const CERTIFICATIONS_PATH = path.join(REPO_ROOT, 'certifications');
 const CERTIFICATION_OUTPUT_PATH = path.join(__dirname, 'certification-data.js');
@@ -1770,6 +1771,171 @@ const GLOSSARY_FIELD_KEYS = new Map([
   ["Why it's called that", 'whyCalled'],
 ]);
 
+// Korean field labels from glossary/terms.ko.md (plus English fallbacks).
+const GLOSSARY_KO_FIELD_KEYS = new Map([
+  ...GLOSSARY_FIELD_KEYS,
+  ['분류', 'category'],
+  ['흔히 하는 말', 'says'],
+  ['실제 의미', 'means'],
+  ['왜 중요한가', 'whyItMatters'],
+  ['실무에서는', 'example'],
+  ['흔한 혼동', 'confusion'],
+  ['다른 이름', 'aliases'],
+  ['관련 용어', 'related'],
+  ['배울 곳', 'lessons'],
+  ['출처', 'sources'],
+  ['이름의 유래', 'whyCalled'],
+]);
+
+// Map Korean (and leftover English) category labels onto the English order keys.
+const GLOSSARY_KO_CATEGORY_TO_EN = new Map([
+  ['수학 및 학습', 'Math & training'],
+  ['수학 및 훈련', 'Math & training'],
+  ['Math & training', 'Math & training'],
+  ['모델 및 추론', 'Models & inference'],
+  ['Models & inference', 'Models & inference'],
+  ['데이터 및 표현', 'Data & representations'],
+  ['Data & representations', 'Data & representations'],
+  ['검색 및 생성', 'Retrieval & generation'],
+  ['Retrieval & generation', 'Retrieval & generation'],
+  ['프롬프팅 및 컨텍스트', 'Prompting & context'],
+  ['프롬팅 및 컨텍스트', 'Prompting & context'],
+  ['Prompting & context', 'Prompting & context'],
+  ['에이전트 및 도구', 'Agents & tools'],
+  ['Agents & tools', 'Agents & tools'],
+  ['평가 및 안전', 'Evaluation & safety'],
+  ['Evaluation & safety', 'Evaluation & safety'],
+  ['AI 네이티브 개발', 'AI-native development'],
+  ['AI-native development', 'AI-native development'],
+  ['인프라 및 서빙', 'Infrastructure & serving'],
+  ['Infrastructure & serving', 'Infrastructure & serving'],
+  ['신뢰성 및 운영', 'Reliability & operations'],
+  ['Reliability & operations', 'Reliability & operations'],
+  ['보안 및 거버넌스', 'Security & governance'],
+  ['Security & governance', 'Security & governance'],
+  ['멀티모달 시스템', 'Multimodal systems'],
+  ['Multimodal systems', 'Multimodal systems'],
+]);
+
+const GLOSSARY_CATEGORY_KO_LABEL = {
+  'Math & training': '수학 및 학습',
+  'Models & inference': '모델 및 추론',
+  'Data & representations': '데이터 및 표현',
+  'Retrieval & generation': '검색 및 생성',
+  'Prompting & context': '프롬프팅 및 컨텍스트',
+  'Agents & tools': '에이전트 및 도구',
+  'Evaluation & safety': '평가 및 안전',
+  'AI-native development': 'AI 네이티브 개발',
+  'Infrastructure & serving': '인프라 및 서빙',
+  'Reliability & operations': '신뢰성 및 운영',
+  'Security & governance': '보안 및 거버넌스',
+  'Multimodal systems': '멀티모달 시스템',
+};
+
+function splitBilingualGlossaryHeading(heading) {
+  const idx = heading.indexOf(' - ');
+  if (idx === -1) return { enTerm: heading, koTerm: '' };
+  const left = heading.slice(0, idx).trim();
+  const right = heading.slice(idx + 3).trim();
+  if (!/[A-Za-z]/.test(left)) return { enTerm: heading, koTerm: '' };
+  if (!right || right === left) return { enTerm: left, koTerm: '' };
+  return { enTerm: left, koTerm: right };
+}
+
+/**
+ * Parse glossary/terms.ko.md into the same entry shape as GLOSSARY from terms.md.
+ * Display term prefers Korean; slug/letter stay English for stable anchors.
+ */
+function parseGlossaryKo(content) {
+  const terms = [];
+  let currentTerm = null;
+  const lines = content.split(/\r?\n/);
+
+  function finishEntry() {
+    if (!currentTerm) return;
+    if (!currentTerm.means) {
+      currentTerm = null;
+      return;
+    }
+    if (!currentTerm.category) currentTerm.category = 'Math & training';
+    const aliases = currentTerm.aliases.slice();
+    if (currentTerm.enTerm && currentTerm.enTerm !== currentTerm.term) {
+      if (!aliases.includes(currentTerm.enTerm)) aliases.unshift(currentTerm.enTerm);
+    }
+    const { headerLine, fields, enTerm, ...entry } = currentTerm;
+    entry.aliases = aliases;
+    terms.push(entry);
+    currentTerm = null;
+  }
+
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    const termMatch = line.match(/^###\s+(.+?)\s*$/);
+    if (termMatch) {
+      finishEntry();
+      const { enTerm, koTerm } = splitBilingualGlossaryHeading(termMatch[1].trim());
+      const slug = glossarySlug(enTerm);
+      if (!slug) continue;
+      const firstCharacter = enTerm.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').match(/[a-z0-9]/i);
+      currentTerm = {
+        term: koTerm || enTerm,
+        enTerm,
+        slug,
+        letter: firstCharacter ? firstCharacter[0].toUpperCase() : '#',
+        category: '',
+        says: '',
+        means: '',
+        whyItMatters: '',
+        example: '',
+        confusion: '',
+        aliases: [],
+        related: [],
+        lessons: [],
+        sources: [],
+        whyCalled: '',
+        headerLine: index + 1,
+        fields: new Set(),
+      };
+      continue;
+    }
+
+    if (/^#{1,2}\s+/.test(line)) {
+      finishEntry();
+      continue;
+    }
+
+    if (!currentTerm) continue;
+
+    const fieldMatch = line.match(/^\s*-\s+\*\*([^*]+):\*\*\s*(.*?)\s*$/);
+    if (!fieldMatch) continue;
+    const label = fieldMatch[1].trim();
+    const value = fieldMatch[2].trim();
+    const key = GLOSSARY_KO_FIELD_KEYS.get(label);
+    if (!key || !value) continue;
+    if (currentTerm.fields.has(key)) continue;
+    currentTerm.fields.add(key);
+
+    if (key === 'category') {
+      currentTerm.category = GLOSSARY_KO_CATEGORY_TO_EN.get(value) || value;
+    } else if (key === 'aliases' || key === 'related') {
+      currentTerm[key] = glossaryList(value);
+    } else if (key === 'lessons' || key === 'sources') {
+      try {
+        currentTerm[key] = glossaryLinks(value, label, index + 1, currentTerm.enTerm);
+      } catch (_) {
+        currentTerm[key] = [];
+      }
+    } else if (key === 'says') {
+      currentTerm.says = value.replace(/^["“]/, '').replace(/["”]$/, '').trim();
+    } else {
+      currentTerm[key] = value;
+    }
+  }
+
+  finishEntry();
+  return terms;
+}
+
 function glossaryError(lineNumber, term, message) {
   const context = term ? ` (term "${term}")` : '';
   throw new Error(`glossary/terms.md:${lineNumber}${context}: ${message}`);
@@ -2113,7 +2279,7 @@ function discoverArtifacts(repoRoot = REPO_ROOT) {
         const entries = fs.readdirSync(outputsDir, { withFileTypes: true })
           .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
         for (const entry of entries) {
-          if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
+          if (!entry.isFile() || !entry.name.endsWith('.md') || /\.[a-z]{2}\.md$/i.test(entry.name)) continue;
           const file = entry.name;
           const stem = file.replace(/\.md$/, '');
           const type = VALID_TYPES.find(t => stem.startsWith(`${t}-`));
@@ -2287,6 +2453,12 @@ function build() {
   console.log('🔍 Parsing glossary/terms.md...');
   const glossaryTerms = parseGlossary(glossary);
 
+  let glossaryTermsKo = [];
+  if (fs.existsSync(GLOSSARY_KO_PATH)) {
+    console.log('🔍 Parsing glossary/terms.ko.md...');
+    glossaryTermsKo = parseGlossaryKo(fs.readFileSync(GLOSSARY_KO_PATH, 'utf8'));
+  }
+
   console.log('🔍 Discovering outputs + Phase 14 missions...');
   const artifacts = discoverArtifacts();
 
@@ -2325,6 +2497,7 @@ function build() {
   console.log(`   Complete: ${completeLessons}`);
   console.log(`   Summaries: ${summarized}, Keywords: ${withKeywords}`);
   console.log(`   Glossary terms: ${glossaryTerms.length}`);
+  console.log(`   Glossary KO terms: ${glossaryTermsKo.length}`);
   console.log(`   Artifacts: ${artifacts.length}`);
   console.log(`   Curriculum edges: ${Object.values(roadmapPrereqs).reduce((sum, ids) => sum + ids.length, 0)}`);
   console.log(`   Focused learning paths: ${learningPaths.length}`);
@@ -2344,7 +2517,11 @@ const LEARNING_PATHS = ${JSON.stringify(learningPaths, null, 2)};
 
 const GLOSSARY_CATEGORY_ORDER = ${JSON.stringify(GLOSSARY_CATEGORY_ORDER, null, 2)};
 
+const GLOSSARY_CATEGORY_KO = ${JSON.stringify(GLOSSARY_CATEGORY_KO_LABEL, null, 2)};
+
 const GLOSSARY = ${JSON.stringify(glossaryTerms, null, 2)};
+
+const GLOSSARY_KO = ${JSON.stringify(glossaryTermsKo, null, 2)};
 
 const ARTIFACTS = ${JSON.stringify(artifacts, null, 2)};
 `;
@@ -2541,4 +2718,5 @@ module.exports = {
   renderSponsorsMarkdown,
   serializeFigureProviderManifest,
   writeFigureManifest,
+  parseGlossaryKo,
 };
