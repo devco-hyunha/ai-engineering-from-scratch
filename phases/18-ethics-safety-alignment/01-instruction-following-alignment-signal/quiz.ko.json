@@ -1,0 +1,78 @@
+{
+  "lesson": "01-instruction-following-alignment-signal",
+  "title": "지시문 따르기(Instruction Following)를 정렬(Alignment) 신호로 보기",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "왜 원시 사전 학습된 언어 모델은 '리스트를 역순으로 만드는 Python 함수를 작성해줘'라는 요청에 대해 코드 대신 다른 프롬프트로 응답하는 경우가 많습니까?",
+      "options": [
+        "온도(Temperature) 기본값이 0이기 때문입니다",
+        "어휘(Vocabulary)에 Python 토큰이 없기 때문입니다",
+        "프롬프트가 추가 프롬프트로 이어지는 웹 스타일 텍스트를 완성하도록 학습되었기 때문입니다",
+        "미세 조정(Fine-tuning) 없이는 함수 시그니처를 표현할 수 없기 때문입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "InstructGPT 보상 모델은 쌍별 선호 라벨에 대해 어떤 손실 함수를 사용합니까?",
+      "options": [
+        "예측된 보상과 실제 보상 간의 교차 엔트로피(Cross-Entropy)",
+        "라벨러 점수에 대한 평균 제곱 오차(Mean Squared Error)",
+        "고정 마진(Hinge Loss)을 사용하는 힌지 손실",
+        "Bradley-Terry: -log sigmoid(r(x, y_w) - r(x, y_l))"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "InstructGPT의 3단계에서 KL 페널티는 주로 무엇을 보호합니까?",
+      "options": [
+        "토크나이저 통계의 catastrophic forgetting (치명적遗忘)",
+        "보상 모델을 악용하는 적대적 고보상 문자열을 옵티마이저가 찾아내는 것",
+        "샘플링 중 컨텍스트 윈도우(Context Window)의 오버플로우",
+        "PPO 기울기 업데이트의 수치적 불안정성"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PPO-ptx는 RL 목적 함수에 무엇을 혼합하여 어떤 문제를 완화합니까?",
+      "options": [
+        "정렬 세(alignment tax): RLHF가 타겟하지 않은 벤치마크에서의 성능 저하",
+        "SFT와 RM 간의 토크나이저 불일치",
+        "KL 항이 음수가 되는 현상",
+        "PPO 동안 보상 모델이 드리프트(drift)하는 현상"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "1.3B InstructGPT는 175B 원시 GPT-3보다 약 70%의 시간 동안 선호되었습니다. 이는 정렬(Alignment)과 능력(Capability)에 대해 무엇을 말합니까?",
+      "options": [
+        "정렬은 능력과 다른 축이며, 원시 모델이 능력의 하한을 설정합니다",
+        "50% 이상의 선호율은 대리 보상이 인간의 가치와 같음을 증명합니다",
+        "규모가 커지면 능력과 정렬은 같은 축이 됩니다",
+        "더 큰 원시 모델은 항상 작은 정렬된 모델에 패합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "InstructGPT의 보상 모델은 다음 중 무엇으로 초기화됩니까?",
+      "options": [
+        "LM 헤드(LM head)가 그대로 유지된 원시 사전 학습 모델",
+        "LM 헤드가 스칼라 헤드(scalar head)로 대체된 SFT 모델",
+        "별도의 인코더 전용 트랜스포머(Transformer)",
+        "사전 학습이 없는 랜덤 스칼라 회귀 모델"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
