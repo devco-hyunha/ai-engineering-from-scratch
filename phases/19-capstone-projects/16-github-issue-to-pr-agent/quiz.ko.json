@@ -1,0 +1,90 @@
+{
+  "lesson": "16-github-issue-to-pr-agent",
+  "title": "캡스톤 16 — GitHub 이슈에서 PR까지 자율 에이전트",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "프로덕션 환경에서 비동기 클라우드 코딩 에이전트는 어떻게 트리거됩니까?",
+      "options": [
+        "이슈 라벨이나 PR 댓글에 의해 발동된 GitHub 웹훅이 샌드박스 워커로 디스패치됨",
+        "수동 파일 업로드",
+        "VM으로의 장기 지속 SSH 세션",
+        "저장소를 주기적으로 방문하는 스케줄링된 크론 작업"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "왜 에이전트는 개인 접근 토큰(PAT)가 아닌 단기 수명의 GitHub App 설치 토큰으로 실행되어야 합니까?",
+      "options": [
+        "개인 접근 토큰은 PR을 열 수 없습니다",
+        "App 토큰은 작업 단위 워커에 적합한 세분화된 범위 지정 및 단기 수명 자격 증명을 부여합니다",
+        "Apps는 GitHub 속도 제한을 완전히 피합니다",
+        "Apps는 PAT보다 코드가 적게 필요합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "에이전트가 main 브랜치를 덮어쓰는(clobbering) 것을 방지하는 두 가지 보호 장치는 무엇입니까?",
+      "options": [
+        "워커에서 git 비활성화",
+        "main에 대한 직접 푸시나 강제 푸시를 금지하는 브랜치 보호를 적용하고, 앱이 우회 목록에 포함되지 않도록 함",
+        "푸시마다 캡차 요구",
+        "클론 전에 저장소를 암호화"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": ".github/workflows에 대한 경로 범위 지정 보호는 왜 GitHub App 권한이 아니라 워커에서 강제됩니까?",
+      "options": [
+        ".github/workflows는 가상 경로입니다",
+        "GitHub App 권한은 경로 범위 지정이 지원되지 않으므로, 제안된 diff에 대한 워커의 허용 목록 체크가 이를 강제하는 적절한 위치입니다",
+        "어떤 형태든 경로 범위 지정은 불가능합니다",
+        "워크플로우는 저장소 외부에 저장됩니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "에이전트 루프가 종료된 후 PR을 열기 전에 어떤 게이트(gating)가 수행됩니까?",
+      "options": [
+        "리뷰어 모델이 diff를 재작성합니다",
+        "체크 없이 즉시 PR이 열립니다",
+        "샌드박스에서 전체 CI가 실행되고, 커버리지 델타가 계산되며, 임계값을 초과하는 회귀(regression)가 있는 PR은 needs-review 라벨이 붙습니다",
+        "저장소가 main에 강제 푸시됩니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "디스패처는 저장소당 하루에 어떤 예산 조절旋钮(budget knobs)를 강제합니까?",
+      "options": [
+        "턴(turn) 상한만",
+        "PR당 달러 상한과 저장소당 하루 최대 PR 수",
+        "무제한 PR 및 무제한 비용",
+        "월 클록(wall-clock) 상한만"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "에이전트가 게시하는 PR 본문(PR body)에는 무엇이 포함됩니까?",
+      "options": [
+        "리뷰어가 감사하고 후속 조치를 취할 수 있도록 근거, diff 요약, 추적(trace) URL, 비용 및 턴(turn) 수",
+        "diff만",
+        "아무것도 없음; PR 본문은 비어 있습니다",
+        "생성된 변경 로그(changelog)만"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
