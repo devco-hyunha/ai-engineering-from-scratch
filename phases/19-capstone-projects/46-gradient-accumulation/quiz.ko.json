@@ -1,0 +1,78 @@
+{
+  "lesson": "46-gradient-accumulation",
+  "title": "기울기 누적(Gradient Accumulation)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "기울기 누적(Gradient Accumulation)이 표현하는 유효 배치(effective batch)의 식은 무엇인가요?",
+      "options": [
+        "effective_batch = micro_batch / accum_steps",
+        "effective_batch = world_size only",
+        "effective_batch = micro_batch + accum_steps",
+        "effective_batch = micro_batch * accum_steps"
+      ],
+      "correct": 3,
+      "explanation": "마이크로 배치(micro batch)는 메모리에 Fits되는 크기이며, 누적 단계(accumulation steps)는 하나의 옵티마이저 단계(optimizer step) 전에 하나의 버퍼에 기울기를 쌓는 순방향 + 역방향(passes)의 횟수입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "각 마이크로 배치에서 역전파(backward) 전에 손실(loss)을 accum_steps로 나누어야 하는 이유는 무엇인가요?",
+      "options": [
+        "손실 곡선을 더 예쁘게 만들기 위해",
+        "NaN을 피하기 위해",
+        "혼합 정밀도(mixed precision)에만 필요하기 때문에",
+        "PyTorch는 기본적으로 param.grad에 기울기를 합산하므로, 나누지 않으면 누적된 기울기가 N배 너무 커지고 옵티마이저 단계가 N배 너무 공격적이게 됩니다."
+      ],
+      "correct": 3,
+      "explanation": "누적 버퍼는 합(sum)입니다. 마이크로 배치당 1/N 스케일링은 그 합을 단일 전체 배치(full-batch) 역전파가 생성하는 것과 동일한 스케일로 되돌립니다."
+    },
+    {
+      "stage": "check",
+      "question": "누적 루프(accumulation loop) 내에서 옵티마이저 단계(optimizer step)는 언제 실행되나요?",
+      "options": [
+        "전혀 실행되지 않으며, 옵티마이저는 대체됩니다.",
+        "안전성을 위해 창(window)당 두 번 실행됩니다.",
+        "모든 마이크로 배치(micro batch)마다 실행됩니다.",
+        "누적 창(accumulation window)의 마지막 마이크로 배치(micro batch) 후에만 실행됩니다."
+      ],
+      "correct": 3,
+      "explanation": "누적 중 단계 실행은 나머지 실행이 의존하는 모든 매개변수를 오염시킵니다. 옵티마이저 단계는 유효 배치(effective batch)당 한 번 실행됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "실제 다중 GPU(multi-GPU) 실행에서 no_sync 컨텍스트는 무엇을 감싸나요?",
+      "options": [
+        "데이터 로더(data loader)",
+        "마지막이 아닌 마이크로 배치(non-final micro batches)를 감싸, 기울기 올-리듀스(all-reduce)가 N번이 아니라 마지막 역전파(backward) 후에만 실행되도록 합니다.",
+        "옵티마이저 단계(optimizer step)",
+        "순방향 패스(forward pass)"
+      ],
+      "correct": 1,
+      "explanation": "DDP의 no_sync는 기울기 콜렉티브(gradient collective)를 건너뜁니다. 마지막 마이크로 배치(micro batch)를 제외한 모든 마이크로 배치를 감싸면 유효 단계(effective step)당 N개의 콜렉티브가 하나로 바뀝니다."
+    },
+    {
+      "stage": "check",
+      "question": "main.py의 equivalence_check 함수는 무엇을 단정(assert)하나요?",
+      "options": [
+        "손실(loss)이 수렴한다는 것",
+        "기울기(gradients)가 0이라는 것",
+        "손실(loss)을 N으로 나눈 accum_steps 청킹(chunked) 역전파(backward)와 단일 전체 배치(full-batch) 역전파가 작은 허용 오차(tolerance) 내에서 동일한 기울기 버퍼와 동일한 단계 후 매개변수를 생성한다는 것",
+        "처리량(throughput)이 일정하다는 것"
+      ],
+      "correct": 2,
+      "explanation": "단정 경계(assertion bound)는 max-abs-diff가 1e-4 미만입니다. 손실(loss) 스케일링이 없으면 차이가 급증합니다. 스케일링이 있으면 부동 소수점 노이즈(floating point noise) 수준에 머무릅니다."
+    },
+    {
+      "stage": "post",
+      "question": "유효 배치(effective batch)에 대한 처리량(throughput) 곡선을 읽을 때, 대략적으로 일정한 것과 스케일(scale)되는 것은 무엇인가요?",
+      "options": [
+        "모델이 더 빨라져서 처리량(throughput)이 증가합니다.",
+        "두 지표 모두 accum에 대해 선형으로 스케일(scale)됩니다.",
+        "초당 샘플 수(samples per second)는 하드웨어 한계(hardware limit) 근처에서 포화(saturates)되며, 옵티마이저 단계(optimizer step)당 벽 시간(wall time)은 accum_steps에 대해 선형으로 스케일(scale)됩니다. 초당 옵티마이저 단계(optimizer steps per second)가 감소합니다.",
+        "초당 샘플 수(samples per second)는 더 큰 유효 배치(effective batch)와 함께 감소합니다."
+      ],
+      "correct": 2,
+      "explanation": "각 마이크로 배치(micro batch)는 동일한 순방향 + 역방향(passes) 비용을 지불합니다. 누적(accumulation)은 옵티마이저 단계(optimizer step)당 통계적 스무딩(statistical smoothing)을 구매하며, 원시 처리량(raw throughput)을 구매하지는 않습니다. 이 곡선은 통설(folklore)에 대한 유용한 현실 확인(reality check)입니다."
+    }
+  ]
+}
