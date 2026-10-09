@@ -1,0 +1,78 @@
+{
+  "lesson": "21-ab-testing-llm-features",
+  "title": "LLM 기능 A/B 테스트 — GrowthBook, Statsig, 그리고 직관(Vibes) 문제",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "교재에서 평가(evals)와 A/B 테스트의 정확한 차이점은 무엇인가요?",
+      "options": [
+        "A/B 테스트만 요구됩니다",
+        "평가는 레이블이 지정된 데이터셋에서 \"모델이 작업을 수행할 수 있는가?\"에 답하고, A/B 테스트는 라이브 랜덤 트래픽으로 \"사용자가 신경 쓰는가?\"에 답합니다",
+        "평가는 사용자-facing이고, A/B 테스트는 오프라인입니다",
+        "둘은 상호 교환 가능합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "CUPED는 실험에서 무엇을 수행하나요?",
+      "options": [
+        "다중 비교 보정을 비활성화합니다",
+        "사후 기간 비교 전에 사전 기간의 분산을 회귀 제거하여, 일반적으로 분산을 30-70% 줄이고 유효 표본 크기를 높입니다",
+        "더 많은 사용자를 고용하여 표본 크기를 늘립니다",
+        "순차적 테스트를 완전히 대체합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "많은 A/B 테스트를 실행할 때 다중 비교 보정(Bonferroni 또는 Benjamini-Hochberg)이 필요한 이유는 무엇인가요?",
+      "options": [
+        "실험을 가속화합니다",
+        "순차적 테스트에만 필요합니다",
+        "GDPR에 의해 요구됩니다",
+        "95% 신뢰도로 20개 테스트를 실행하면 우연히 하나의 거짓 양성이 발생하며, 보정은 가족 전체 오류율 또는 거짓 발견율을 통제합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SRM(표본 비율 불일치)은 무엇을 감지하나요?",
+      "options": [
+        "느린 토크나이저 성능",
+        "PII 유출",
+        "의도된 분할(예: 50/50)과 다른 전달된 분할(예: 47/53)을 생성하는 할당 해시 버그",
+        "실험 플랫폼의 메모리 누수"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "LLM의 비결정성(non-determinism)이 표본 크기를 버퍼링해야 하는 이유는 무엇인가요?",
+      "options": [
+        "비결정성은 필요한 표본을 줄입니다",
+        "IID 가정을 위반하므로 유효 표본 크기가 감소하며, 안전 마진으로 필요한 크기를 약 1.3-1.5배 곱해야 합니다",
+        "검정력 계산과 무관합니다",
+        "오프라인에서만 중요합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "교재는 Statsig와 GrowthBook을 어떻게 대조하나요?",
+      "options": [
+        "GrowthBook은 클로즈드 소스입니다",
+        "동일한 기능 세트",
+        "Statsig는 웨어하우스 네이티브 전용입니다",
+        "Statsig는 올인원 SaaS(2025년 9월 OpenAI에 $1.1B에 인수됨)이며, GrowthBook은 오픈소스 MIT, 웨어하우스 네이티브로, 베이지안/프랙티스트/순차적 엔진과 CUPED/SRM/BH를 제공합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
