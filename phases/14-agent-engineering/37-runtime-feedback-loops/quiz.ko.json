@@ -1,0 +1,90 @@
+{
+  "lesson": "37-runtime-feedback-loops",
+  "title": "런타임 피드백 루프",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "피드백 러너는 에이전트(Agent)에게 무엇을 강제합니까?",
+      "options": [
+        "상상된 출력에 반응",
+        "사실에 반응: 모든 명령에서 루프에 캡처된 구조화된 stdout/stderr/exit/duration 레코드",
+        "검증 건너뛰기",
+        "다른 모델 사용"
+      ],
+      "correct": 1,
+      "explanation": "러너는 '테스트 통과'(상상)와 '테스트가 실제로 실행되어 exit code 0으로 종료됨'(기록) 사이의 간극을 메웁니다."
+    },
+    {
+      "stage": "pre",
+      "question": "피드백은 텔레메트리(Telemetry)와 어떻게 다릅니까?",
+      "options": [
+        "피드백은 이 실행의 다음 턴용이며, 텔레메트리는 시간에 걸쳐 실행을 검토하는 운영자용입니다(다른 파일, 다른 보존 기간)",
+        "둘은 같은 것입니다",
+        "텔레메트리는 유료입니다",
+        "텔레메트리는 OTel을 사용하며, 피드백은 GraphQL을 사용합니다"
+      ],
+      "correct": 0,
+      "explanation": "둘은 필드를 공유하지만 다른 파일에 있으며 보존 기간이 다릅니다. 피드백은 실행 내(intra-run)이고, 텔레메트리는 실행 간(cross-run)입니다."
+    },
+    {
+      "stage": "check",
+      "question": "모든 피드백 레코드에 반드시 포함되어야 하는 필드는 무엇입니까?",
+      "options": [
+        "exit_code (exit가 null이면 루프 진행을 거부해야 합니다)",
+        "embedding_vector",
+        "model_id",
+        "prompt_cache_token"
+      ],
+      "correct": 0,
+      "explanation": "exit_code는 모호하지 않은 성공 신호입니다. exit가 null이면 진전이 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "러너는 큰 출력을 어떻게 잘라냅니까?",
+      "options": [
+        "gzip으로 압축",
+        "무작위 샘플링",
+        "첫 10줄만",
+        "'truncated N lines' 마커와 함께 결정적인 head + tail로, 동일한 출력은 항상 동일한 레코드를 생성합니다"
+      ],
+      "correct": 3,
+      "explanation": "결정적인 잘라내기는 토큰 비용을 제한하면서 레코드를 재생 가능하게 유지합니다. tail은 실패 요약 정보를 담습니다."
+    },
+    {
+      "stage": "check",
+      "question": "읽기 시점이 아닌 쓰기 시점에 마스킹하는 이유는 무엇입니까?",
+      "options": [
+        "읽기 시점 마스킹은 JSON을 깨뜨립니다",
+        "디스크의 파일은 공격자가 접근하는 대상입니다. 읽기 시에만 마스킹하면 JSONL 파일에 비밀이 남습니다",
+        "더 빠르기 때문입니다",
+        "압축 때문입니다"
+      ],
+      "correct": 1,
+      "explanation": "append 전에 Bearer, password=, api_key=, AKIA..., xox[baprs]-와 일치하는 줄을 마스킹합니다. 패턴을 분기별로 감사합니다."
+    },
+    {
+      "stage": "post",
+      "question": "parent_command_id는 워크벤치(Workbench)에 무엇을 제공합니까?",
+      "options": [
+        "더 빠른 파일 I/O",
+        "더 낮은 메모리",
+        "재시도가 부모 시도와 연결되어 리뷰어와 감사자가 실패 체인을 볼 수 있습니다. 이것이 없으면 재시도가 독립적인 성공처럼 보입니다",
+        "더 저렴한 추론(Inference)"
+      ],
+      "correct": 2,
+      "explanation": "부모 연결은 리뷰어(Lesson 39)와 검증 게이트(Verification Gate)에 재시도 체인을 가시화합니다."
+    },
+    {
+      "stage": "post",
+      "question": "피드백_record.jsonl을 1 MB로 제한하고 로테이션하는 이유는 무엇입니까?",
+      "options": [
+        "디스크가 너무 느리기 때문입니다",
+        "에이전트(Agent)는 현재 파일만 읽습니다. 로테이션은 CI 아티팩트가 전체 집합을 캡처하는 동안 런타임 비용을 제한합니다",
+        "JSON은 더 큰 파일을 처리하지 못합니다",
+        "제공자가 바이트당 요금을 청구합니다"
+      ],
+      "correct": 1,
+      "explanation": "제한된 현재 파일 + 로테이션된 역사는 logrotate가 사용하는 것과 동일한 패턴입니다. 핫 루프에서 예측 가능한 비용입니다."
+    }
+  ]
+}
