@@ -1,0 +1,90 @@
+{
+  "lesson": "20-benchmarks-webarena-osworld",
+  "title": "벤치마크: WebArena와 OSWorld",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "WebArena는 왜 네 개의 대상 애플리케이션을 자체 호스팅(self-host)합니까?",
+      "options": [
+        "TLS를 피하기 위해",
+        "재현 가능한 버전을 고정하여 평가가 실행 기반(execution-based)이고 불안정(flaky)하지 않도록 하기 위해",
+        "비용을 절약하기 위해",
+        "GPU에서 실행하기 위해"
+      ],
+      "correct": 1,
+      "explanation": "고정된 자체 호스팅 애플리케이션은 실행 기반 평가가 신뢰할 수 있고 시간에 따라 비교 가능하도록 만듭니다."
+    },
+    {
+      "stage": "pre",
+      "question": "OSWorld는 왜 접근성 API가 아닌 실제 OS 스크린샷을 사용합니까?",
+      "options": [
+        "스크린샷이 더 저렴하기 때문에",
+        "접근성 API가 PII를 유출하기 때문에",
+        "접근성 API가 너무 빠르기 때문에",
+        "스크린샷은 에이전트(Agent)가 1920x1080 해상도에서 실제 GUI 그라운딩(Grounding)을 수행하도록 강제하며, 이는 생산 환경의 제약 조건과 일치하기 때문에"
+      ],
+      "correct": 3,
+      "explanation": "스크린샷 기반 평가는 픽셀에서 요소로의 그라운딩을 강제하며, 이는 실제 생산 환경의 제약 조건입니다."
+    },
+    {
+      "stage": "check",
+      "question": "OSWorld가 드러내는 두 가지 주요 실패 모드(failure modes)는 무엇입니까?",
+      "options": [
+        "지연(latency) 및 대역폭(bandwidth)",
+        "환각(Hallucination) 및 거부(refusal)",
+        "임베딩(Embedding) 드리프트 및 토큰(Token) 유출",
+        "GUI 그라운딩(Grounding) 및 운영 지식"
+      ],
+      "correct": 3,
+      "explanation": "그라운딩(픽셀에서 요소로)과 운영 지식(메뉴, 단축키)이 주요 장애물입니다."
+    },
+    {
+      "stage": "check",
+      "question": "OSWorld-Human은 기본 벤치마크 위에 무엇을 추가합니까?",
+      "options": [
+        "에이전트(Agent)의 단계 비효율성 격차(1.4-2.7배)를 드러내는 수동으로 큐레이션된 골드(gold) 행동 궤적(action trajectories)",
+        "더 큰 화면 해상도",
+        "더 많은 작업",
+        "새로운 OS"
+      ],
+      "correct": 0,
+      "explanation": "골드(gold) 궤적은 성공률뿐만 아니라 궤적 효율성을 측정 가능하게 만듭니다."
+    },
+    {
+      "stage": "check",
+      "question": "교재는 WebArena의 출시 시점 수치로 무엇을 인용합니까?",
+      "options": [
+        "최고 에이전트(Agent) 50%, 인간 50%",
+        "전체적으로 최고 에이전트(Agent) 0%",
+        "최고 에이전트(Agent) 99%, 인간 100%",
+        "최고 GPT-4 에이전트(Agent) 성공률 14.41% vs 인간 78.24%"
+      ],
+      "correct": 3,
+      "explanation": "14.41% vs 78.24% 격차는 WebArena의 출시 시점 수치입니다."
+    },
+    {
+      "stage": "post",
+      "question": "스크린샷 전용 평가에서 에이전트(Agent)가 DOM이나 접근성 API를 사용할 때 교재는 어떤 일이 발생한다고 경고합니까?",
+      "options": [
+        "아무 변화가 없다",
+        "테스트가 쉽게 통과한다",
+        "속도 제한(Rate Limit)을 초과한다",
+        "OSWorld가 측정하도록 설계된 그라운딩(Grounding) 도전 과제를 놓친다"
+      ],
+      "correct": 3,
+      "explanation": "스크린샷 전용 벤치마크에서 접근성 API 에이전트(Agent)를 평가하면 그라운딩(Grounding) 테스트를 건너뛰게 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "궤적 길이를 무시하는 것이 벤치마킹 실패인 이유는 무엇입니까?",
+      "options": [
+        "길이가 유일한 중요한 지표이기 때문에",
+        "성공률만으로는 놓치는 비용과 비효율성(OSWorld-Human이 드러내는 1.4-2.7배 격차)을 숨기기 때문에",
+        "궤적은 측정할 수 없기 때문에",
+        "궤적 길이는 항상 골드(gold)와 일치하기 때문에"
+      ],
+      "correct": 1,
+      "explanation": "60% 성공률을 가진 두 에이전트(Agent)는 단계 수에서 2-3배 차이가 날 수 있으며, 비용과 효율성은 궤적 길이를 측정해야만 드러납니다."
+    }
+  ]
+}
