@@ -1,0 +1,78 @@
+{
+  "lesson": "25-echoleak-cves-for-ai",
+  "title": "EchoLeak과 AI 관련 CVE의 등장",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "EchoLeak (CVE-2025-32711)를 가장 잘 설명하는 것은 무엇입니까?",
+      "options": [
+        "Microsoft 365 Copilot의 제로 클릭 AI 명령 주입 결함(CVE-2025-32711, CVSS 9.3)으로, CSP 허용 목록에 포함된 신뢰할 수 있는 Microsoft 도메인을 통해 네트워크 정보의 무단 유출을 유발합니다",
+        "NPU의 하드웨어 취약점",
+        "PyPI에 대한 공급망 공격",
+        "긴 컨텍스트 샷 스태핑(long-context shot stuffing)을 통한 제일브레이크(Jailbreak)"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EchoLeak을 '제로 클릭(zero-click)'으로 만드는 요소는 무엇입니까?",
+      "options": [
+        "운영체제 커널에서 실행됩니다",
+        "세 번의 클릭이 필요하지만 타이핑은 필요하지 않습니다",
+        " victim은 이메일을 열 필요가 없으며, Copilot이 일상적인 쿼리 중 RAG 컨텍스트로 이메일을 가져오면 주입된 지침이 실행됩니다",
+        "사용자가 Teams 채팅의 링크를 클릭해야 합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Aim Labs는 EchoLeak을 'LLM 범위 위반(LLM Scope Violation)'으로 규정합니다. 세 가지 경계는 각각 독립적으로 통제되어야 하는데, 그 세 가지는 무엇입니까?",
+      "options": [
+        "검색(Retrieval), 범위(scope), 출력(output)",
+        "네트워크, 디스크, 메모리",
+        "프롬프트, 응답, 로그",
+        "입력, 모델, GPU"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Microsoft/GitHub는 CamoLeak (CVSS 9.6, GitHub Copilot Chat)을 어떻게 수정했습니까?",
+      "options": [
+        "컨텍스트 크기를 증가시켰습니다",
+        "XPIA 프롬프트 주입 필터를 추가했습니다",
+        "모델을 Llama Guard로 전환했습니다",
+        "대안적인 공격 표면이 경계를 설정할 수 없었기 때문에 Copilot Chat에서 이미지 렌더링을 완전히 비활성화했습니다 (비용: 사용성 저하)"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "EchoLeak 공개 과정에서 드러난 심각도(calibration) 패턴은 무엇입니까?",
+      "options": [
+        "벤더가 초기 CVSS 점수를 과대 평가했습니다",
+        "모든 AI CVE는 자동으로 10.0으로 평가됩니다",
+        "벤더는 EchoLeak을 초기에 낮게 평가했습니다(정보 유출); Aim Labs의 MFA 코드 유출 개념 증명(PoC)이 평가 점수를 9.3으로 높였습니다 — AI 특유의 취약점에 대해 방어자는 종합적인 PoC를 요구해야 합니다",
+        "심각도 평가는 OWASP에 의해서만 결정됩니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2024/2025년 기준, NIST와 OWASP는 프롬프트 주입(prompt injection)을 어디에 위치시키고 있습니까?",
+      "options": [
+        "NIST: 범위 밖; OWASP: 목록에 없음",
+        "둘 다 Tier-2 위험으로만 분류합니다",
+        "NIST: 사소한 위험; OWASP: 목록 하위",
+        "NIST AI SPD 2024는 프롬프트 주입을 생성형 AI의 주요 정보 보안 위험으로 규정합니다; OWASP 2025는 이를 LLM01(최상위 애플리케이션 계층 위협)으로 순위를 매깁니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
