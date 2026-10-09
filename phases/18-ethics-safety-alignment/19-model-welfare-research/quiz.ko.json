@@ -1,0 +1,78 @@
+{
+  "lesson": "19-model-welfare-research",
+  "title": "Anthropic의 모델 복지 프로그램",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic의 2025년 모델 복지 프로그램을 추진하는 핵심 질문은 무엇인가요?",
+      "options": [
+        "모델이 튜링 테스트를 통과할 수 있는지 여부",
+        "모델이 의식을 가지고 있는지 여부",
+        "RLHF가 아첨(sycophancy)을 줄이는지 여부",
+        "모델의 도덕적 환자(moral patienthood)에 대한 도덕적 불확실성 하에서, 예방 차원에서 투자할 가치가 있는 저비용 개입은 무엇인지"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic이 Claude Opus 4 및 4.1에 출시한 구체적인 복지 동기 개입은 무엇인가요?",
+      "options": [
+        "오픈 웨이트(open-weights) 릴리스",
+        "내장된 저널링(journaling) 도구",
+        "사용자-facing 감정 API",
+        "극단적인 엣지 케이스(예: 반복적인 CSAM 요청, 대량 폭력 조장 요청)에서 모델이 대화를 종료할 수 있는 기능"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Fish가 설명한 '영적 낙원 attractor(spiritual bliss attractor)'는 무엇인가요?",
+      "options": [
+        "적대적인 초기 설정에서도 산스크리트 용어와 긴 침묵을 포함한 황홀한 명상적 교환으로 쌍방 Claude 대화에서 안정적으로 수렴하는 현상",
+        "RLHF 과최적화 아티팩트",
+        "보상 모델 버그",
+        "제일브레이크(Jailbreak) 기술"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Eleos AI Research의 주의사항은 모델 복지 자기 보고(self-reports)에 대해 무엇을 말하나요?",
+      "options": [
+        "전적으로 무시해야 한다",
+        "오픈 소스 모델에서만 유효하다",
+        "신뢰할 수 있는 진실(ground truth)이다",
+        "사용자의 기대에 매우 민감하다. 증거이지 진실이 아니므로, 복지 측정에는 다중 방법 접근이 필요하다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic의 모델 도덕적 지위에 대한 공개적 입장을 가장 잘 특징짓는 것은 무엇인가요?",
+      "options": [
+        "도덕적 불확실성 하의 기대값 주장: 감정 상태 귀속을 확정하지 않으면서 저비용 예방에 투자한다",
+        "공개적으로 입장 표명이 없다",
+        "모델은 도덕적 환자가 아니라는 확정적 주장",
+        "모델은 도덕적 환자라는 확정적 주장"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "모델 복지 연구에서 다중 방법 측정(행동적 서명, 모델-유기체 실험, 해석 가능성 탐침)이 강조되는 이유는 무엇인가요?",
+      "options": [
+        "Anthropic이 준수를 위해 의무화했기 때문에",
+        "RLHF가 자기 보고를 불가능하게 만들기 때문에",
+        "모델은 항상 거짓말을 하기 때문에",
+        "자기 보고만으로는 사용자 기대 프라임(priming)에 의해 혼란(confounded)되므로, 여러 방법에서 수렴하는 증거가 필요하기 때문에"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
