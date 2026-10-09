@@ -1,0 +1,102 @@
+{
+  "lesson": "04-glove-fasttext-subword",
+  "title": "GloVe, FastText 및 서브워드 임베딩",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "GloVe는 Word2Vec에 비해 어떤 기여를 했습니까?",
+      "options": [
+        "더 깊은 신경망",
+        "서브워드 n-gram 임베딩",
+        "가중 손실 함수를 사용하여 단어-단어 동시 출현 행렬을 직접 분해(factorization)하는 방식",
+        "바이트 단위 토큰화"
+      ],
+      "correct": 2,
+      "explanation": "GloVe는 전역 동시 출현 행렬을 신중하게 가중된 로그 손실(log-loss)로 분해합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "FastText는 Word2Vec과 GloVe가 해결하지 못하는 어떤 문제를 해결합니까?",
+      "options": [
+        "학습 비용 절감",
+        "다국어 전이",
+        "중의성(multiple meanings) 해소",
+        "문자 n-gram을 조합하여 본 적 없는 단어(unseen words)에 대한 벡터를 생성하는 것"
+      ],
+      "correct": 3,
+      "explanation": "FastText는 단어의 서브워드 n-gram을 조합하여 단어 벡터를 생성하므로, OOV(out-of-vocabulary) 단어도 합리적인 벡터를 얻을 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "GloVe에서 가중 함수 f(x) = (x/x_max)^alpha는 어떤 역할을 합니까?",
+      "options": [
+        "음성 샘플(negative samples) 선택",
+        "벡터를 단위 길이로 정규화",
+        "가중치를 무작위로 초기화",
+        "극도로 빈번한 쌍이 손실 함수를 지배하지 않도록 가중치를 낮추는 것"
+      ],
+      "correct": 3,
+      "explanation": "이 가중 함수는 (the, and)와 같은 흔한 동시 출현 쌍이 학습을 지배하는 것을 방지합니다."
+    },
+    {
+      "stage": "check",
+      "question": "BPE 병합 단계는 다음에 결합할 쌍을 어떻게 선택합니까?",
+      "options": [
+        "무작위 쌍",
+        "사전 순서상 첫 번째 쌍",
+        "코퍼스 전체에서 가장 빈번한 인접 토큰 쌍",
+        "IDF가 가장 높은 쌍"
+      ],
+      "correct": 2,
+      "explanation": "BPE는 가장 빈번한 인접 쌍을 반복적으로 병합합니다."
+    },
+    {
+      "stage": "check",
+      "question": "GPT-2는 왜 바이트 단위 BPE를 사용합니까?",
+      "options": [
+        "256바이트의 기본 어휘가 모든 입력을 커버하므로 어휘 외(out-of-vocabulary) 단어가 완전히 사라짐",
+        "바이트가 문자보다 학습 속도가 빠름",
+        "바이트가 대소문자를 암묵적으로 보존함",
+        "바이트 BPE는 병합 학습을 생략함"
+      ],
+      "correct": 0,
+      "explanation": "256바이트에서 시작하면 모든 UTF-8 문자열이 토큰화되므로, OOV가 존재하지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "사전 학습된 트랜스포머를 미세 조정할 때 어떤 토크나이저를 사용해야 합니까?",
+      "options": [
+        "항상 바이트 단위 BPE",
+        "항상 SentencePiece",
+        "어휘가 가장 큰 토크나이저",
+        "모델이 배포될 때 함께 제공된 정확한 토크나이저; 불일치 시 임베딩이 손상됨"
+      ],
+      "correct": 3,
+      "explanation": "토크나이저와 모델의 불일치는 입력을 조용히 손상시킵니다. 항상 모델과 함께 배포된 토크나이저를 사용해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "사전 학습된 단어 벡터를 위해 FastText를 GloVe보다 선택하는 경우는 언제입니까?",
+      "options": [
+        "50차원 모델이 필요할 때",
+        "레이턴시(latency)가 가장 엄격할 때",
+        "코퍼스가 매우 작을 때",
+        "형태론적으로 풍부한 언어나 신조어 및 오타가 빈번한 도메인"
+      ],
+      "correct": 3,
+      "explanation": "FastText의 서브워드 조합은 GloVe가 처리할 수 없는 굴절(inflections), 신조어, 오타를 처리합니다."
+    },
+    {
+      "stage": "post",
+      "question": "WordPiece, BPE, SentencePiece 어휘의 기본 단위는 무엇입니까?",
+      "options": [
+        "문장",
+        "단어 전체",
+        "문단",
+        "단어 수준 아래인 서브워드 조각(문자, n-gram, 또는 학습된 병합)"
+      ],
+      "correct": 3,
+      "explanation": "이 세 가지는 모두 서브워드 토크나이저입니다. 병합이나 조각을 학습하는 방식이 다를 뿐, 서브워드라는 본질은 동일합니다."
+    }
+  ]
+}
