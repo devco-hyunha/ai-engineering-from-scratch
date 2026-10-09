@@ -1,0 +1,62 @@
+[
+  {
+    "question": "딥러닝 프레임워크에서 Module 추상화가 가진 세 가지 책임은 무엇입니까?",
+    "options": [
+      "데이터 로드, 데이터 전처리, 데이터 증강",
+      "계산을 위한 forward(), 기울기를 위한 backward(), 학습 가능한 가중치를 위한 parameters()",
+      "컴파일, 최적화, 배포",
+      "토큰화, 임베딩, 디코딩"
+    ],
+    "correct": 1,
+    "explanation": "모든 Module은 forward()를 구현하여 출력을 계산하고, backward()를 구현하여 기울기를 전파하며, parameters()를 구현하여 학습 가능한 가중치를 노출합니다. 이러한 균일한 인터페이스 덕분에 모든 모듈은 다른 모듈과 조합될 수 있습니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "Sequential은 왜 역전파(backward pass) 중에 모듈을 역순으로 처리합니까?",
+    "options": [
+      "역순 처리가 메모리를 덜 사용하기 때문입니다",
+      "기울기는 손실(loss)로부터 네트워크를 통해 뒤로 흐르므로, 마지막 레이어가 기울기를 먼저 계산합니다",
+      "기울기 폭발을 방지하기 때문입니다",
+      "임의적입니다 -- 어느 방향이든 작동합니다"
+    ],
+    "correct": 1,
+    "explanation": "역전파는 손실(loss)에서 시작하여 입력을 향해 기울기를 전파합니다. 마지막 레이어가 손실 기울기를 먼저 받아들이고, 그 지역의 기울기를 계산하여 이전 레이어로 전달합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "optimizer.zero_grad()는 왜 자동으로 수행되지 않고 별도의 호출로 분리되어 있습니까?",
+    "options": [
+      "단일 옵티마이저 스텝을 수행하기 전에 여러 배치에 걸쳐 기울기 누적(gradient accumulation)을 허용하기 때문입니다",
+      "디버깅을 더 쉽게 만들기 때문입니다",
+      "메모리를 절약하기 때문입니다",
+      "PyTorch의 설계 실수이기 때문입니다"
+    ],
+    "correct": 0,
+    "explanation": "zero_grad를 step과 분리하면 기울기 누적이 가능해집니다: 여러 미니 배치에 걸쳐 backward()를 여러 번 실행하여 기울기를 합산한 후 step()를 호출할 수 있습니다. 이는 더 큰 배치 크기를 시뮬레이션합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "학습 루프에서 연산의 올바른 순서는 무엇입니까?",
+    "options": [
+      "backward, forward, zero_grad, step",
+      "forward, loss, zero_grad, backward, step",
+      "forward, zero_grad, backward, loss, step",
+      "zero_grad, forward, loss, backward, step"
+    ],
+    "correct": 3,
+    "explanation": "표준 패턴은 다음과 같습니다: zero_grad(이전 기울기 지우기), forward(예측 계산), loss(스칼라 손실 계산), backward(기울기 계산), step(매개변수 업데이트). 이 순서가 잘못되면 미묘한 버그가 발생합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "프레임워크에서 DataLoader의 역할은 무엇입니까?",
+    "options": [
+      "데이터를 배치로 분할하고, 미니 배치 경사 하강법(mini-batch gradient descent)을 위해 에포크 간에 선택적으로 셔플합니다",
+      "손실 함수를 계산합니다",
+      "가중치를 초기화합니다",
+      "모델을 학습합니다"
+    ],
+    "correct": 0,
+    "explanation": "DataLoader는 두 가지 실무적 문제를 처리합니다: 배치화(모든 데이터를 메모리에 담을 수 없음)와 셔플(무작위 순서는 모델이 데이터 순서를 암기하는 것을 방지합니다).",
+    "stage": "post"
+  }
+]
