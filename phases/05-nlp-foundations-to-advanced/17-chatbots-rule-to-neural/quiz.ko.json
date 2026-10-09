@@ -1,0 +1,102 @@
+{
+  "lesson": "17-chatbots-rule-to-neural",
+  "title": "챗봇 — 규칙 기반에서 신경망, LLM 에이전트로",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "규칙 기반 챗봇에서 슬롯 채우기 상태 머신(slot-filling state machine)은 무엇을 수행합니까?",
+      "options": [
+        "가장 유창한 답변을 선택합니다",
+        "사용자 메시지를 임베딩합니다",
+        "누락된 필수 매개변수(날짜, 목적지, 금액)를 추적하고 순차적으로 요청합니다",
+        "아이러니를 감지합니다"
+      ],
+      "correct": 2,
+      "explanation": "슬롯 채우기는 작업 핸들러가 필요로 하는 구조화된 매개변수를 반복적으로 수집합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "검색 기반 챗봇이 환각(Hallucination)에 저항적인 이유는 무엇입니까?",
+      "options": [
+        "BM25를 사용합니다",
+        "임베딩을 사용합니다",
+        "모든 쿼리를 거부합니다",
+        "새로운 텍스트를 생성하는 대신 큐레이션된 세트에서 canned response를 반환합니다"
+      ],
+      "correct": 3,
+      "explanation": "검색은 사전에 작성된 답변을 제시하며, 생성이 없으므로 조작된 콘텐츠가 발생하지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "단일 샷(single-shot) LLM 호출과 LLM 에이전트 루프를 구분하는 것은 무엇입니까?",
+      "options": [
+        "모델이 최종 답변을 반환하거나 단계 예산(step budget)에 도달할 때까지 LLM 호출과 도구 호출을 교대로 수행하는 컨트롤러",
+        "소프트맥스(Softmax)의 사용",
+        "탐욕적 디코딩(greedy decoding)의 사용",
+        "더 큰 컨텍스트 윈도우(Context Window)"
+      ],
+      "correct": 0,
+      "explanation": "에이전트는 도구 호출과 종료 조건(Termination Condition)을 포함한 계획-실행-관찰(plan-act-observe) 루프를 추가합니다."
+    },
+    {
+      "stage": "check",
+      "question": "하이브리드 라우팅(규칙 + 검색 + LLM 에이전트)이 2026년 생산 환경의 기본값인 이유는 무엇입니까?",
+      "options": [
+        "임베딩을 피합니다",
+        "단일 아키텍처가 모든 요청을 잘 처리하지 못합니다. 규칙은 파괴적인 작업을, 검색은 FAQ를, 에이전트는 모호한 개방형 쿼리를 처리합니다",
+        "유지보수가 더 저렴합니다",
+        "평가(Evaluation (Eval))의 필요성을 제거합니다"
+      ],
+      "correct": 1,
+      "explanation": "하이브리드 시스템은 위험한 작업에 결정론적 규칙을 사용하며, LLM 에이전트는 개방형 쿼리에 예약합니다."
+    },
+    {
+      "stage": "check",
+      "question": "프롬프트 인젝션(Prompt Injection)이란 무엇입니까?",
+      "options": [
+        "토크나이저 공격의 일종",
+        "시스템 프롬프트(System Prompt)를 덮어쓰거나 에이전트(Agent)의 행동을 장악하려는 사용자 제공(직접) 또는 문서 제공(간접) 텍스트",
+        "SQL 인젝션 변형에 한정됨",
+        "임베딩에 토큰을 주입하는 것"
+      ],
+      "correct": 1,
+      "explanation": "프롬프트 인젝션은 사용자 입력이나 도구 출력의 신뢰할 수 없는 텍스트를 통해 에이전트의 행동을 재작성합니다."
+    },
+    {
+      "stage": "post",
+      "question": "OWASP Top 10 (LLM Apps 2025)에서 LLM01로 순위가 매겨진 위험은 무엇입니까?",
+      "options": [
+        "SQL 인젝션",
+        "손상된 접근 제어",
+        "불안전한 역직렬화",
+        "프롬프트 인젝션(Prompt Injection) (직접 및 간접)"
+      ],
+      "correct": 3,
+      "explanation": "프롬프트 인젝션은 OWASP LLM Apps Top 10 (2025)에서 LLM01입니다."
+    },
+    {
+      "stage": "post",
+      "question": "계획과 실행을 분리하여 간접 프롬프트 주입(Indirect Prompt Injection)을 줄이는 완화 패턴은 무엇입니까?",
+      "options": [
+        "계획-검증-실행(Plan-Verify-Execute): 에이전트가 먼저 계획을 세우고, 각 행동을 계획에 대해 검증한 후 실행합니다. 이를 통해 도구 출력에서 새로운 계획되지 않은 행동이 주입되는 것을 방지합니다",
+        "더 짧은 컨텍스트",
+        "더 낮은 온도(Temperature)",
+        "더 큰 모델"
+      ],
+      "correct": 0,
+      "explanation": "PVE는 각 단계를 합의된 계획에 대해 검증하므로, 도구 출력에서 주입된 지침은 거부됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "LLM 에이전트 시스템에서도 파괴적인 작업(결제, 삭제)이 구조화된 흐름을 통해 라우팅되어야 하는 이유는 무엇입니까?",
+      "options": [
+        "도구를 호출할 수 없기 때문에",
+        "빔 검색(beam search)이 안전하지 않기 때문에",
+        "확신 있는 조작, 프롬프트 인젝션, 범위 creep(scope creep)으로 인해 LLM이 되돌릴 수 없는 부작용에 대한 유일한 권한이 될 수 없기 때문입니다",
+        "LLM이 느리기 때문에"
+      ],
+      "correct": 2,
+      "explanation": "환각(Hallucination)과 인젝션으로 인해 순수 LLM 에이전트를 통한 되돌릴 수 없는 작업은 안전하지 않으며, 결정론적인 확인 흐름이 필요합니다."
+    }
+  ]
+}
