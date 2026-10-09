@@ -1,0 +1,90 @@
+{
+  "lesson": "36-scope-contracts",
+  "title": "범위 계약과 작업 경계",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "범위 확대(scope creep)가 가장 감시가 소홀한 실패 모드라고 불리는 이유는 무엇인가요?",
+      "options": [
+        "감시하기에는 너무 드물기 때문입니다",
+        "테스트가 자동으로 잡아내기 때문입니다",
+        "에이전트(Agent)가 크게 충돌하기 때문입니다",
+        "각 변경은 당시에는 타당한 이유가 있었지만, 합쳐지면 검토된 것과 다른 변경이 되기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": "에이전트(Agent)는 각 단계를 성실하게 서술합니다. 조용히 누적된 총합이 범위 확대를 만듭니다."
+    },
+    {
+      "stage": "pre",
+      "question": "교재는 계약의 어떤 필드를 '계약의 절반'이라고 부릅니까?",
+      "options": [
+        "approvals_required",
+        "forbidden_files (음의 공간)",
+        "goal",
+        "task_id"
+      ],
+      "correct": 1,
+      "explanation": "forbidden_files가 없는 계약은 불완전합니다. 음의 공간은 계약의 절반입니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 허용/금지 대상을 원시 경로(raw paths)가 아닌 글롭(globs)에 고정해야 합니까?",
+      "options": [
+        "글롭이 더 잘 암호화되기 때문입니다",
+        "글롭이 더 빠르기 때문입니다",
+        "원시 경로는 JSON 직렬화가 불가능하기 때문입니다",
+        "실제 저장소에서는 파일이 이동합니다. 글롭은 세션 간 리팩토링을 견디기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": "글롭(app/**/*.py)은 리팩토링을 거치더라도 계약의 유효성을 유지합니다."
+    },
+    {
+      "stage": "check",
+      "question": "'위반 예산(violation budget)' 패턴은 무엇을 수행합니까?",
+      "options": [
+        "위반 건당 요금을 부과합니다",
+        "예산 내에서 사소한 범위 이탈을 경고로 허용합니다. 초과분만 병합 거부를 유발합니다. 이는 출시되는 게이트와 비활성화되는 게이트의 차이입니다",
+        "모델 호출을 제한합니다",
+        "에이전트(Agent)에 월간 예산을 설정합니다"
+      ],
+      "correct": 1,
+      "explanation": "agent-guardrails는 violationBudget을 사용하여 게이트가 일상적인 흐름에서 사용 가능하도록 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "스펙스맥싱(specsmaxxing) 실무자가 보고한 내용은 무엇인가요?",
+      "options": [
+        "지연이 90% 감소했습니다",
+        "비용이 5배 증가했습니다",
+        "에이전트(Agent)를 변경하지 않고 3주 만에 토끼굴(rabbit-hole) 비율이 52%에서 21%로 감소했습니다. 모델이 아닌 계약이 역할을 수행했습니다",
+        "테스트가 느려졌습니다"
+      ],
+      "correct": 2,
+      "explanation": "에이전트(Agent)를 호출하기 전에 YAML로 범위 계약을 작성하면 모델 변경 없이 토끼굴 비율이 절반으로 줄었습니다."
+    },
+    {
+      "stage": "post",
+      "question": "다중 계약 병합의 의미는 무엇인가요 (최소 권한)?",
+      "options": [
+        "마지막 계약이 우선합니다",
+        "allowed_files는 교집합; forbidden_files는 합집합; time_budget은 최소값; approvals는 누적; deny-all은 유지; None의 병합은 다른 쪽을 따릅니다",
+        "무작위 무승부 처리",
+        "첫 번째 계약이 우선합니다"
+      ],
+      "correct": 1,
+      "explanation": "최소 권한 병합: 허용 항목은 교집합, 금지 항목은 합집합, 가장 제한적인 시간, 승인 누적."
+    },
+    {
+      "stage": "post",
+      "question": "왜 시간 및 네트워크 예산도 계약에 포함해야 합니까?",
+      "options": [
+        "제공자가 요구하기 때문입니다",
+        "월 클록(wall clock)과 외부 호스트 접근은 범위 차원입니다. 파일 글롭만으로는 필요하지만 충분하지 않기 때문입니다",
+        "JSON을 더 작게 만들기 때문입니다",
+        "Apache 2.0이 요구하기 때문입니다"
+      ],
+      "correct": 1,
+      "explanation": "time_budget_minutes와 network_egress 허용 목록은 파일 글롭 위에 추가된 범위 차원입니다."
+    }
+  ]
+}
