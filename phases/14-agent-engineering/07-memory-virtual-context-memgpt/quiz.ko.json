@@ -1,0 +1,90 @@
+{
+  "lesson": "07-memory-virtual-context-memgpt",
+  "title": "에이전트 메모리 — 가상 컨텍스트 및 메모리 페이징",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MemGPT는 어떤 OS 비유를 기반으로 구축되었습니까?",
+      "options": [
+        "가상 메모리: 메인 컨텍스트는 RAM, 외부 저장소는 디스크, 메모리 도구는 페이지 인/아웃",
+        "프로세스 및 스레드",
+        "네트워크 소켓",
+        "파일 디스크립터"
+      ],
+      "correct": 0,
+      "explanation": "MemGPT는 프롬프트를 RAM에, 외부 저장소를 디스크에, 메모리 도구를 페이지 폴트 스타일의 전송에 매핑합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "더 큰 컨텍스트 윈도우가 메모리 문제를 완전히 해결하지 못하는 이유는 무엇입니까?",
+      "options": [
+        "모델이 긴 입력을 거부합니다",
+        "긴 컨텍스트는 비용이 들지 않습니다",
+        "128k 윈도우를 사용하더라도 오버플로, 주의력 희석, 세션 간 지속성 부재가 여전히 문제가 됩니다",
+        "제공업체가 이를 4k 토큰으로 제한합니다"
+      ],
+      "correct": 2,
+      "explanation": "Mem0는 128k 윈도우 기준선이 외부 메모리를 가진 4k 에이전트가 포착하는 사실을 놓치는 것을 측정했습니다. 오버플로, 희석, 지속성 문제가 남아 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "다음 중 MemGPT의 표준 메모리 도구가 아닌 것은 무엇입니까?",
+      "options": [
+        "archival_memory_search",
+        "core_memory_append",
+        "conversation_search",
+        "gradient_memory_update"
+      ],
+      "correct": 3,
+      "explanation": "기울기 메모리 도구는 없으며, 인터페이스는 코어/아카이브/대화 작업으로 구성됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT에서 인터럽트 패턴은 무엇을 수행합니까?",
+      "options": [
+        "오류가 발생하면 전체 에이전트 실행을 중단합니다",
+        "대화 중 에이전트가 메모리 도구를 호출하고, 런타임이 이를 실행하며, 결과가 다음 턴에 스플라이스(splice)됩니다",
+        "컨텍스트 윈도우를 완전히 우회합니다",
+        "모델 재학습을 트리거합니다"
+      ],
+      "correct": 1,
+      "explanation": "메모리-인터럽트 패턴: 메모리 도구를 호출하면 런타임이 가져오고, 결과가 다음 턴의 새로운 관측치로 반환됩니다(Unix read()와 유사)."
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT는 2024년에 어떤 프로덕션 시스템으로 발전했습니까?",
+      "options": [
+        "Pinecone",
+        "Mem0",
+        "Zep",
+        "Letta"
+      ],
+      "correct": 3,
+      "explanation": "MemGPT는 2024년 9월에 Letta가 되었습니다. 연구 저장소 cpacker/MemGPT는 기원으로서 여전히 존재합니다."
+    },
+    {
+      "stage": "post",
+      "question": "이 맥락에서 메모리 오염(memory poisoning)이란 무엇입니까?",
+      "options": [
+        "RAM이 가용할 때 디스크에서 읽는 것",
+        "임베딩 모델 버전 드리프트",
+        "벡터 인덱스를 손상시키는 버그",
+        "공격자의 콘텐츠가 메모리 노트로 저장되어 향후 회상 시 재섭취(re-ingest)되는 것"
+      ],
+      "correct": 3,
+      "explanation": "외부 메모리는 검색된 텍스트입니다. 공격자가 접근 가능한 콘텐츠가 메모리 노트에 저장되면 에이전트는 다음 세션에서 이를 재섭취합니다."
+    },
+    {
+      "stage": "post",
+      "question": "교재에서는 프로덕션 메모리 시스템이 MemGPT 변형이라고 설명하는 이유는 무엇입니까?",
+      "options": [
+        "Letta, Mem0, Assistants threads, Claude Agent SDK는 모두 2계층(또는 그 이상)의 페이징된 메모리 패턴을 실행하며, 차이점은 운영 형태입니다",
+        "가중치를 공유합니다",
+        "동일한 벡터 DB를 사용합니다",
+        "MemGPT가 상표권을 소유합니다"
+      ],
+      "correct": 0,
+      "explanation": "패턴이 아닌 운영 형태에 따라 선택하십시오. 모두 MemGPT의 페이지 인/아웃 골격을 공유합니다."
+    }
+  ]
+}
