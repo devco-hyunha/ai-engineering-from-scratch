@@ -1,0 +1,78 @@
+{
+  "lesson": "08-inference-metrics-goodput",
+  "title": "추론 지표 — TTFT, TPOT, ITL, Goodput, P99",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "TTFT (첫 토큰까지의 시간)를 지배하는 구성 요소는 무엇인가요?",
+      "options": [
+        "가중치를 위한 디스크 I/O",
+        "대기 시간, 네트워크 요청 시간, 프리필 시간",
+        "토크나이저 GIL 오버헤드",
+        "디코딩 전용 순전파 시간"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "교재에서 제품 측면에서 실제로 중요한 지표라고 부르는 것은 무엇인가요?",
+      "options": [
+        "순수 처리량(Goodput) — 모든 SLO 제약 조건을 동시에 충족하는 요청의 비율",
+        "초당 토큰 수(TPS)의 총 처리량",
+        "평균 ITL",
+        "GPU 가동 주기"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "LLM 지연 시간을 보고할 때 평균이 잘못된 통계인 이유는 무엇인가요?",
+      "options": [
+        "LLM 지연 분포는 오른쪽으로 치우쳐 있으며, 사용자는 평균이 숨기는 P99 이상치에 자주 노출됩니다",
+        "스트리밍 응답에서는 평균을 계산할 수 없습니다",
+        "평균은 프리필에만 적용되고 디코딩에는 적용되지 않습니다",
+        "GenAI-Perf는 평균을 지원하지 않습니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "GenAI-Perf와 LLMPerf가 동일한 실행에서 TPOT 값이 다른 이유는 무엇인가요?",
+      "options": [
+        "서로 다른 요청을 샘플링합니다",
+        "GenAI-Perf는 Blackwell에서만 실행됩니다",
+        "LLMPerf는 마이크로초를 사용하고 GenAI-Perf는 밀리초를 사용합니다",
+        "GenAI-Perf는 ITL 계산에서 TTFT를 제외하고, LLMPerf는 이를 포함하므로 도구 선택에 따라 값이 달라집니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "긴 출력 요청(500 토큰 이상)의 경우, 종단 간(end-to-end) 지연 시간을 지배하는 지표는 무엇인가요?",
+      "options": [
+        "네트워크 응답 시간",
+        "TPOT × 출력 길이",
+        "TTFT",
+        "콜드 스타트 시간"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2026년 70B 채팅 모델에 대한 교재의 합리적인 소비자 대상 SLO를 가장 잘 포착하는 집합은 무엇인가요?",
+      "options": [
+        "P50만 사용하며, 상위 백분위수는 없음",
+        "TTFT P99 800 ms, TPOT P99 25 ms, 300 토큰 미만 출력에 대해 E2E P99 3 s, 순수 처리량(Goodput) >= 99%",
+        "TTFT P99 8s, TPOT P99 200ms, 순수 처리량(Goodput) 50%",
+        "평균 TTFT 10 ms, 평균 TPOT 1 ms"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
