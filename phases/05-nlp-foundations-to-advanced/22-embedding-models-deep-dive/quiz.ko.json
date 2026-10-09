@@ -1,0 +1,102 @@
+{
+  "lesson": "22-embedding-models-deep-dive",
+  "title": "임베딩 모델 — 2026 심층 분석",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "밀집 임베딩(dense embedding)이란 무엇인가요?",
+      "options": [
+        "각 텍스트에 대해 고정 크기의 벡터 하나를 생성하며, 코사인 유사도(Cosine Similarity)로 의미적 근접성에 따라 passage를 순위를 매기는 방식",
+        "토큰 단위 정렬 매트릭스",
+        "어휘 토큰별 희소 가중치",
+        "문서 간 그래프"
+      ],
+      "correct": 0,
+      "explanation": "밀집 임베딩은 각 텍스트에 대해 하나의 벡터(통상 384~3072 차원)를 제공하며, 코사인 유사도로 유사도를 순위를 매깁니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Matryoshka Representation Learning은 무엇을 가능하게 하나요?",
+      "options": [
+        "더 빠른 소프트맥스(Softmax)",
+        "다국어 학습",
+        "크로스 인코더 재채점",
+        "학습된 임베딩을 앞의 N 차원으로 잘라내어 여전히 유용한 더 작은 임베딩을 얻는 것"
+      ],
+      "correct": 3,
+      "explanation": "Matryoshka 학습은 벡터의 앞 N 차원을 독립적으로 유용하게 만들어, 저렴한 잘라내기를 가능하게 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "다중 벡터(ColBERT) 임베딩은 쿼리-문서 쌍을 어떻게 점수화하나요?",
+      "options": [
+        "평균 풀링된 토큰 벡터의 코사인 유사도",
+        "교차 엔트로피(Cross-Entropy)",
+        "MaxSim: 각 쿼리 토큰에 대해 가장 유사한 문서 토큰을 찾은 후, 최대값들을 합산하는 방식",
+        "Earth-mover's distance"
+      ],
+      "correct": 2,
+      "explanation": "ColBERT 스타일의 후기 융합(Late Fusion)은 토큰별 벡터에 걸쳐 MaxSim을 사용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "BGE-M3는 동시에 무엇을 출력하나요?",
+      "options": [
+        "희소 벡터만",
+        "밀집 벡터만",
+        "단일 추론에서 하나의 모델로부터 밀집, 희소, 다중 벡터(colbert) 표현을 모두 생성",
+        "colbert 벡터만"
+      ],
+      "correct": 2,
+      "explanation": "BGE-M3는 하나의 모델에서 세 가지 검색 모드를 생성하며, 융합된 하이브리드 점수화에 유용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "Matryoshka로 잘라낸 벡터는 코사인 유사도(Cosine Similarity) 전에 왜 재정규화(re-normalize)해야 하나요?",
+      "options": [
+        "잘라내기가 벡터의 노름(norm)을 변경하므로, 재정규화하지 않으면 내적(dot product)이 더 이상 코사인 유사도와 같아지지 않습니다",
+        "코사인 유사도는 정규화를 무시합니다",
+        "잘라내기가 학습을 파괴합니다",
+        "FAISS에서만 요구됩니다"
+      ],
+      "correct": 0,
+      "explanation": "잘라낸 후 재정규화하면 단위 노름(unit norm)이 복원되어 내적이 다시 코사인 유사도와 같아집니다."
+    },
+    {
+      "stage": "post",
+      "question": "BGE 모델은 왜 쿼리 쪽에 접두어(prefix) 문자열이 필요하나요?",
+      "options": [
+        "쿼리를 압축하기 위해",
+        "접두어가 토크나이저의 동작을 변경하기 위해",
+        "FAISS가 요구하기 위해",
+        "BGE는 명시적인 쿼리 프롬프트로 학습되었으며, 이를 생략하면 재현율(recall)이 3~5 포인트 감소합니다"
+      ],
+      "correct": 3,
+      "explanation": "BGE 모델은 쿼리에 'Represent this sentence for searching...' 접두어를 기대합니다."
+    },
+    {
+      "stage": "post",
+      "question": "임베딩 모델을 선택할 때 MTEB가 필요하지만 충분하지 않은 이유는 무엇인가요?",
+      "options": [
+        "MTEB는 영어만 다루기 때문에",
+        "MTEB는 더 큰 모델에 보상을 주기 때문에",
+        "MTEB는 지연(latency)을 무시하기 때문에",
+        "리더보드 순위는 많은 작업에 대한 평균이며, 특정 도메인은 다를 수 있으므로 항상 자체 데이터로 벤치마킹해야 하기 때문에"
+      ],
+      "correct": 3,
+      "explanation": "MTEB는 작업에 걸쳐 평균을 내며, 도메인 특화 평가는 순위를 뒤집을 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "밀집 임베딩(dense embedding)과 함께 SPLADE 희소 검색을 언제 추가해야 하나요?",
+      "options": [
+        "작은 코퍼스에서만",
+        "인코더가 다국어일 때 항상",
+        "쿼리가 키워드 중심적이거나 식별자/코드를 포함하여 밀집 임베딩이 흐릿하게 처리할 때",
+        "Matryoshka가 사용될 때 항상"
+      ],
+      "correct": 2,
+      "explanation": "SPLADE는 밀집 모델이 놓칠 수 있는 어휘/키워드 매치를 포착하며, 상호 랭킹 융합 (RRF)(Reciprocal Rank Fusion (RRF))로 밀집 검색과 융합합니다."
+    }
+  ]
+}
