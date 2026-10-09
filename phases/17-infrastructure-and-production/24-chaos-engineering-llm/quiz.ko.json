@@ -1,0 +1,78 @@
+{
+  "lesson": "24-chaos-engineering-llm",
+  "title": "LLM 프로덕션 환경에서의 카오스 엔지니어링",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "프로덕션 환경에서 카오스 실험을 수행하기 전에 강의가 요구하는 5가지 전제 조건은 무엇인가요?",
+      "options": [
+        "Slack 채널, 스티커 팩, 마스코트, 해시태그, 블로그 포스트",
+        "벡터 데이터베이스(Vector Database)만",
+        "SLI/SLO, 관측 가능성(Observability), 자동 롤백(Rollback), 구조화된 런북, 온콜(on-call)",
+        "3개의 프론티어 모델"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "카오스 아키텍처는 피드백 루프를 포함하여 4개의 평면(plane)을 가지고 있습니다. 이 평면들은 무엇인가요?",
+      "options": [
+        "프론트엔드, 백엔드, 모바일, 웹",
+        "수집(Ingest), 변환(Transform), 저장(Store), 서빙(Serve)",
+        "학습(Train), 평가(Eval), 배포(Deploy), 아카이브(Archive)",
+        "제어(Control), 대상(Target), 안전(Safety), 관측 가능성(Observability) — SLO 조정을 위한 피드백 포함"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "카오스 실험 중 번레이트(burn-rate) 경보 가드레일(guardrail)은 어떤 역할을 수행하나요?",
+      "options": [
+        "하루 오류 예산(error-budget) 소모량이 예상치의 약 2배를 초과할 때 실험을 일시 중단합니다",
+        "실험을 프로덕션 환경으로 자동 승격합니다",
+        "관측 가능성(Observability)을 비활성화합니다",
+        "실험 속도를 높입니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "강의에서 언급된 LLM 특유의 카오스 실험은 무엇인가요?",
+      "options": [
+        "랜덤 팬 속도 감소",
+        "데이터센터 전체 재부팅",
+        "vLLM 블록 예산(block-budget) 포화를 강제하는 KV 캐시(KV Cache) 퇴거 폭풍(eviction storm)",
+        "모든 DNS 제거"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "강의는 카오스 연습에 대해 어떤 주기(cadence)를 권장하나요?",
+      "options": [
+        "연 1회만",
+        "매일 전체 프로덕션 환경의 장애 발생",
+        "전혀 하지 않음",
+        "주 1회 작은 카나리 릴리스(Canary Release), 월 1회 게임 데이(game day) 및 사후 분석(Postmortem), 분기별 팀 간 복원력(resilience) 감사"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "잘못된 프롬프트(malformed-prompt) 실험은 어떤 LLM 특유의 장애 모드(failure mode)를 발견하나요?",
+      "options": [
+        "깊이 중첩된 유니코드나 거대한 UTF-8 코드 포인트와 같은 입력으로 인해 워커가 잠기는 토크나이저(tokenizer) 스톨(stall)",
+        "GPU 전압 저하(undervolt)",
+        "네트워크 패킷 손실",
+        "디스크 I/O 경합(contention)"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
