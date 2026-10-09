@@ -1,0 +1,78 @@
+{
+  "lesson": "18-frontier-safety-frameworks-rsp-pf-fsf",
+  "title": "프론티어 안전 프레임워크 - RSP, PF, FSF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic의 ASL 구조는 무엇을 모델로 삼고 있나요?",
+      "options": [
+        "EU AI Act 분류",
+        "생물 안전 수준 (BSL)",
+        "Internet RFC 등급",
+        "ITIL 인시던트 심각도"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OpenAI Preparedness Framework v2의 어떤 기준이 '피해가 빠르게 발생하거나 되돌릴 수 없는 경우'를 포착하나요?",
+      "options": [
+        "Net-new",
+        "Plausible",
+        "Measurable",
+        "Instantaneous-or-irremediable"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "DeepMind의 FSF v3.0 (2025년 9월)에 추가된 Critical Capability Level은 무엇인가요?",
+      "options": [
+        "Harmful Manipulation",
+        "Cyber Uplift",
+        "Bioweapon Uplift",
+        "ML R&D Acceleration"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025년 이후의 프론티어 안전 프레임워크에서 '경쟁사 조정 조항(competitor-adjustment clause)'이란 무엇인가요?",
+      "options": [
+        "동등한 안전 장치를 갖추지 않은 경쟁사가 모델을 출시할 경우, 실험실이 안전 요구 사항을 낮출 수 있도록 허용하는 조항",
+        "수출 통제 예외",
+        "모델 카드 공개 요구 사항",
+        "API 접근에 대한 가격 규칙"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "수업에서 설명된 안전 사례(safety case)의 세 가지 표준 기둥은 무엇인가요?",
+      "options": [
+        "유익함, 정직함, 무해함",
+        "모니터링, 비가독성, 무능력",
+        "속도, 정확성, 비용",
+        "내부, 외부, mesa"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic의 'Capability Thresholds', OpenAI의 'High Capability thresholds', DeepMind의 'Critical Capability Levels' 간에 어떤 구조적 정렬이 존재하나요?",
+      "options": [
+        "어떤 것도 공개적으로 문서화되지 않았다",
+        "구조적 정렬: 용어는 다르지만, 공개된 평가 기준을 가진 계층적 프론티어 능력 임계값을 공유한다",
+        "용어와 수치적 컷오프가 동일하다",
+        "세 곳 모두 정확히 동일한 평가를 사용한다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
