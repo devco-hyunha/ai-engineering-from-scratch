@@ -1,0 +1,78 @@
+{
+  "lesson": "23-capstone-tool-ecosystem",
+  "title": "캡스톤: 상태 비저장 도구 생태계",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의의 stdlib 하네스(harness)가 성공적으로 실행되면 무엇을 증명합니까?",
+      "options": [
+        "프로세스 내 정책 및 데이터 흐름이 단언(assert)된 대로 동작했습니다",
+        "실제 MCP 전송 계층이 초기화를 완료했습니다",
+        "OAuth 인증 서버가 유효한 토큰을 발급했습니다",
+        "수집기가 모든 OpenTelemetry 스팬(span)을 수신했습니다"
+      ],
+      "correct": 0,
+      "explanation": "하네스는 Python 함수, 정적 토큰, 픽스처(fixtures), 메모리 내 스팬을 사용합니다. 이는 로컬 경계를 검증하며, 프로토콜, 인증, 내보내기(export), 브라우저, 샌드박스 통합은 이후 테스트에 맡깁니다."
+    },
+    {
+      "stage": "check",
+      "question": "서버를 발견하고 장기 실행 작업을 폴링(polling)하는 데 MCP 개정판 2026-07-28에 부합하는 흐름은 무엇입니까?",
+      "options": [
+        "server/connect, tools/poll, tasks/status",
+        "server/discover, 작업 핸들(task handle)을 반환하는 tools/call, tasks/get",
+        "initialize, tools/call, tasks/result",
+        "GET /mcp, tools/call, tasks/list"
+      ],
+      "correct": 1,
+      "explanation": "상태 비저장(Stateless) 개정판은 필수적인 `server/discover`를 사용합니다. 선택적인 `io.modelcontextprotocol/tasks` 확장 기능은 작업 핸들(task handle)을 반환하고 `tasks/get`를 사용하며, 종료된 작업은 최종 결과를 포함합니다. 이전의 핸드셰이크, GET 엔드포인트, `tasks/result`, `tasks/list`는 이 흐름에 포함되지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "A2A v1은 gRPC 및 JSON-RPC 바인딩에서 메시지 전송 연산을 어떻게 명명합니까?",
+      "options": [
+        "AgentMessage",
+        "message/create",
+        "tasks/send",
+        "SendMessage"
+      ],
+      "correct": 3,
+      "explanation": "A2A v1은 gRPC 및 JSON-RPC에서 `SendMessage`를 사용합니다. HTTP+JSON 바인딩은 `POST /message:send`를 노출합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MCP Apps SDK의 어떤 호출이 앱(App)이 원본 서버에서 도구를 요청할 수 있게 합니까?",
+      "options": [
+        "host.callTool(name, args)",
+        "app.callServerTool({ name, arguments })",
+        "app.invoke(name, args)",
+        "server.tools.call(args)"
+      ],
+      "correct": 1,
+      "explanation": "App 인스턴스는 `name`과 선택적인 `arguments`를 포함하는 객체와 함께 `callServerTool`을 호출합니다. 호스트는 기초가 되는 `tools/call` 요청을 프록시(proxy)합니다."
+    },
+    {
+      "stage": "post",
+      "question": "캡스톤 에이전트 스킬(Agent Skill)은 MCP 도구와 샌드박스에 대해 어떤 권한을 부여합니까?",
+      "options": [
+        "명시적 호출 후 승인(approval)을 우회합니다",
+        "본문에 명시된 모든 도구에 권한을 부여합니다",
+        "읽기 전용 네트워크 접근 권한을 부여합니다",
+        "없습니다. 호스트 어댑터와 정책이 각 기능(capability)을 여전히 승인합니다"
+      ],
+      "correct": 3,
+      "explanation": "스킬은 절차(procedure)를 제공합니다. 발견, 호출, 도구 노출, 승인, 자격 증명(credentials), 격리(isolation)는 호스트와 외부 런타임 경계에서 강제됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "텔레메트리(telemetry)가 프로덕션 내보내기(export) 경계를 넘었다는 것을 가장 잘 증명하는 증거는 무엇입니까?",
+      "options": [
+        "스팬(span)을 방출하라는 스킬 지침",
+        "traceId 키를 포함하는 로컬 사전(dictionary)",
+        "의도된 스팬 계층 구조의 다이어그램",
+        "추적(trace) 및 부모(parent) 단언(assertion)이 포함된 수신 측 수집기(collector) 데이터"
+      ],
+      "correct": 3,
+      "explanation": "수신 측 관찰은 SDK, 전파기(propagator), 내보내기기(exporter), 전송 계층, 수집기 경로가 작동했음을 증명합니다. 로컬 데이터와 다이어그램은 로컬 구성이나 의도만 증명합니다."
+    }
+  ]
+}
