@@ -1,0 +1,90 @@
+{
+  "lesson": "03-reflexion-verbal-rl",
+  "title": "리플렉션: 언어적 강화 학습",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "리플렉션은 표준 강화 학습에서 무엇을 대체합니까?",
+      "options": [
+        "에피소드 메모리를 파라메트릭 메모리로 대체",
+        "경사 업데이트를 시련(trial) 간에 저장되는 자연어 반성(reflections)으로 대체",
+        "정책 네트워크를 랜덤 검색으로 대체",
+        "보상 shaping을 상수 보상으로 대체"
+      ],
+      "correct": 1,
+      "explanation": "리플렉션은 가중치 업데이트 대신 에피소드 메모리에 자연어 반성을 사용합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "리플렉션 시스템을 정의하는 세 가지 구성 요소는 무엇입니까?",
+      "options": [
+        "Planner, Worker, Solver",
+        "Selector, Expander, Backpropagator",
+        "Generator, Critic, Optimizer",
+        "Actor, Evaluator, Self-Reflector"
+      ],
+      "correct": 3,
+      "explanation": "리플렉션은 에이전트를 궤적(trajectories)을 실행하는 Actor, 이를 점수화하는 Evaluator, 그리고 교훈을 작성하는 Self-Reflector로 분해합니다."
+    },
+    {
+      "stage": "check",
+      "question": "유닛 테스트나 알려진 정답과 같은 외부 이진(binary) 신호를 사용하는 평가자 유형은 무엇입니까?",
+      "options": [
+        "Heuristic",
+        "Scalar",
+        "Self-evaluated",
+        "Vote-based"
+      ],
+      "correct": 1,
+      "explanation": "Scalar 평가자는 정답(ground truth)에서 pass/fail 신호를 읽습니다 (ALFWorld 성공, HumanEval 테스트)."
+    },
+    {
+      "stage": "check",
+      "question": "자기 평가(self-evaluation)가 스칼라 피드백보다 약한 신호인 이유는 무엇입니까?",
+      "options": [
+        "자기 자신을 판단하는 모델은 외부 근거(grounding)가 없으므로 자신의 답변을 무비판적으로 승인할 수 있습니다",
+        "계산 속도가 느립니다",
+        "항상 더 큰 모델이 필요합니다",
+        "도구(tools)에서 실행할 수 없습니다"
+      ],
+      "correct": 0,
+      "explanation": "자기 평가는 외부 검사가 없으므로, 확신에 찬 환각(hallucination)도 높은 점수를 받습니다. 도구 기반 검증과 함께 사용해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "교훈은 리플렉션이 도움이 되지 않는 경우로 어떤 것을 나열합니까?",
+      "options": [
+        "네트워크 다운과 같은 외부의 일시적(transient) 장애",
+        "HotpotQA 다중 홉(multi-hop) 질문",
+        "테스트로 점수를 매길 수 있는 코드 생성",
+        "ALFWorld 탐색 작업"
+      ],
+      "correct": 0,
+      "explanation": "일시적인 외부 장애에 대해 반성하면, 미래 실행에 도움이 되지 않는 반성이 생성됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "리플렉션 패턴에서 '메모리 부패(memory rot)'는 무엇입니까?",
+      "options": [
+        "프로세스가 재시작될 때 반성을 잃는 것",
+        "반성 프롬프트가 컨텍스트 윈도우를 초과하는 것",
+        "반성이 제공자(provider)에 의해 암호화되는 것",
+        "에피소드 버퍼가 낡거나 잘못된 반성으로 가득 차서, 미래 시련을 늦추거나 편향시키는 것"
+      ],
+      "correct": 3,
+      "explanation": "누적된 낡거나 잘못된 반성은 행동을 저하합니다. 압축(compaction)이나 TTL(Time To Live)로 완화해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "교훈이 리플렉션과 가장 명확하게 일치하는 생산 패턴은 무엇입니까?",
+      "options": [
+        "Claude Code의 CLAUDE.md 학습 내용을 미래 세션에 선행(prepend)하는 것",
+        "Anthropic의 프롬프트 캐싱",
+        "Cursor의 apply-edits 흐름",
+        "OpenAI의 batch API"
+      ],
+      "correct": 0,
+      "explanation": "CLAUDE.md 학습 내용, pro-workflow의 learn-rule, Letta의 sleep-time compute는 모두 에피소드 반성 버퍼를 외부화합니다."
+    }
+  ]
+}
