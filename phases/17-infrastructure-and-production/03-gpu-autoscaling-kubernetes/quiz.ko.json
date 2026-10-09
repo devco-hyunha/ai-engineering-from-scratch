@@ -1,0 +1,78 @@
+{
+  "lesson": "03-gpu-autoscaling-kubernetes",
+  "title": "Kubernetes에서의 GPU 자동 확장 — Karpenter, KAI Scheduler, Gang Scheduling",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "vLLM 스타일 서빙에 대해 강의가 '고장났다'고 표현하는 HPA의 기본 확장 신호는 무엇인가요?",
+      "options": [
+        "P99 TTFT",
+        "DCGM_FI_DEV_GPU_UTIL duty cycle",
+        "Queue depth",
+        "KV cache utilization"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "KAI Scheduler의 gang scheduling이 주로 방지하는 문제는 무엇인가요?",
+      "options": [
+        "Tokenizer GIL contention",
+        "8개 GPU 중 7개가 8번째 GPU를 기다리며 유휴 상태로 남는 부분 할당 함정",
+        "Cold-start latency",
+        "GPU memory fragmentation"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Karpenter의 기본 consolidationPolicy인 WhenEmptyOrUnderutilized가 추론 GPU 풀에 위험한 이유는 무엇인가요?",
+      "options": [
+        "Spot 인스턴스만 통합합니다",
+        "Karpenter가 새 노드를 프로비저닝하는 것을 방지합니다",
+        "실행 중인 GPU 노드를 종료하여 Pod를 마이그레이션하므로, 실행 중인 요청이 강제 종료되고 가중치가 다시 로드됩니다",
+        "Burst 상황에서 스케일업하는 것을 거부합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Karpenter는 Cluster Autoscaler와 비교하여 GPU 노드를 프로비저닝할 때 대략 얼마나 더 빠른가요?",
+      "options": [
+        "약 5% 더 빠름",
+        "동일함",
+        "약 40% 더 빠름 (~45-60초 vs ~90-120초)",
+        "약 10배 더 느림"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "분리된 Prefill / Decode Pod (Phase 17 · 17)에 대해 강의가 권장하는 확장 신호는 무엇인가요?",
+      "options": [
+        "둘 다 Cluster Autoscaler 사용",
+        "두 Pod 클래스 모두를 커버하는 duty cycle 기반 단일 HPA",
+        "수동 스케일링만",
+        "Prefill Pod에는 Queue depth, Decode Pod에는 KV cache pressure를 사용하며, 역할별 별도 HPA를 구성"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "실행 중인 작업을 강제 종료(evict)하지 않기 위해, 강의가 추론 GPU 풀에 권장하는 Karpenter disruption 설정은 무엇인가요?",
+      "options": [
+        "Spot 인스턴스로만 실행하고 consolidation 없음",
+        "Karpenter를 완전히 비활성화",
+        "consolidationPolicy: WhenEmptyOrUnderutilized, consolidateAfter: 0s",
+        "consolidationPolicy: WhenEmpty, consolidateAfter: 1h"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
