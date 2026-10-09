@@ -1,0 +1,90 @@
+{
+  "lesson": "08-memory-blocks-sleep-time-compute",
+  "title": "메모리 블록과 수면 시간 계산",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Letta의 세 가지 메모리 계층은 무엇인가요?",
+      "options": [
+        "RAM, 스왑, 디스크",
+        "캐시, KV, 아카이브",
+        "코어, 리콜, 아카이브",
+        "작업, 일화, 의미"
+      ],
+      "correct": 2,
+      "explanation": "Letta는 코어(항상 표시됨), 리콜(대화 기록), 아카이브(외부) 계층을 사용합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "수면 시간 계산이 해결하려는 프로덕션 문제는 무엇인가요?",
+      "options": [
+        "임베딩 비용 절감",
+        "JSON 파싱 속도 향상",
+        "수학 문제 정확도 향상",
+        "임계 경로에서 메모리 통합을 수행하는 데서 발생하는 꼬리 지연(Tail Latency)"
+      ],
+      "correct": 3,
+      "explanation": "수면 시간 계산은 가지치기/요약/조정을 사용자-facing 경로에서 벗어나게 하므로, 주요 응답이 빠르게 유지됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "Letta의 메모리 블록 필드가 아닌 속성은 무엇인가요?",
+      "options": [
+        "limit",
+        "embedding_model_version",
+        "label",
+        "value"
+      ],
+      "correct": 1,
+      "explanation": "블록은 id, label, value, limit, description을 포함하며, 임베딩 모델 버전은 블록 스키마의 일부가 아닙니다."
+    },
+    {
+      "stage": "check",
+      "question": "수면 시간 에이전트(Agent)가 주요 에이전트보다 더 강력한 모델을 실행할 수 있는 이유는 무엇인가요?",
+      "options": [
+        "메모리 연산이 토큰의 절반 비용으로 수행됨",
+        "비공개 API 키를 받음",
+        "임계 경로에 있지 않으므로 지연(latency) 제약이 없음",
+        "속도 제한(Rate Limit)에서 예외로 처리됨"
+      ],
+      "correct": 2,
+      "explanation": "수면 시간 에이전트는 사용자 응답을 차단하지 않으므로, 더 느리고 더 비싼 모델을 사용할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "Human 및 Persona 블록이 일반화되는 패턴은 무엇인가요?",
+      "options": [
+        "OS 프로세스",
+        "임의의 사용자 정의 타입의 편집 가능한 블록 (Task, Project, Safety, ...)",
+        "JSON-RPC 채널",
+        "벡터 임베딩(Embedding)"
+      ],
+      "correct": 1,
+      "explanation": "Letta는 두 개의 MemGPT 블록을 id, label, value, limit, description을 가진 임의의 사용자 정의 블록으로 일반화합니다."
+    },
+    {
+      "stage": "post",
+      "question": "이 패턴에서 '침묵의 드리프트(silent drift)'는 무엇인가요?",
+      "options": [
+        "주요 에이전트가 수면 시간 에이전트가 그 아래에서 블록을 재작성한 것을 전혀 보지 못하는 현상; 버전 관리와 가시적인 diff로 해결",
+        "임베딩 모델 업그레이드",
+        "느린 디스크 쓰기",
+        "속도 제한(Rate Limit) 지터"
+      ],
+      "correct": 0,
+      "explanation": "블록을 버전 관리하고 추적(Trace)에 diff를 표시하면, 수면 시간 재작성이 주요 루프에 가시적으로 드러납니다."
+    },
+    {
+      "stage": "post",
+      "question": "Letta V1에서 인라인 `Thought:` 토큰(Token)과 send_message/heartbeat 패턴을 대체한 것은 무엇인가요?",
+      "options": [
+        "별도 채널에서 방출되고 턱(turns)을 통해 전달되는 네이티브 추론(reasoning)",
+        "생각(thoughts) 전용의 두 번째 LLM (대규모 언어 모델)(LLM (Large Language Model))",
+        "더 큰 시스템 프롬프트(System Prompt)",
+        "사용자가 직접 입력한 생각(thoughts)"
+      ],
+      "correct": 0,
+      "explanation": "Letta V1 (letta_v1_agent)은 프롬프트 형태의 생각이 아닌, 제공자(provider) 수준의 네이티브 추론을 사용합니다."
+    }
+  ]
+}
