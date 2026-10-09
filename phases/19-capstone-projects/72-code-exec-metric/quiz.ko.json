@@ -1,0 +1,78 @@
+{
+  "lesson": "72-code-exec-metric",
+  "title": "코드 실행 지표",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "러너가 후보 코드마다 새로운 Python 하위 프로세스를 생성하는 이유는 무엇이며, exec를 인라인으로 호출하지 않는 이유는 무엇입니까?",
+      "options": [
+        "내장(builtins) 오염을 방지하기 위해",
+        "exec는 현대 Python에서 더 이상 권장되지 않기 때문에",
+        "exec보다 더 빠르기 때문에",
+        "호스트 평가 프로세스로부터 시간 초과, 출력 초과 및 위험한 import를 격리하기 위해"
+      ],
+      "correct": 3,
+      "explanation": "후보 코드에서 무한 루프나 메모리 폭주가 발생하면 하위 프로세스만 충돌합니다. 호스트 평가는 계속 진행됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "3개의 단정(assertion) 중 2개가 통과하고 1개가 실패한 작업의 점수는 얼마입니까?",
+      "options": [
+        "0.667",
+        "1.0",
+        "0.0",
+        "0.5"
+      ],
+      "correct": 0,
+      "explanation": "점수는 통과한 단정 수를 총 단정 수로 나눈 값입니다. 3개 중 2개는 0.667입니다. 종료 코드는 assertion_fail입니다."
+    },
+    {
+      "stage": "check",
+      "question": "후보 코드가 구문 분석되지 않을 때 러너는 어떤 종료 코드를 반환합니까?",
+      "options": [
+        "syntax_error",
+        "error",
+        "timeout",
+        "assertion_fail"
+      ],
+      "correct": 0,
+      "explanation": "러너 내부에서 compile()이 SyntaxError를 발생시키면, 내부 스크립트가 이를 포착하여 exit_code=syntax_error를 기록합니다."
+    },
+    {
+      "stage": "check",
+      "question": "import 금지 목록(denylist)보다 벽시계(wall-clock) 시간 초시가 핵심적인 제어 수단인 이유는 무엇입니까?",
+      "options": [
+        "Python에서는 import를 금지할 수 없기 때문에",
+        "subprocess.run은 금지 목록을 지원하지 않기 때문에",
+        "대부분의 실패는 무한 루프이며, 끈질긴 공격자는 프로세스 내 금지 목록을 우회할 수 있기 때문에",
+        "벽시계는 컴파일 시간에 확인되기 때문에"
+      ],
+      "correct": 2,
+      "explanation": "금지 목록은 게으른 코드를 잡지만, 시간 초시는 무한 루프를 잡습니다. 금지 목록은 백스톱(backstop)이며, 시간 초시가 최후의 방어선(floor)입니다."
+    },
+    {
+      "stage": "check",
+      "question": "pass_at_k(n, c, k)는 n - c < k일 때 무엇을 반환합니까?",
+      "options": [
+        "1, 샘플에 적어도 하나의 통과하는 솔루션이 포함되어야 하기 때문에",
+        "c / n, 경험적 통과율",
+        "0, 샘플이 정의되지 않았기 때문에",
+        "ValueError를 발생시킴"
+      ],
+      "correct": 0,
+      "explanation": "실패한 솔루션의 수가 샘플 크기보다 적으면, 크기 k인 모든 샘플은 반드시 적어도 하나의 통과하는 솔루션을 포함하므로 확률은 1입니다."
+    },
+    {
+      "stage": "post",
+      "question": "러너는 출력 초과(output overflow)를 어떻게 표시하며, 상한이 256 KB인 이유는 무엇입니까?",
+      "options": [
+        "Stderr만; 크기는 OS 파이프 기본값과 일치",
+        "소수점 두 자리로 표현된 백분율 점수 값",
+        "하위 프로세스의 Stdout이 스트리밍되며, 누적 합계가 256 KB 상한을 넘으면 자식 프로세스가 종료되고 작업이 exit_code=error, detail \"output overflow\"로 기록됩니다",
+        "후보 소스 코드 크기; 생성된 코드가 작게 유지되도록 상한을 설정"
+      ],
+      "correct": 2,
+      "explanation": "상한은 호스트를 보호합니다. stdout을 넘치게 하는 후보 코드는 스트리밍 중 종료되며, 러너는 새로운 종료 코드를 만들지 않고 exit_code=error, detail \"output overflow\"로 결과를 정규화합니다."
+    }
+  ]
+}
