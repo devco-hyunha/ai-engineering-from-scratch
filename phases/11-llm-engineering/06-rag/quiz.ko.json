@@ -1,0 +1,62 @@
+[
+  {
+    "question": "RAG는 무엇을 의미하며, 어떤 문제를 해결합니까?",
+    "options": [
+      "Recurrent Attention Generation -- 어텐션 메커니즘 개선",
+      "RAG (검색 증강 생성)(Retrieval-Augmented Generation) -- LLM (대규모 언어 모델)(LLM (Large Language Model))이 학습되지 않은 외부 지식에 접근할 수 있도록 함",
+      "Reduced Architecture Generation -- 모델을 더 작게 만듦",
+      "Random Augmented Generation -- 랜덤한 출력 생성"
+    ],
+    "correct": 1,
+    "explanation": "RAG는 외부 지식 베이스에서 관련 문서를 검색하여 프롬프트에 추가합니다. 이를 통해 LLM (대규모 언어 모델)(LLM (Large Language Model))은 재학습 없이 최신의 도메인 특화 정보에 접근할 수 있습니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "지식 기반 애플리케이션의 대부분에서 미세 조정(Fine-tuning)(Fine-tuning)보다 RAG가 선호되는 이유는 무엇입니까?",
+    "options": [
+      "RAG는 비용이 저렴하고, 문서가 변경될 때 즉시 업데이트할 수 있으며, 출처 표기를 제공합니다 -- 미세 조정(Fine-tuning)(Fine-tuning)은 비용이 많이 들고 정보가 오래됩니다",
+      "RAG는 더 좋은 모델을 생성합니다",
+      "미세 조정(Fine-tuning)(Fine-tuning)은 작동하지 않습니다",
+      "RAG는 메모리를 덜 사용합니다"
+    ],
+    "correct": 0,
+    "explanation": "미세 조정(Fine-tuning)(Fine-tuning)은 수천 달러의 비용이 들며, 문서가 변경됨에 따라 정보가 오래되는 정적 모델을 생성하고 출처 표기를 제공하지 않습니다. RAG는 즉시 업데이트할 수 있으며(문서 저장소만 업데이트하면 됨), 임베딩(Embedding)(Embedding) 및 저장 비용만 들고 출처를 인용할 수 있습니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "기본적인 RAG 파이프라인의 단계 순서로 올바른 것은 무엇입니까?",
+    "options": [
+      "문서를 청킹(Chunking)(Chunking)하고, 청크를 임베딩(Embedding)(Embedding)하여 벡터 데이터베이스(Vector Database)(Vector Database)에 저장하고, 쿼리를 임베딩(Embedding)(Embedding)하여 유사한 청크를 검색하고, 컨텍스트와 함께 답변을 생성",
+      "생성, 검색, 임베딩(Embedding)(Embedding), 청킹(Chunking)(Chunking)",
+      "쿼리를 임베딩(Embedding)(Embedding)하고, 답변을 생성하고, 문서를 검색",
+      "문서를 저장하고, LLM (대규모 언어 모델)(LLM (Large Language Model))에 쿼리하고, 응답에 문서를 추가"
+    ],
+    "correct": 0,
+    "explanation": "인제스트: 문서를 청킹(Chunking)(Chunking) -> 청크를 임베딩(Embedding)(Embedding) -> 벡터 데이터베이스(Vector Database)(Vector Database)에 저장. 쿼리 시간: 사용자의 쿼리를 임베딩(Embedding)(Embedding) -> 상위 K개의 유사한 청크를 검색 -> 청크를 프롬프트에 추가 -> 검색된 컨텍스트에 기반하여 답변을 생성.",
+    "stage": "post"
+  },
+  {
+    "question": "기본적인 RAG 시스템에서 흔한 실패 모드(failure mode)는 무엇입니까?",
+    "options": [
+      "임베딩(Embedding)(Embedding)이 너무 큼",
+      "벡터 데이터베이스(Vector Database)(Vector Database)가 충돌함",
+      "검색된 청크가 쿼리와 의미적으로 유사하지만 실제 답변을 포함하지 않음 (예: 'Q3 매출 수치'를 요청했는데 '매출 전략'을 반환함)",
+      "LLM (대규모 언어 모델)(LLM (Large Language Model))이 답변을 거부함"
+    ],
+    "correct": 2,
+    "explanation": "시맨틱 검색(Semantic Search)(Semantic Search)은 쿼리와 '유사하게 들리는' 텍스트를 찾지, 반드시 '답변하는' 텍스트를 찾지는 않습니다. 매출에 대한 쿼리는 실제 수치가 포함된 청크가 아니라 매출 전략을 논의하는 청크를 검색할 수 있습니다.",
+    "stage": "post"
+  },
+  {
+    "question": "RAG의 품질을 어떻게 평가합니까?",
+    "options": [
+      "LLM (대규모 언어 모델)(LLM (Large Language Model))이 어떤 출력을 생성하는지 확인하여",
+      "검색 지표(올바른 청크를 찾았는가?)와 생성 지표(답변이 검색된 컨텍스트에 충실한가?)를 모두 사용하여",
+      "응답 시간만 측정하여",
+      "검색된 문서의 수를 세어"
+    ],
+    "correct": 1,
+    "explanation": "RAG 평가는 두 부분으로 구성됩니다: 검색 품질(정밀도 및 재현율(Precision & Recall)(Precision & Recall)을 기준으로 검색된 청크가 정답과 일치하는지)과 생성 품질(컨텍스트에 대한 충실성, 쿼리와의 관련성, 검색된 정보를 넘어서는 환각(Hallucination)(Hallucination)이 없는지).",
+    "stage": "post"
+  }
+]
