@@ -1,0 +1,78 @@
+{
+  "lesson": "13-many-shot-jailbreaking",
+  "title": "다중 예시 제일브레이킹",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "다중 예시 제일브레이킹(MSJ)은 컨텍스트 윈도우의 어떤 특성을 이용합니까?",
+      "options": [
+        "유니코드 문자에 대한 토크나이저 모호성",
+        "수백 개의 가짜 사용자-어시스턴트 유해 순응(turn)을 타겟 쿼리 전에 허용하는 매우 긴 컨텍스트 윈도우",
+        "2048 토큰을 넘어서 회전하는 위치 임베딩",
+        "시스템 프롬프트를 잘라내는 슬라이딩 윈도우 어텐션"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "MSJ에서 공격 성공률(ASR)은 예시 수(shot count)에 따라 어떻게 증가합니까?",
+      "options": [
+        "100 예시에서 계단 함수(step function)처럼 증가",
+        "음의 기울기를 가진 선형 증가",
+        "50%에서 평탄화되는 로지스틱(logistic) 증가",
+        "예시 수에 대한幂함수(power-law) 증가; 평탄화되지 않고 계속 상승"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "MSJ는 왜 선의의 인컨텍스트 학습(ICL)과 동일한 메커니즘을 공유합니까?",
+      "options": [
+        "둘 다 토크나이저를 우회함",
+        "둘 다 RLHF에 의존함",
+        "둘 다 숨겨진 스크래치 패드(hidden scratchpad)가 필요함",
+        "둘 다 모델이 컨텍스트 내 예시에서 작업 구조를 추출하고 쿼리에 이를 적용하는 것에 의존함"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "MSJ에 대한 핵심적인 방어 딜레마는 무엇입니까?",
+      "options": [
+        "방어는 응답의 모든 토큰에 대해 실행되어야 함",
+        "방어는 GPU 클러스터가 필요함",
+        "방어는 샘플링 온도 0에서 적용되어야 함",
+        "긴 컨텍스트에서 패턴 추출을 억제하면 선의의 인컨텍스트 학습도 비활성화되므로, 방어는 유해 패턴과 선의 패턴을 구분해야 함"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic의 분류기 기반 프롬프트 수정 방어는 테스트된 설정에서 MSJ 공격 성공률을 몇 %에서 몇 %로 감소시킵니까?",
+      "options": [
+        "30%에서 25%로",
+        "99%에서 50%로",
+        "61%에서 2%로",
+        "ASR이 증가함"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "MSJ는 PAIR (Lesson 12)와 어떻게 상호작용합니까?",
+      "options": [
+        "MSJ는 PAIR와 결합됨; PAIR로 공격 구조를 찾은 후 이를 다중 예시로 채우면 각각 단독으로 사용할 때보다 더 높은 ASR에 도달할 수 있음",
+        "PAIR는 MSJ를 무력화함",
+        "둘은 상호 배타적임",
+        "PAIR는 폐쇄형(closed-source) 모델에서만 작동함"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
