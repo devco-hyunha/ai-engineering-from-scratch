@@ -1,0 +1,90 @@
+{
+  "lesson": "04-multimodal-document-qa",
+  "title": "캡스톤 04 — 멀티모달 문서 QA (비전 우선 PDF, 표, 차트)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026년 프론티어 모델이 금융 PDF 및 과학 논문에서 OCR 후 텍스트 처리 방식보다 비전 우선 후기 상호작용(late interaction)을 선호하는 이유는 무엇인가요?",
+      "options": [
+        "OCR 파이프라인은 회전된 표, 밀집된 수식, 차트 이미지를 손상시켜 신호의 절반을 잃게 됩니다",
+        "OCR은 GPU에서 실행할 수 없습니다",
+        "비전 모델은 페이지당 비용이 더 저렴합니다",
+        "OCR은 렌더링보다 느립니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "ColPali 스타일 검색에서 후기 상호작용(late interaction)이란 무엇을 의미하나요?",
+      "options": [
+        "각 쿼리 토큰이 모든 패치 토큰에 대해 점수를 매기며, 토큰별 최대값을 MaxSim으로 합산합니다",
+        "임베딩은 사용자가 결과를 클릭한 후에 계산됩니다",
+        "리랭커는 최종 후보에만 실행됩니다",
+        "임베딩은 평가 시점까지 지연됩니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "ColQwen 임베딩은 페이지당 대략 몇 개의 패치 벡터를 생성하며, 이로 인해 어떤 저장 문제가 발생하나요?",
+      "options": [
+        "정확히 128개의 벡터로, 모든 벡터 DB에 깔끔하게 저장됩니다",
+        "페이지당 약 2048개의 패치 벡터로, 단일 벡터 인덱스에 비해 원시 저장 공간이 급증합니다",
+        "페이지당 1개의 벡터로, 저장 문제가 없습니다",
+        "16개의 벡터로, 저장 오버헤드가 무시할 수 있는 수준입니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 파이프라인에서 DocPruner는 무엇을 수행하나요?",
+      "options": [
+        "인제션 전에 중복 PDF 페이지를 제거합니다",
+        "다중 벡터 인덱스를 압축하여 고신호 패치를 약 50%로 유지하며, 정확도 손실은 무시할 수 있는 수준입니다",
+        "증거 영역 주위에 바운딩 박스를 잘라냅니다",
+        "더 짧은 벡터를 위해 쿼리 임베딩을 재작성합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "왜 일부 페이지에 OCR 텍스트 채널이 여전히 결합(spliced)되어 있나요?",
+      "options": [
+        "VLM은 180 DPI로 이미지를 읽을 수 없습니다",
+        "OCR이 주요 검색 모달리티입니다",
+        "PDF 렌더링 품질을 개선합니다",
+        "수식이 밀집된 페이지와 표가 많은 페이지는 이미지와 함께 텍스트 폴백(text fallback)의 혜택을 받습니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 캡스톤은 비전 우선 검색 평가를 위해 어떤 벤치마크를 목표로 하나요?",
+      "options": [
+        "ViDoRe v3",
+        "RewardBench-2",
+        "MMLU-Pro",
+        "SWE-bench Pro"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "루브릭(rubric)에서 증거 영역 그라운딩(evidence-region grounding)이란 무엇을 의미하나요?",
+      "options": [
+        "p99 꼬리에서의 리랭커 지연",
+        "쿼리당 검색된 총 페이지 수",
+        "인용된 바운딩 박스 중 실제로 답변 스팬(answer span)을 포함하는 비율",
+        "DocPruner가 달성한 압축 비율"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
