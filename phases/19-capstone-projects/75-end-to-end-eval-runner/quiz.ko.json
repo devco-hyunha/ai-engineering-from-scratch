@@ -1,0 +1,78 @@
+{
+  "lesson": "75-end-to-end-eval-runner",
+  "title": "엔드투엔드 평가 실행기",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "ModelAdapter 인터페이스의 최소 표면(surface)은 무엇인가요?",
+      "options": [
+        "complete, embed, classify, summarise",
+        "init, login, generate, close",
+        "generate(prompt, task)가 텍스트와 선택적 신뢰도 및 토큰별 NLL을 반환",
+        "load_weights, generate, save_weights"
+      ],
+      "correct": 2,
+      "explanation": "단일 메서드가 모든 어댑터를 포괄합니다. 나머지는 선택적인 장식입니다. 실행기는 더 풍부한 표면이 필요하지 않습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "실행기가 항상 병렬로 실행하지 않고 병렬 플래그를 받는 이유는 무엇인가요?",
+      "options": [
+        "테스트는 결정적인 실행 순서를 필요로 하며, 플래그를 통해 순차 실행으로 전환할 수 있습니다",
+        "CPython에서 병렬 실행은 안전하지 않습니다",
+        "병렬 실행에는 GPU가 필요합니다",
+        "ThreadPoolExecutor는 표준 라이브러리가 아닙니다"
+      ],
+      "correct": 0,
+      "explanation": "테스트는 재현성을 원합니다. 프로덕션은 처리량을 원합니다. 플래그는 두 코드 경로 없이 이러한 관심사를 분리합니다."
+    },
+    {
+      "stage": "check",
+      "question": "실행기는 보정 버퍼에 대한 올바른 플래그를 어떻게 결정하나요?",
+      "options": [
+        "기본적으로 임계값 1.0에서 exact_match 스타일 지표, 임계값 0.5에서 단계적 지표(graded metrics)를 사용합니다",
+        "어댑터를 두 번 호출하고 출력값을 비교합니다",
+        "평균 빈(bin) 신뢰도를 사용합니다",
+        "Brier 분해를 사용합니다"
+      ],
+      "correct": 0,
+      "explanation": "임계값은 지표에 따라 인식됩니다. exact_match 스타일 지표는 거의 1.0에 가까운 컷오프를 사용하며, 단계적 지표는 기본적으로 0.5를 사용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "실행기가 리더보드를 인라인으로 계산하지 않고 EvalRun 레코드를 만들어 집계기(aggregator)에 넘기는 이유는 무엇인가요?",
+      "options": [
+        "실행기를 집계기에 대해 독립적으로 유지하고, 실행기를 건드리지 않고도 리더보드 계층이 진화할 수 있도록 합니다",
+        "집계기는 데이터클래스보다 numpy 배열에서 더 빠릅니다",
+        "EvalRun은 JSON Schema에 의해 요구됩니다",
+        "EvalRun은 더 메모리 효율적입니다"
+      ],
+      "correct": 0,
+      "explanation": "인라인 대신 조합(composition)을 사용합니다. 실행기는 레코드를 생성하고, 집계기는 리더보드 연산을 소유합니다. 각 레슨은 하나의 관심사를 담당합니다."
+    },
+    {
+      "stage": "check",
+      "question": "최종 JSON 엔벨로프(envelope)에서 퍼플렉시티(perplexity) 블록의 역할은 무엇인가요?",
+      "options": [
+        "부트스트랩 CI에서 계산됩니다",
+        "태스크 점수링과 독립적으로 모델별 홀드아웃(held-out) 언어 모델링 수치를 전달합니다",
+        "보정 보고서의 입력값입니다",
+        "리더보드 순위 매김에 필요합니다"
+      ],
+      "correct": 1,
+      "explanation": "퍼플렉시티는 리더보드 옆에 위치하며 내부에 있지 않습니다. 어댑터의 호출별 토큰 NLL과 토큰 수를 사용합니다."
+    },
+    {
+      "stage": "post",
+      "question": "자기 종료(self-terminating) 데모의 클린 런(clean-run) 종료 조건은 무엇인가요?",
+      "options": [
+        "모든 태스크가 검증되고, 모든 태스크가 점수링되며, 보정이 집계되고, 규칙 기반 어댑터가 리더보드에서 랜덤 어댑터보다 엄격하게 상위 순위에 있습니다",
+        "모든 태스크가 0.9 이상으로 점수링됩니다",
+        "모든 모델에 대해 ECE가 0.05 미만입니다",
+        "모든 쌍에 대해 부트스트랩 CI가 0을 제외합니다"
+      ],
+      "correct": 0,
+      "explanation": "데모는 계약(contract)을 엔드투엔드로 강제합니다. 모든 계층이 실행되었으며, 가장 정확한 어댑터가 그에 따라 순위 매김됩니다."
+    }
+  ]
+}
