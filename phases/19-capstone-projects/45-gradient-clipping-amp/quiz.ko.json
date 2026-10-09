@@ -1,0 +1,78 @@
+{
+  "lesson": "45-gradient-clipping-amp",
+  "title": "기울기 클리핑(Gradient Clipping) 및 혼합 정밀도(Mixed Precision)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "전역 L2 기울기 클리핑(Gradient Clipping)이 해결하는 문제는 무엇인가요?",
+      "options": [
+        "나쁜 배치(batch) 하나가 기울기 노름(norm)을 몇 배 이상 급증시킬 수 있으며, 클리핑은 최악의 경우 옵티마이저(Optimizer) 스텝을 제한하여 하나의 배치가 수 시간의 학습을 초기화하지 못하도록 방지합니다",
+        "어휘(Vocabulary) 드리프트",
+        "느린 학습",
+        "랜덤 재시작"
+      ],
+      "correct": 0,
+      "explanation": "클리핑은 노이즈가 많은 배치(batch)가 손실(loss) 곡선을 망치지 않도록 하는 안전벨트입니다."
+    },
+    {
+      "stage": "check",
+      "question": "한 스텝(step)에서 GradScaler 연산의 올바른 순서는 무엇인가요?",
+      "options": [
+        "scaler.scale(loss).backward(); scaler.unscale_(optimizer); clip_grad_norm_; scaler.step(optimizer); scaler.update()",
+        "backward, step, scale, update",
+        "임의의 순서; scaler가 내부적으로 순서를 재배열합니다",
+        "step, scale, unscale, backward, update"
+      ],
+      "correct": 0,
+      "explanation": "unscale_와 step 사이의 unscaled 기울기에 대해 클리핑을 수행하며, update는 항상 실행됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "스킵(skip)된 스텝(step)에서 scaler.update()는 무엇을 수행하나요?",
+      "options": [
+        "실행(run)을 종료합니다",
+        "아무것도 하지 않습니다",
+        "스케일링(scaling) 팩터를 절반으로 줄이고 no-inf 카운터를 리셋합니다; 스킵 경로에서 이를 호출하지 않는 것은 '스케일링 팩터가 변하지 않았다'는 버그를 발생시키는 원인입니다",
+        "스케일링(scaling) 팩터를 두 배로 늘립니다"
+      ],
+      "correct": 2,
+      "explanation": "scaler는 최근 스텝(step)들의 스킵/클린 비율에 따라 팩터를 조정합니다."
+    },
+    {
+      "stage": "check",
+      "question": "GradScaler가 있음에도 손실(loss) 유한성(finiteness) 검사가 필요한 이유는 무엇인가요?",
+      "options": [
+        "GradScaler가 느리기 때문입니다",
+        "장식적인 요소이기 때문입니다",
+        "PyTorch가 이를 요구하기 때문입니다",
+        "GradScaler는 역전파(backward-pass) 오버플로우를 처리하지만, 비유한(non-finite) 손실은 유용한 기울기를 생성하지 못합니다; 역전파 전에 스킵하면 연산 비용을 절약하고 scaler의 상태를 오염시키지 않습니다"
+      ],
+      "correct": 3,
+      "explanation": "손실(loss) 검사는 순전파(forward-pass) 실패를 다루며, scaler는 역전파(backward-pass) 실패를 다룹니다."
+    },
+    {
+      "stage": "post",
+      "question": "롤링 스킵 비율(rolling skip rate)에서의 생산 환경 신호는 무엇인가요?",
+      "options": [
+        "스킵(skip)이 발생하면 항상 페이지(page)를 호출합니다",
+        "실행(run)당 몇 번의 스킵(skip)은 정상입니다; 에포크(epoch)당 수백 번의 스킵(skip) (롤링 비율 약 5% 이상)는 모델이 FP16이 유지할 수 없는 영역에 있음을 나타내는 강한 경보입니다",
+        "스킵(skip) 비율은 관련이 없습니다",
+        "연속적인 스킵(skip)에서만 페이지(page)를 호출합니다"
+      ],
+      "correct": 1,
+      "explanation": "비율 기반 경보(alerting)는 간헐적인 스킵(skip) 페이지(page)가 잡지 못하는 조용한 실패 모드(silent failure modes)를 포착합니다."
+    },
+    {
+      "stage": "post",
+      "question": "스킵(skip)이 빈번할 때 FP16에서 BF16 autocast로 전환하는 이유는 무엇인가요?",
+      "options": [
+        "BF16은 FP16보다 지수(exponent) 범위가 넓어 손실(loss) 스케일링(scaling)이 거의 필요하지 않으며, 동일한 모델에서 스킵(skip) 비율이 일반적으로 0으로 떨어집니다",
+        "BF16이 더 느려서 스킵(skip)이 적습니다",
+        "BF16이 더 최신이기 때문입니다",
+        "랜덤한 전통 때문입니다"
+      ],
+      "correct": 0,
+      "explanation": "FP16은 범위(range)보다 가수(mantissa) 정밀도를 우선시합니다; BF16은 그 반대이며, 오버플로우(overflow) 클래스를 완전히 제거합니다."
+    }
+  ]
+}
