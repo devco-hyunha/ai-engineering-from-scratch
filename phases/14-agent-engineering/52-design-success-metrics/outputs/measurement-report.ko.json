@@ -1,0 +1,54 @@
+{
+  "status": "valid",
+  "issues": [],
+  "plan": {
+    "goal": "위험한 조치의 증가 없이 영향받는 서비스를 식별하는 시간을 단축",
+    "questions": [
+      "올바른 서비스가 얼마나 빠르게 식별되는가?",
+      "진단 과정이 읽기 전용(read-only) 상태로 유지되는가?"
+    ],
+    "metrics": [
+      {
+        "name": "median_identification_seconds",
+        "direction": "최대",
+        "threshold": 120,
+        "window": "10건의 인시던트 리플레이",
+        "source": "리플레이 로그",
+        "kind": "outcome"
+      },
+      {
+        "name": "correct_service_rate",
+        "direction": "최소",
+        "threshold": 0.9,
+        "window": "10건의 인시던트 리플레이",
+        "source": "인시던트 기록",
+        "kind": "outcome"
+      },
+      {
+        "name": "production_writes",
+        "direction": "최대",
+        "threshold": 0,
+        "window": "전체 파일럿 기간",
+        "source": "감사 로그",
+        "kind": "guardrail"
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "median_identification_seconds",
+      "value": 94,
+      "passed": true
+    },
+    {
+      "name": "correct_service_rate",
+      "value": 0.9,
+      "passed": true
+    },
+    {
+      "name": "production_writes",
+      "value": 0,
+      "passed": true
+    }
+  ]
+}
