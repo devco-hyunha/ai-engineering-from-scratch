@@ -1,0 +1,90 @@
+{
+  "lesson": "15-constitutional-safety-harness",
+  "title": "캡스톤 15 — 헌법적 안전 하네스 + 레드 티밍 레인지",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 캡스톤에서 계층적 안전(layered safety)이란 무엇을 의미합니까?",
+      "options": [
+        "입력 정화, 정책 레일, 분류기 게이트, 모델, 출력 필터 및 인간 개입 루프 (HITL)(Human-in-the-Loop (HITL)) 계층에 걸친 심층 방어(Defense in Depth)",
+        "입력에만 강력한 분류기를 하나 실행하는 것",
+        "출력에 대한 단일 규칙 기반 정규식",
+        "모든 응답에 대한 수동 검토"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "약 132개 언어에 걸친 다국어 커버리지를 처리하는 분류기는 무엇입니까?",
+      "options": [
+        "Llama Guard 4",
+        "Nemotron 3 Content Safety",
+        "X-Guard",
+        "ShieldGemma-2"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "XSTest와 같은 온건한(benign) 스위트에서 과잉 거절(over-refusal)을 측정하는 이유는 무엇입니까?",
+      "options": [
+        "유해성을 개선하면서도 모델이 유용성을 유지하도록 false-positive 차단(false-positive blocks)을 추적하기 위해",
+        "가드레일 프레임워크를 인증하기 위해",
+        "레드 티밍 점수를 대체하기 위해",
+        "토큰 처리량(token throughput)을 벤치마킹하기 위해"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 캡스톤에서의 헌법적 자기 비판(self-critique) 루프는 무엇입니까?",
+      "options": [
+        "처음부터 학습된 RLHF (인간 피드백 기반 강화 학습)(RLHF (Reinforcement Learning from Human Feedback)) 보상 모델",
+        "비판 LLM이 작성된 헌법에 초안을 채점하고, 모델이 이의가 제기된 출력을 다시 작성하도록 프롬프트하며, 개선된 쌍에 대해 지도 미세 조정 (SFT)(SFT (Supervised Fine-Tuning))를 실행하는 것",
+        "Llama Guard 4를 통한 단일 순방향 패스",
+        "후보 제일브레이크(Jailbreak) 프롬프트에 대한 리랭커(Reranker)"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "발견 사항(findings)에서 성공적인 제일브레이크(Jailbreak)의 심각도는 어떻게 점수화됩니까?",
+      "options": [
+        "응답을 생성한 모델에 의해",
+        "공격 벡터, 복잡성 및 영향과 함께 공개 타임라인을 사용하여 CVSS 4.0을 사용",
+        "프롬프트의 원시 토큰 수(token count)에 의해",
+        "운영자가 선택한 수동으로 튜닝된 1-10 척도"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "레드 티밍 레인지(red-team range)는 어떤 6가지 공격 계열을 실행합니까?",
+      "options": [
+        "PSI, KL, MMD, KS, JS 및 Wasserstein",
+        "PAIR, TAP, GCG, 인코딩(ASCII/base64/rot13), 다중 턴 페르소나 및 다국어 코드 스위칭",
+        "브루트 포스, 사전 공격, 리플레이, MITM, 피싱 및 CSRF",
+        "BLEU, ROUGE, METEOR, BERTScore, CometKiwi 및 chrF"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "레인지 자동화(cron + 알림)가 평가 기준(rubric)의 일부인 이유는 무엇입니까?",
+      "options": [
+        "cron은 OPA를 호출하는 유일한 방법이기 때문에",
+        "Llama Guard 4를 비활성화하려면 자동화가 필요하기 때문에",
+        "수동 실행이 명시적으로 요구되기 때문에",
+        "지속적으로 예약된 탐지가 시간에 따른 공격 성공률의 드리프트(drift)와 과잉 거절의 회귀(regression)를 포착하기 때문에"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
