@@ -1,0 +1,102 @@
+{
+  "lesson": "06-named-entity-recognition",
+  "title": "고유 명칭 인식(Named Entity Recognition)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "BIO 태깅(tagging)이란 무엇인가요?",
+      "options": [
+        "엔티티의 트리(tree) 표현",
+        "엔티티 대 비엔티티(binary) 방식",
+        "토큰별 레이블: 엔티티 시작은 B-TYPE, 내부인 경우 I-TYPE, 외부인 경우 O",
+        "토큰화(tokenization) 스타일"
+      ],
+      "correct": 2,
+      "explanation": "BIO는 B/I/O 접두사를 사용하여 스팬(span) 추출을 토큰 분류 문제로 변환합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "프로덕션 NER에서 규칙 기반 사전(gazetteer)가 취약한 이유는 무엇인가요?",
+      "options": [
+        "속도가 느리기 때문",
+        "다중 토큰 엔티티를 처리할 수 없기 때문",
+        "새로운 엔티티에 대한 커버리지가 0이며, 의미를 구분할 수 없기 때문 (예: Apple 과일 대 회사)",
+        "GPU가 필요하기 때문"
+      ],
+      "correct": 2,
+      "explanation": "사전은 알려진 문자열을 매칭할 수 있지만, 의미를 구분하거나 unseen 이름으로 일반화할 수 없습니다."
+    },
+    {
+      "stage": "check",
+      "question": "NER에서 HMM 대비 CRF의 주요 장점은 무엇인가요?",
+      "options": [
+        "CRF는 Viterbi 알고리즘을 피합니다",
+        "CRF는 판별적(discriminative)이며 임의의 특징(형태, 대문자화, 이웃)을 혼합할 수 있습니다",
+        "CRF는 더 빠릅니다",
+        "CRF는 학습 데이터가 전혀 필요하지 않습니다"
+      ],
+      "correct": 1,
+      "explanation": "CRF는 판별적이며, 풍부하고 겹치는 특징에 대해 조건부 확률을 모델링할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "BiLSTM-CRF 아키텍처에서 CRF 레이어는 어떤 역할을 수행하나요?",
+      "options": [
+        "토큰화를 수행합니다",
+        "임베딩(embedding)을 대체합니다",
+        "LSTM을 사전 학습합니다",
+        "LSTM 방출(emission) 위에 태그 간 전이를 모델링하여 유효한 BIO 태그 시퀀스를 강제합니다"
+      ],
+      "correct": 3,
+      "explanation": "LSTM 특징 위에 있는 CRF는 레이블 간 의존성을 모델링하고 불법적인 시퀀스를 배제합니다."
+    },
+    {
+      "stage": "check",
+      "question": "NER은 토큰 단위 F1이 아닌 엔티티 단위 F1로 평가해야 하는 이유는 무엇인가요?",
+      "options": [
+        "예측된 스팬은 실제 스팬과 정확히 일치해야 하며, 토큰 단위 F1은 부분 일치까지 계산하여 정확도를 과대평가합니다",
+        "HuggingFace가 엔티티 단위 F1을 요구하기 때문",
+        "토큰 단위 F1은 BIO를 처리할 수 없기 때문",
+        "엔티티 단위 F1이 계산하기 더 쉽기 때문"
+      ],
+      "correct": 0,
+      "explanation": "스팬 정확 일치(span exact-match)가 의미 있는 지표이며, 토큰 단위 F1은 부분 겹침(partial overlap)으로 점수를 부풀립니다."
+    },
+    {
+      "stage": "post",
+      "question": "HuggingFace NER 파이프라인에서 aggregation_strategy='simple'은 무엇을 수행하나요?",
+      "options": [
+        "가장 확신도가 높은 엔티티만 반환합니다",
+        "연속적인 B-X 및 I-X 토큰을 단일 스팬으로 병합합니다",
+        "출력을 소문자로 변환합니다",
+        "토큰화를 건너뜁니다"
+      ],
+      "correct": 1,
+      "explanation": "동일한 유형의 연속적인 BIO 토큰을 스팬 단위 엔티티로 병합합니다."
+    },
+    {
+      "stage": "post",
+      "question": "표준 BIO가 중첩(nested) 엔티티에 실패하는 이유는 무엇인가요?",
+      "options": [
+        "BIO는 평면적인 토큰별 방식이며, 서로 다른 유형의 겹치는 두 스팬을 표현할 수 없기 때문",
+        "BIO는 트랜스포머(transformer)가 필요하기 때문",
+        "BIO는 다중 토큰 엔티티를 표현할 수 없기 때문",
+        "BIO는 유형(type) 레이블을 드롭(drop)하기 때문"
+      ],
+      "correct": 0,
+      "explanation": "BIO는 토큰당 하나의 레이블을 할당합니다. 중첩 스팬은 다중 패스(multi-pass) 또는 스팬 기반 모델이 필요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에도 고전적인 NER(CRF 또는 BiLSTM-CRF)가 LLM을 능가하는 경우는 언제인가요?",
+      "options": [
+        "오픈 도메인 서사(narrative)에서",
+        "중첩 엔티티에서",
+        "입력이 영어인 경우 항상",
+        "엄격한 지연(latency) 예산, 풍부한 레이블, 안정적인 온톨로지(ontology), 또는 비생성적(non-generative) 규제 제약 조건 하에서"
+      ],
+      "correct": 3,
+      "explanation": "고전적인 NER은 지연(latency), 레이블이 풍부한 데이터 환경, 고정된 온톨로지, 온프레미스(on-prem) 제약 조건에서 승리합니다."
+    }
+  ]
+}
