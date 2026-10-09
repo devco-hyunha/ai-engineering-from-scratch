@@ -1,0 +1,90 @@
+{
+  "lesson": "23-function-call-dispatcher",
+  "title": "함수 호출 디스패처",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "멱등성이 없는(non-idempotent) 도구에서 타임아웃이 발생하면 왜 기본적으로 재시도하지 않는가?",
+      "options": [
+        "디스패처가 멱등성이 없는 호출을 측정할 수 없기 때문에",
+        "멱등성이 없는 핸들러가 더 빠르게 실행되기 때문에",
+        "멱등성 키가 느리기 때문에",
+        "도구가 부분적으로 커밋했을 수 있으며, 재시도는 효과를 중복시킬 수 있기 때문에"
+      ],
+      "correct": 3,
+      "explanation": "4.9초에 타임아웃된 db.write를 재시도하면 두 번째 쓰기가 발생할 수 있습니다. 핸들러가 호출을 반복하는 것이 안전하다고 알려주지 않는 한, 디스패처는 재시도를 거부합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "멱등성 키의 중복 제거(dedupe)는 무엇을 보호하는가?",
+      "options": [
+        "스키마 검증 오류",
+        "원래 호출이 아직 진행 중일 때 발생하는 재시도",
+        "프로세스 재시작",
+        "느린 네트워크"
+      ],
+      "correct": 1,
+      "explanation": "중복 제거가 없으면, 5초에 재시도가 느린 원래 호출이 아직 대기 중일 때 경쟁(race)을 일으킵니다. 캐시는 둘을 하나의 핸들러 호출로 통합합니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 디스패처에서 재시도 대상이 되는 오류 종류는 무엇인가?",
+      "options": [
+        "schema 및 not_found",
+        "timeout (멱등적인 경우) 및 transient",
+        "internal 및 budget_exceeded",
+        "모두"
+      ],
+      "correct": 1,
+      "explanation": "schema와 not_found는 결정적입니다. internal은 알 수 없는 핸들러 버그를 숨깁니다. budget_exceeded는 양보(yield)입니다. 멱등적인 도구에서의 timeout과 명시적인 TransientError만 재시도됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "_run_with_retries를 둘러싼 세마포어(semaphore)는 무엇을 보호하는가?",
+      "options": [
+        "핸들러가 자기 자신을 보호하는 것",
+        "gather()가 확산시킨 너무 많은 동시 호출로부터 백엔드를 보호하는 것",
+        "검증기(validator)",
+        "재시도 카운터"
+      ],
+      "correct": 1,
+      "explanation": "40개 호출의 gather는 제한이 없으면 40개의 동시 디스패치를 열게 됩니다. 세마포어는 이 물결을 제한합니다."
+    },
+    {
+      "stage": "check",
+      "question": "멱등성 키는 왜 디스패처가 아니라 호출자가 파생(derive)하는가?",
+      "options": [
+        "캐시가 문자열을 저장할 수 없기 때문에",
+        "레지스트리가 키를 가질 수 없기 때문에",
+        "인수(args)만으로 파생하면, 인수를 공유하는 두 개의 의미적으로 다른 호출이 충돌(collide)할 수 있기 때문에",
+        "Python 해시가 불안정하기 때문에"
+      ],
+      "correct": 2,
+      "explanation": "호출자는 단계 ID, 계획자(planner)의 의도, 사용자를 알고 있습니다. 인수만으로는 안전하게 중복 제거를 수행하기에 충분한 컨텍스트가 아닙니다."
+    },
+    {
+      "stage": "post",
+      "question": "디스패치 시 스키마 실패에 매핑되는 JSON-RPC 오류 코드는 무엇인가?",
+      "options": [
+        "-32602",
+        "-32603",
+        "-32700",
+        "-32601"
+      ],
+      "correct": 0,
+      "explanation": "-32602는 Invalid params입니다. 디스패처는 핸들러가 실행되기 전에 이를 반환합니다."
+    },
+    {
+      "stage": "post",
+      "question": "멱등적인 도구에서 timeout으로 max_attempts에 도달하면 무엇이 반환되는가?",
+      "options": [
+        "결과가 없는 DispatchOk",
+        "kind=timeout 및 attempts==max_attempts인 DispatchError",
+        "예외가 발생한다",
+        "kind=internal인 DispatchError"
+      ],
+      "correct": 1,
+      "explanation": "디스패처는 타입이 지정된 오류 엔벨로프를 반환합니다. kind는 마지막 실패 모드를 반영하고, attempts는 시도 횟수를 반영합니다."
+    }
+  ]
+}
