@@ -1,0 +1,78 @@
+{
+  "lesson": "18-vllm-production-stack-lmcache",
+  "title": "프로덕션 서빙 스택 — KV 오프로딩 및 캐시 인식 라우팅",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LMCache는 vLLM 배포에서 주로 어떤 문제를 해결합니까?",
+      "options": [
+        "토크나이저 GIL 경합",
+        "네트워크 아웃바운드 필터링",
+        "콜드 스타트 이미지 풀",
+        "HBM의 KV 캐시 압력으로 인한 선점 및 동일 접두어의 재프리필"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "가변형 KV 캐시 백엔드를 도입한 vLLM API는 무엇입니까?",
+      "options": [
+        "접두어 캐싱 플래그",
+        "vLLM v0.9.0의 커넥터 API",
+        "PagedAttention v2",
+        "ChunkedPrefill API"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "vLLM 0.11.0 (2026년 1월) 릴리스는 KV 오프로드 경로에 무엇을 추가합니까?",
+      "options": [
+        "LMCache 지원 제거",
+        "FP8 KV 캐시 강제",
+        "일반적인 경우 엔진이 오프로드에서 차단되지 않도록 하는 비동기 오프로드 경로",
+        "동기 전용 오프로드"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "네이티브 CPU 오프로드 대신 LMCache를 선택해야 하는 시점은 언제입니까?",
+      "options": [
+        "CPU 전용으로 실행할 때",
+        "여러 엔진이 테넌트, LoRA 변형, 반복되는 RAG 컨텍스트 간에 접두어를 공유하여 엔진 간 재사용이 효율적일 때",
+        "단일 엔진이 HBM 압력을 받고 접두어 공유가 없을 때",
+        "KV 캐싱을 완전히 비활성화하고 싶을 때"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "KV 발자국이 HBM 용량보다 충분히 낮을 때 LMCache의 이점은 어떻게 됩니까?",
+      "options": [
+        "LMCache가 자동으로 비활성화됨",
+        "구성 설정이 기준선과 일치하며 약 3-5%의 오버헤드가 발생하고 실질적인 이점이 없음",
+        "엔진이 충돌함",
+        "처리량이 여전히 두 배로 증가함"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "LMCache는 왜 분산 서빙(Phase 17 · 17)과 결합합니까?",
+      "options": [
+        "프리필에서 디코드로 전송된 KV가 LMCache에 저장되며, 이후 쿼리는 LMCache에서 가져와 프리필을 건너뛸 수 있으므로 캐시 인식 라우터가 로컬 캐시 또는 LMCache 공유 캐시가 일치하는 엔진을 선택할 수 있음",
+        "결합하지 않음 — 상호 배타적임",
+        "LMCache가 NIXL을 대체하기 때문",
+        "LMCache가 엔진과 동일한 GPU에서 실행되기 때문"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
