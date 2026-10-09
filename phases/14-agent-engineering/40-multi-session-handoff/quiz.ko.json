@@ -1,0 +1,90 @@
+{
+  "lesson": "40-multi-session-handoff",
+  "title": "멀티 세션 핸드오프(Multi-Session Handoff)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "핸드오프 패킷(handoff packet)에서 핵심적인(load-bearing) 필드는 무엇인가요?",
+      "options": [
+        "next_action (이 필드가 없으면 문서는 핸드오프가 아니라 상태 보고서는 됩니다)",
+        "verdict_pointer",
+        "summary",
+        "commands_run"
+      ],
+      "correct": 0,
+      "explanation": "next_action을 제외한 모든 내용을 담은 핸드오프는 상태 보고서에 불과합니다. 다음 세션을 생산적으로 만드는 것은 다음에 취할 구체적인 단계입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "왜 핸드오프는 직접 작성하는 것이 아니라 생성(generate)하는 것인가요?",
+      "options": [
+        "직접 작성한 핸드오프는 힘든 날에는 생략되기 쉽습니다. 생성기는 워크벤치(workbench) 산출물을 읽고 패킷을 출력하므로, 에이전트(agent)는 생성기가 요약할 수 있는 상태로 워크벤치를 남겨두기만 하면 됩니다",
+        "Apache 2.0 라이선스가 이를 요구하기 때문입니다",
+        "생성기가 더 빠르기 때문입니다",
+        "생성기가 더 잘 암호화하기 때문입니다"
+      ],
+      "correct": 0,
+      "explanation": "자동화는 의도와 일관성 사이의 간극을 메워줍니다."
+    },
+    {
+      "stage": "check",
+      "question": "패킷(packet)은 어떤 두 가지 형식으로 전달(ship)되나요?",
+      "options": [
+        "이메일과 Slack",
+        "PDF와 PNG",
+        "YAML과 TOML",
+        "handoff.md (사람이 읽기용)와 handoff.json (기계 읽기용, 둘 다 동일한 소스 산출물에서 생성되며, 불일치(divergence)가 발생하면 JSON이 우선합니다)"
+      ],
+      "correct": 3,
+      "explanation": "사람을 위해 Markdown을, 다음 에이전트를 위해 JSON을 사용합니다. 둘 다 동일한 생성기에서 만들어집니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 교재는 컴팩션(compaction)과 핸드오프(handoff)를 어떻게 구분하나요?",
+      "options": [
+        "둘은 동일합니다",
+        "컴팩션은 비용이 들지만 핸드오프는 무료입니다",
+        "핸드오프에는 GPU가 필요합니다",
+        "컴팩션은 세션을 연장합니다. 핸드오프는 세션을 깔끔하게 종료하고 다음 세션을 새로운 컨텍스트에서 시작합니다. 패킷은 이 전환을 저렴하게 만드는 요소입니다"
+      ],
+      "correct": 3,
+      "explanation": "Hermes Issue 20372의 관점: 품질이 저하되기 전에(in-place compression) 컴팩트한 핸드오프를 작성한 후, 새로운 세션에서 재개합니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 교재는 세션을 언제 마무리(wrap up)할 것을 권장하나요?",
+      "options": [
+        "컨텍스트 예산(context budget)의 50-75% 이전, 컨텍스트가 온전할 때. 압축 아티팩트(compression artifacts)가 상태를 오염하기 전에 작성하는 것이 저렴합니다",
+        "컨텍스트가 100% 채워진 후, 당황하며 작성합니다",
+        "병합(merge) 후에만 작성합니다",
+        "자정(midnight)에만 작성합니다"
+      ],
+      "correct": 0,
+      "explanation": "일찍 마무리하면 생성기의 입력이 깨끗하게 유지됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "이 교재는 패킷 내의 피드백 로그(feedback log)를 어떻게 잘라(trim)낼 것을 권장하나요?",
+      "options": [
+        "마지막 K개 항목과 비영(non-zero) 종료 코드를 가진 모든 항목. 패킷은 작게 유지되면서 실패 기록은 보존됩니다",
+        "무작위 N개 항목",
+        "처음 K개 항목만",
+        "가장 최근 항목만"
+      ],
+      "correct": 0,
+      "explanation": "비대칭적 잘라내기(asymmetric trim): 실패 기록은 반드시 살아남아야 합니다. 꼬리 부분의 사소한 정보는 유지 비용이 저렴합니다."
+    },
+    {
+      "stage": "post",
+      "question": "멀티 에이전트(multi-agent) 세션 간 조정을 가능하게 하는 메타데이터는 무엇인가요?",
+      "options": [
+        "branch, last_known_good_commit, status (active | superseded | archived). 브랜치와 주제(topic)당 활성(active) 핸드오프는 하나만 존재해야 합니다",
+        "공용 Slack 채널",
+        "중앙 큐(central queue)",
+        "최상위 비밀 암호화(top secret encryption)"
+      ],
+      "correct": 0,
+      "explanation": "오래된(stale) 핸드오프는 멀티 에이전트 실패의 주요 원인입니다. status, branch, LKG(last known good commit)는 활성 집합을 작게 유지합니다."
+    }
+  ]
+}
