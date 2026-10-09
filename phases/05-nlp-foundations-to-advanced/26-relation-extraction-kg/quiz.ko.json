@@ -1,0 +1,102 @@
+{
+  "lesson": "26-relation-extraction-kg",
+  "title": "관계 추출 및 지식 그래프 구축",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "지식 그래프의 원자 단위(atomic unit)는 무엇인가요?",
+      "options": [
+        "토큰(Token)",
+        "품사 태그(POS tag)",
+        "(주체, 관계, 객체) 삼중항(triple)",
+        "문장"
+      ],
+      "correct": 2,
+      "explanation": "지식 그래프(KG)는 (s, r, o) 삼중항(triple)으로 정보를 저장하며, 집계된 삼중항이 그래프를 형성합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "2026년 관계 추출에서 AEVS는 무엇을 의미하나요?",
+      "options": [
+        "집계된 엔티티-값 스키마(Aggregated Entity-Value Schema)",
+        "비동기 엔티티 검증 서비스(Async Entity Validation Service)",
+        "자동 인코더 벡터 검색(Auto-Encoder Vector Search)",
+        "앵커 추출-검증-보충(Anchor-Extraction-Verification-Supplement): 앵커 스팬, 삼중항 추출, 원본 대비 검증, 커버리지 보충"
+      ],
+      "correct": 3,
+      "explanation": "AEVS는 근거 기반 관계 추출(RE)을 위한 2026년 환각(Hallucination) 완화 프레임워크입니다."
+    },
+    {
+      "stage": "check",
+      "question": "각 삼중항(triple)이 출처 정보(문서 ID + 스팬)를 포함해야 하는 이유는 무엇인가요?",
+      "options": [
+        "SPARQL이 출처 정보를 요구하기 때문",
+        "추출 속도를 높이기 때문",
+        "출처 정보가 온톨로지를 변경하기 때문",
+        "출처 정보를 통해 삼중항을 감사(audit)하고, 스팬이 원본 텍스트와 일치하지 않는 환각을 거부할 수 있기 때문"
+      ],
+      "correct": 3,
+      "explanation": "출처 정보는 감사(audit)를 가능하게 하며, AEVS 스타일의 환각 감지 핵심입니다."
+    },
+    {
+      "stage": "check",
+      "question": "관계의 정규화(canonicalization)는 무엇을 수행하나요?",
+      "options": [
+        "임베딩(Embedding)을 추가합니다",
+        "삼중항(triple)을 제거합니다",
+        "표면 동사 구(예: 'was born in', 'is a native of')를 고정된 속성 ID에 매핑하여 그래프를 쿼리 가능하게 만듭니다",
+        "문서를 번역합니다"
+      ],
+      "correct": 2,
+      "explanation": "정규화(canonicalization)는 유의어(paraphrase)를 정규 KG 속성 ID로 통합합니다."
+    },
+    {
+      "stage": "check",
+      "question": "관계 추출은 왜 일반적으로 코어퍼런스 해석(coreference resolution)이 먼저 필요하나요?",
+      "options": [
+        "'he founded Apple'과 같은 대명사는 삼중항 추출 전에 명명된 엔티티로 해석되어야 합니다",
+        "코어퍼런스 해석은 대소문자를 정규화합니다",
+        "코어퍼런스 해석은 위치를 제공합니다",
+        "코어퍼런스 해석은 임베딩(Embedding)을 추가합니다"
+      ],
+      "correct": 0,
+      "explanation": "코어퍼런스 해석이 없으면, 관계 추출은 대명사에 관계를 연결하며, 그 밑에 있는 명명된 엔티티에는 연결하지 못합니다."
+    },
+    {
+      "stage": "post",
+      "question": "개방형 정보 추출(Open IE)의 재현율(recall)을 그래프 쿼리 가능성과 교환하는 선택지는 무엇인가요?",
+      "options": [
+        "삼중항(triple)의 랜덤 샘플링",
+        "임베딩(Embedding) 전용 그래프",
+        "KG에 병합하기 전에 개방형 IE 관계를 폐쇄형 온톨로지(예: Wikidata 속성)에 매핑하는 것",
+        "NER를 건너뛰는 것"
+      ],
+      "correct": 2,
+      "explanation": "폐쇄형 온톨로지는 그래프를 쿼리 가능하게 만듭니다. 정규화(canonicalization) 단계는 하류(downstream)에서 그 비용을 상쇄합니다."
+    },
+    {
+      "stage": "post",
+      "question": "많은 프로덕션 KG가 시간 수식어(start/end time)를 사용하는 이유는 무엇인가요?",
+      "options": [
+        "RDF가 요구하기 때문",
+        "NIL 엔티티를 제거하기 위해",
+        "SPARQL을 더 빠르게 만들기 위해",
+        "많은 관계가 시간 제한적(고용주, 배우자, 역할)이며, 수식어는 시간이 지나면 낡아지는 '영원히 참'이라는 주장을 방지하기 때문"
+      ],
+      "correct": 3,
+      "explanation": "시간 제한적 관계는 수식어(예: Wikidata P580/P582)가 필요하며, 그렇지 않으면 사실이 조용히 낡아집니다."
+    },
+    {
+      "stage": "post",
+      "question": "REBEL은 무엇인가요?",
+      "options": [
+        "토크나이저(Tokenization)",
+        "코어퍼런스 모델",
+        "삼중항(triple)을 이미 Wikidata 속성 ID로 출력하는 seq2seq 관계 추출기",
+        "벡터 데이터베이스(Vector Database)"
+      ],
+      "correct": 2,
+      "explanation": "REBEL(Babelscape)은 원격 감독(distantly supervised)된 Wikidata 삼중항으로 학습된 seq2seq RE 모델입니다."
+    }
+  ]
+}
