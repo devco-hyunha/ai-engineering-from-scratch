@@ -1,0 +1,78 @@
+{
+  "lesson": "26-compliance-frameworks",
+  "title": "컴플라이언스 — SOC 2, HIPAA, GDPR, PCI-DSS, EU AI Act, ISO 42001",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "EU AI Act의 고위험 시스템에 대한 집행은 언제 시작됩니까?",
+      "options": [
+        "2024년에 이미 완전히 집행됨",
+        "2026년 8월 2일",
+        "2025년 2월 2일",
+        "2030년 1월 1일"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EU AI Act는 어떤 두 단계의 벌금 상한을 정의합니까?",
+      "options": [
+        "모든 위반에 대해 최대 €100K",
+        "고위험 시스템 의무 위반에 대해 최대 €15M 또는 전 세계 연간 매출의 3% (Art. 99(4)); 금지된 AI 관행에 대해 최대 €35M 또는 7% (Art. 99(3))",
+        "모든 위반에 대해 최대 €1M 고정",
+        "금전적 벌금 없음, 삭제 명령만"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "후처리 PII 정리가 GDPR 방어적 입장이 될 수 없는 이유는 무엇입니까?",
+      "options": [
+        "모델이 이미 데이터를 보았으므로, 실시간 추론 레이어에서의 마스킹 (LLM 호출 전)이 2026년 표준 방어적 입장입니다",
+        "GDPR은 마스킹을 완전히 금지합니다",
+        "대규모로 처리하기에는 너무 느립니다",
+        "후처리는 실시간 처리와 동일합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SOC 2 Type I과 Type II의 실질적인 차이점은 무엇입니까?",
+      "options": [
+        "Type I은 HIPAA BAA가 필요합니다",
+        "Type I이 Type II보다 더 엄격합니다",
+        "Type I은 설계 및 문서화된 통제에 대해 인증하며, Type II는 6-12개월 동안 효과적으로 운영되는 통제에 대해 인증합니다",
+        "Type II는 스타트업 전용입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "교차 프레임워크 통제 매핑이 목표로 하는 것은 무엇입니까?",
+      "options": [
+        "감사 제거",
+        "모든 프레임워크를 ISO 42001로 대체",
+        "다수의 프레임워크 요구 사항을 충족하는 단일 통제 정책 (예: 접근 로깅은 ISO 27001 A.5.15-5.18, GDPR Art. 32, HIPAA §164.312(a)에 매핑됨)",
+        "각 프레임워크마다 더 많은 개별 통제"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "HIPAA + LLM 워크로드에 대해 교훈은 무엇을 권장합니까?",
+      "options": [
+        "관리형 모델을 사용하지 말고 온프레미스 모델만 사용",
+        "PHI를 모든 제공자에게 전송; BAA는 선택 사항",
+        "HIPAA는 LLM에 적용되지 않음",
+        "서명된 BAA 없이 외부 AI 서비스로 PHI를 전송하지 마십시오; 세 주요 하이퍼스케일러와 주요 LLM API 제공자 모두 BAA를 제공합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
