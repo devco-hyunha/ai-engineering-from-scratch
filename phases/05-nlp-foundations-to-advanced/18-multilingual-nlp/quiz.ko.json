@@ -1,0 +1,102 @@
+{
+  "lesson": "18-multilingual-nlp",
+  "title": "다국어 NLP",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "제로샷(Zero-Shot) 다국어 전이(cross-lingual transfer)란 무엇을 의미합니까?",
+      "options": [
+        "번역 모델 없이 번역하는 것",
+        "병합(merge)이 0개인 토큰화",
+        "다국어 모델을 하나의 소스 언어에 대해 미세 조정(fine-tune)하고, 타겟 언어 레이블 없이 다른 언어로 평가하는 것",
+        "예시(examples)가 0개인 상태로 학습하는 것"
+      ],
+      "correct": 2,
+      "explanation": "제로샷 전이: 소스 언어로 학습하고, 타겟 언어의 지도(supervision) 없이 타겟 언어에서 실행합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "100개 언어 다국어(cross-lingual) 표준 기준선(baseline)으로 제공되는 모델 계열은 무엇입니까?",
+      "options": [
+        "GPT-2",
+        "GloVe",
+        "DistilBERT",
+        "XLM-R (예: XLM-RoBERTa-base, 270M)"
+      ],
+      "correct": 3,
+      "explanation": "XLM-R은 다국어 분류를 위한 표준적인 100개 언어 사전 학습 기준선입니다."
+    },
+    {
+      "stage": "check",
+      "question": "비영어(non-English) 타겟에 대해 영어를 소스로 사용하는 것이 항상 최상의 전이를 보장하지 않는 이유는 무엇입니까?",
+      "options": [
+        "영어 데이터가 너무 적어서",
+        "언어 유사성(유형론, 문자 체계, 형태론)이 전이 품질을 예측하며, 더 가까운 고자원(high-resource) 소스가 영어보다 성능이 더 좋을 수 있음",
+        "영어는 BPE를 사용해서",
+        "영어는 너무 짧아서"
+      ],
+      "correct": 1,
+      "explanation": "유형론적으로 관련 있는 소스(예: 인도어 계열 타겟에 대한 힌디어)는 미세 조정 소스로서 영어보다 성능이 더 좋은 경우가 많습니다."
+    },
+    {
+      "stage": "check",
+      "question": "저자원(low-resource) 언어에 대한 'fertility tax(생성률 비용)'란 무엇입니까?",
+      "options": [
+        "작은 모델이 더 느리게 학습됨",
+        "토크나이저가 유니코드(Unicode)를 처리할 수 없음",
+        "BPE가 학습을 거부함",
+        "저자원 텍스트는 영어보다 단어당 더 많은 하위 단어(subword)로 토큰화되어, 컨텍스트 윈도우(context window), 지연(latency), 용량(capacity)을 소모함"
+      ],
+      "correct": 3,
+      "explanation": "롱테일(long-tail) 언어는 훨씬 높은 fertility로 토큰화되어 컨텍스트와 학습 효율을 소모합니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 언어별(per-language) 평가가 필요하고, 집계된(aggregated) 정확도는 충분하지 않습니까?",
+      "options": [
+        "집계는 더 빠르게 실행됨",
+        "집계는 분류에만 작동함",
+        "집계는 토큰화를 무시함",
+        "집계된 수치는 다국어 모델이 평균이 시사하는 것보다 훨씬 나쁠 수 있는 롱테일(long-tail) 언어의 성능을 숨김"
+      ],
+      "correct": 3,
+      "explanation": "집계된 정확도는 저자원 언어의 낮은 성능을 가립니다. 언어별 점수는 이를 드러냅니다."
+    },
+    {
+      "stage": "post",
+      "question": "소수 예시(few-shot) 데이터로 다국어 모델을 적응(adapt)할 때 미세 조정(fine-tuning) 학습률(LR)이 중요한 이유는 무엇입니까?",
+      "options": [
+        "높은 LR은 다국어 정렬(alignment)을 붕괴시켜 모델이 사실상 영어 전용으로 축소될 수 있음",
+        "낮은 LR은 GPU를 낭비함",
+        "어휘(vocabulary)를 변경함",
+        "토크나이저가 요구함"
+      ],
+      "correct": 0,
+      "explanation": "과도한 LR은 공유 표현(shared representation)을 드리프트(drift)시킵니다. 보수적인 LR(~2e-5)은 다국어 구조를 보존합니다."
+    },
+    {
+      "stage": "post",
+      "question": "롱테일(long-tail) 문자 체계의 토크나이저 fertility를 직접적으로 완화하는 방법은 무엇입니까?",
+      "options": [
+        "불용어(stopword) 건너뛰기",
+        "바이트 폴백(byte-fallback) 사용(SentencePiece byte_fallback=True) 또는 더 넓은 문자 체계 커버리지를 가진 토크나이저 사용(예: XLM-V)",
+        "더 많은 학습 에포크(epoch)",
+        "더 낮은 배치 크기(batch size)"
+      ],
+      "correct": 1,
+      "explanation": "바이트 폴백과 더 넓은 어휘를 가진 토크나이저는 저자원 문자 체계의 fertility와 OOV(out-of-vocabulary)를 줄입니다."
+    },
+    {
+      "stage": "post",
+      "question": "다국어 모델 대신 처음부터(scratch) 단국어(monolingual) 모델을 시도하는 것이 가치 있는 경우는 언제입니까?",
+      "options": [
+        "번역에만",
+        "토크나이저가 BPE인 경우 항상",
+        "영어에 대해 항상",
+        "타겟 언어가 다국어 기준선을 능가하는 단국어 모델을 학습할 만큼 충분한 데이터를 가진 경우. 가정하기 전에 테스트하십시오"
+      ],
+      "correct": 3,
+      "explanation": "고자원 타겟에서는 단국어 학습이 다국어보다 성능이 더 좋은 경우가 있습니다. 경험적 비교가 결정합니다."
+    }
+  ]
+}
