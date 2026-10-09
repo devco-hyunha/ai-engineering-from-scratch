@@ -1,0 +1,78 @@
+{
+  "lesson": "05-eagle3-speculative-decoding",
+  "title": "프로덕션에서의 EAGLE-3 추론적 디코딩(Speculative Decoding)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "추론적 디코딩(Speculative Decoding)이 순수 디코딩 단계(plain decode)에 존재하는 격차를 활용하는 이유는 무엇인가요?",
+      "options": [
+        "디코딩 단계는 배칭(batching)의 이점을 누리지 못합니다",
+        "디코딩 단계는 메모리 바운드(memory-bound)이므로, GPU는 가중치에 대한 HBM 읽기를 기다리는 동안 대부분 유휴 상태입니다",
+        "디코딩 단계는 컴퓨팅 바운드(compute-bound)이므로, 추가 컴퓨팅은 무료입니다",
+        "디코딩 단계는 프리필(prefill)보다 더 많은 네트워크 대역폭을 필요로 합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "수락률(alpha)은 무엇을 측정하나요?",
+      "options": [
+        "초안 모델(draft model)의 지연 오버헤드",
+        "초안 모델이 제안한 토큰 중 타겟 모델이 수락한 비율",
+        "KV 캐시의 캐시 적중률",
+        "디코딩 단계 동안 사용된 GPU 메모리의 비율"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EAGLE-3는 EAGLE-2와 비교하여 무엇이 변경되어 일반적인 채팅에서 alpha를 약 0.6-0.8까지 끌어올리나요?",
+      "options": [
+        "초안 헤드(draft head)가 마지막 레이어가 아닌 여러 타겟 레이어에서 학습됩니다",
+        "동일 계열의 풀 사이즈 초안 모델을 사용합니다",
+        "GPU 대신 CPU에서 실행됩니다",
+        "검증 단계(verify step)를 완전히 제거합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "강의에 따르면, 2026년 하드웨어의 대부분에서 높은 동시성(high concurrency) 환경 하에서 추론적 디코딩이 순 음수(net negative)가 되는 alpha는 대략 어느 값 이하인가요?",
+      "options": [
+        "0.85",
+        "0.95",
+        "0.05",
+        "0.55"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "EAGLE-3를 활성화한 후, 평균 토큰 간 지연(ITL)이 감소하더라도 가장 면밀히 모니터링해야 하는 지표는 무엇인가요?",
+      "options": [
+        "GPU 메모리 사용률",
+        "콜드 스타트 시간",
+        "평균 E2E 지연",
+        "P99 ITL, 왜냐하면 수락되지 않은 초안(draft)의 두 번의 패스가 전체 배칭(full batch) 하에서 직렬화(serialized)될 수 있기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "강의에 따르면, vLLM 2026에서 추론적 디코딩이 기본값이 아닌 옵트인(opt-in)인 이유는 무엇인가요?",
+      "options": [
+        "PagedAttention과 호환되지 않기 때문입니다",
+        "Blackwell GPU에서만 작동하기 때문입니다",
+        "별도의 라이선스가 필요하기 때문입니다",
+        "수락률이 워크로드에 의존하며, alpha를 측정하지 않고 활성화하는 것은 프로덕션 안티 패턴(anti-pattern)이기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
