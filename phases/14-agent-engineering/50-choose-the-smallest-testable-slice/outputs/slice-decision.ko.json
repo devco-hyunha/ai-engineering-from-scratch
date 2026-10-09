@@ -1,0 +1,46 @@
+{
+  "required_proof": [
+    "운영자 신뢰",
+    "서비스 식별"
+  ],
+  "selected": {
+    "name": "읽기 전용 인시던트 리플레이",
+    "outcome_value": 4,
+    "uncertainty_reduced": 5,
+    "effort": 2,
+    "consequence": 1,
+    "reversible": true,
+    "proves": [
+      "서비스 식별",
+      "운영자 신뢰"
+    ],
+    "score": 3.6
+  },
+  "alternatives": [
+    {
+      "name": "프로덕션 자동 복구",
+      "outcome_value": 5,
+      "uncertainty_reduced": 4,
+      "effort": 10,
+      "consequence": 5,
+      "reversible": false,
+      "proves": [
+        "서비스 식별",
+        "운영자 신뢰"
+      ],
+      "score": 0.45
+    },
+    {
+      "name": "대시보드 목업",
+      "outcome_value": 2,
+      "uncertainty_reduced": 2,
+      "effort": 1,
+      "consequence": 1,
+      "reversible": true,
+      "proves": [
+        "운영자 신뢰"
+      ],
+      "score": 2.667
+    }
+  ]
+}
