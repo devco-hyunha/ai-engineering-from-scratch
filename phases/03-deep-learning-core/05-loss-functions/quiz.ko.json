@@ -1,0 +1,62 @@
+[
+  {
+    "question": "신경망 학습에서 손실 함수(Loss Function)는 무엇을 나타냅니까?",
+    "options": [
+      "학습률(Learning Rate) 스케줄",
+      "모델의 예측이 얼마나 틀렸는지를 측정하는 미분 가능한 지표로, 옵티마이저(Optimizer)가 이를 최소화합니다",
+      "잘못된 예측의 개수",
+      "학습 데이터셋의 크기"
+    ],
+    "correct": 1,
+    "explanation": "손실 함수(Loss Function)는 예측값과 목표값을 하나의 스칼라 값으로 매핑하며, 옵티마이저(Optimizer)는 경사 하강법(Gradient Descent)을 통해 이 값을 최소화합니다. 기울기(Gradient)를 계산할 수 있도록 미분 가능해야 합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "분류(Classification) 작업에서 MSE보다 교차 엔트로피(Cross-Entropy)가 선호되는 이유는 무엇입니까?",
+    "options": [
+      "교차 엔트로피(Cross-Entropy)는 -log(p)를 통해 확신 있는 잘못된 예측을 지수적으로 벌하며, MSE는 0과 1 근처에서 약한 기울기(Gradient)를 생성합니다",
+      "교차 엔트로피(Cross-Entropy)는 레이블이 필요하지 않습니다",
+      "MSE는 회귀(Regression)에만 작동합니다",
+      "교차 엔트로피(Cross-Entropy)는 계산 속도가 더 빠릅니다"
+    ],
+    "correct": 0,
+    "explanation": "모델이 잘못된 클래스를 확신 있게 예측할 경우(참 클래스에 대한 p가 0에 가까움), -log(p)는 거대한 손실(Loss)과 강한 기울기(Gradient)를 생성합니다. MSE는 시그모이드(Sigmoid)가 0과 1 근처에서 평평하기 때문에 동일한 상황에서 약한 기울기(Gradient)를 생성합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "이진 분류(Binary Classification)에 MSE 손실(Loss)을 사용하면 어떤 일이 발생합니까?",
+    "options": [
+      "기울기(Gradient)가 폭발합니다",
+      "학습이 즉시 발산합니다",
+      "모델이 정상적으로 학습됩니다",
+      "모델은 모든 입력에 대해 0.5를 예측하여 MSE=0.25를 달성함으로써 손실(Loss)을 최소화할 수 있으며, 이는 학습을 하지 않은 상태입니다"
+    ],
+    "correct": 3,
+    "explanation": "균형 잡힌 이진 데이터셋에서 MSE를 사용할 경우, 모든 입력에 대해 0.5를 예측하면 MSE=0.25가 되며, 이는 구별 능력 없이 달성할 수 있는 최소값입니다. 모델은 유용한 패턴을 학습하지 않고도 손실(Loss)을 충족합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "레이블 스무딩(Label Smoothing)은 무엇을 수행하며, 왜 유용합니까?",
+    "options": [
+      "학습률(Learning Rate) 스케줄을 부드럽게 만듭니다",
+      "하드 0/1 목표값을 0.1/0.9와 같은 소프트 값으로 대체하여, 과도한 확신 있는 예측을 방지하고 일반화(Generalization) 성능을 향상시킵니다",
+      "데이터셋에서 잡음 레이블을 제거합니다",
+      "손실(Loss)에 이동 평균을 적용합니다"
+    ],
+    "correct": 1,
+    "explanation": "레이블 스무딩(Label Smoothing)은 alpha=0.1일 때 목표값을 [0,0,1,0]에서 [0.025,0.025,0.925,0.025]로 변경합니다. 이는 모델이 하드 목표값을 달성하기 위해 로짓(Logits)을 무한대로 밀어붙이는 것을 방지하여, 과도한 확신(Overconfidence)을 줄입니다.",
+    "stage": "post"
+  },
+  {
+    "question": "대조 손실(Contrastive Loss, InfoNCE)에서 온도(Temperature) 매개변수(Parameter)는 어떤 역할을 합니까?",
+    "options": [
+      "유사도 분포의 날카로움을 제어합니다 -- 낮은 온도(Temperature)는 양의 샘플과 음의 샘플 사이의 더 어려운 분리를 의미합니다",
+      "음의 샘플의 개수를 설정합니다",
+      "학습률(Learning Rate)을 제어합니다",
+      "임베딩(Embedding) 차원을 결정합니다"
+    ],
+    "correct": 0,
+    "explanation": "온도(Temperature)는 소프트맥스(Softmax) 전에 유사도 점수를 나눕니다. 낮은 온도(Temperature)(예: 0.07)는 모델이 양의 샘플과 음의 샘플을 명확히 분리해야 하는 더 날카로운 분포를 생성합니다. 높은 온도(Temperature)는 더 관대합니다.",
+    "stage": "post"
+  }
+]
