@@ -1,0 +1,102 @@
+{
+  "lesson": "07-pos-tagging-parsing",
+  "title": "품사 태깅 및 통사 분석",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "품사 태깅의 목표는 무엇인가요?",
+      "options": [
+        "문장을 번역하는 것",
+        "감정을 감지하는 것",
+        "고유 명사를 추출하는 것",
+        "각 토큰에 문법적 범주(명사, 동사 등)를 할당하는 것"
+      ],
+      "correct": 3,
+      "explanation": "품사 태깅은 각 토큰에 품사를 라벨링합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "언어 간 작업의 기본 태그셋은 무엇인가요?",
+      "options": [
+        "Penn Treebank",
+        "CoNLL-2003",
+        "Stanford Dependencies",
+        "Universal Dependencies"
+      ],
+      "correct": 3,
+      "explanation": "Universal Dependencies는 언어에 독립적인 더 거친 17개 태그셋을 제공합니다."
+    },
+    {
+      "stage": "check",
+      "question": "빅램 HMM 품사 태거는 무엇을 모델링하나요?",
+      "options": [
+        "의존 관계 분석",
+        "P(tags)만",
+        "P(tag | previous tag) 전이와 P(word | tag) 방출을 모델링하며, Viterbi로 디코딩",
+        "임베딩 유사성"
+      ],
+      "correct": 2,
+      "explanation": "빅램 HMM은 품사 전이와 단어 방출을 사용하며, Viterbi는 확률이 가장 높은 시퀀스를 찾습니다."
+    },
+    {
+      "stage": "check",
+      "question": "Viterbi 알고리즘은 HMM 태거에 대해 무엇을 계산하나요?",
+      "options": [
+        "전이 행렬",
+        "각 품사의 한계 확률",
+        "순방향 확률만",
+        "품사 격자에 대한 동적 프로그래밍을 통해 확률이 가장 높은 단일 품사 시퀀스"
+      ],
+      "correct": 3,
+      "explanation": "Viterbi는 O(n * |T|^2) 동적 프로그래밍을 통해 argmax 시퀀스를 찾습니다."
+    },
+    {
+      "stage": "check",
+      "question": "의존 관계 분석은 무엇을 생성하나요?",
+      "options": [
+        "NP/VP/PP 라벨의 구성 성분 트리",
+        "각 단어가 하나의 머리 단어와 라벨링된 문법적 관계를 가지는 트리",
+        "공참조 체인",
+        "평평한 BIO 시퀀스"
+      ],
+      "correct": 1,
+      "explanation": "의존 관계 분석은 단어별 (머리, 관계) 간선을 제공하며, 구성 성분 분석은 중첩된 구 구조를 제공합니다."
+    },
+    {
+      "stage": "post",
+      "question": "PTB 품사 태깅의 정확도 상한이 약 97-98%인 이유는 무엇인가요?",
+      "options": [
+        "모델은 어떤 작업에서도 98%를 초과할 수 없음",
+        "Universal Dependencies는 98%로 상한이 정해져 있음",
+        "인간 주석자가 약 97%의 시간 동안만 일치하므로, ~98% 이상의 모델은 테스트 데이터에 과적합될 가능성이 있음",
+        "하드웨어의 한계"
+      ],
+      "correct": 2,
+      "explanation": "주석자 간 불일치가 달성 가능한 정확도를 제한하며, 매우 높은 수치는 종종 과적합을 신호합니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년 LLM 파이프라인에서 품사 태깅이 여전히 중요한 이유는 무엇인가요?",
+      "options": [
+        "토큰화에 필수적임",
+        "어간화, 측면 기반 감정 분석, 쿼리 분해, 구조화된 출력 검증 및 언어 간 전이가 모두 품사나 의존 관계 분석을 소비함",
+        "트랜스포머를 대체함",
+        "LLM은 이것 없이는 실행할 수 없음"
+      ],
+      "correct": 1,
+      "explanation": "LLM이 산문을 생성하더라도, 품사와 의존 관계 분석은 많은 구조화된 후속 작업에 입력됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "대부분의 생산 환경 품사/분석 작업에서 어떤 라이브러리를 선택해야 하나요?",
+      "options": [
+        "scikit-learn",
+        "spaCy (또는 최고 정확도나 더 넓은 언어 커버리지를 위해 stanza/trankit)",
+        "NumPy",
+        "직접 파서를 작성"
+      ],
+      "correct": 1,
+      "explanation": "spaCy는 빠른 생산 등급의 품사 + 의존 관계 파서를 제공하며, stanza/trankit은 더 넓은 언어를 커버합니다."
+    }
+  ]
+}
