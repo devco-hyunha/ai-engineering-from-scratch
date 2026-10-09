@@ -1,0 +1,78 @@
+{
+  "lesson": "19-ai-gateways",
+  "title": "AI 게이트웨이 — LiteLLM, Portkey, Kong AI Gateway, Bifrost",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의에서 AI 게이트웨이의 핵심 역할은 무엇인가요?",
+      "options": [
+        "검색을 위한 벡터 데이터베이스",
+        "모델 미세 조정(Fine-tuning) 서비스",
+        "라우팅, 폴백, 재시도, 속도 제한, 시크릿 참조, 관측 가능성(Observability), 가드레일(Guardrails)을 하나의 API 뒤에 통합하여 앱과 모델 제공자 사이에 위치하는 프로세스",
+        "로그 전용 사이드카"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Kong의 벤치마크는 LiteLLM에 대해 어떤 규모 상한을 보고하나요?",
+      "options": [
+        "LiteLLM은 벤치마크할 수 없다",
+        "10k RPS를 넘어서도 선형적으로 확장된다",
+        "8 GB 메모리에서 약 2000 RPS 부근에서 한계에 도달하며, 지속적 부하 하에서 연쇄적 장애가 발생한다",
+        "50 RPS에서 상한에 도달한다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Kong의 벤치마크에 따르면, 동일한 CPU 조건에서 Kong AI Gateway는 Portkey와 LiteLLM보다 얼마나 빠른가요?",
+      "options": [
+        "동일하다",
+        "약 10% 및 20% 빠르다",
+        "Portkey보다 228%, LiteLLM보다 859% 빠르다",
+        "둘보다 느리다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 강의는 20-40 ms의 지연 오버헤드와 가드레일(Guardrails) / PII 마스킹 / 제일브레이크(Jailbreak) 탐지에 중점을 둔 게이트웨이를 어디로 위치시키나요?",
+      "options": [
+        "Cloudflare AI Gateway",
+        "Portkey",
+        "Kong AI Gateway",
+        "LiteLLM"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의는 자가 호스팅(self-hosted) 게이트웨이와 관리형(managed) 게이트웨이 결정의 강제 요인(forcing function)으로 무엇을 제시하나요?",
+      "options": [
+        "지원되는 제공자의 수",
+        "요청당 비용",
+        "데이터 상주(Data Residency) 요건",
+        "게이트웨이가 오픈 소스인지 여부"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "SLA가 TTFT P99 < 100 ms일 때 예산 내에 유지되는 게이트웨이는 어디인가요?",
+      "options": [
+        "Portkey만",
+        "모든 게이트웨이",
+        "LiteLLM만",
+        "Kong (~3-8 ms) 또는 Cloudflare/Vercel 엣지 게이트웨이(~1-3 ms); Portkey의 20-40 ms는 너무 무겁다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
