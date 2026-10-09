@@ -1,0 +1,78 @@
+{
+  "lesson": "69-end-to-end-rag-system",
+  "title": "엔드투엔드 RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation)) 시스템",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "6개 구성 요소로 이루어진 RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation)) 파이프라인에서 통합 테스트가 유일한 정직한 평가인 이유는 무엇입니까?",
+      "options": [
+        "각 구성 요소가 서로 다른 머신에서 실행되기 때문입니다",
+        "청커(chunker)가 유일하게 중요한 구성 요소이기 때문입니다",
+        "프로덕션 서버는 개별 단계 테스트를 실행할 수 없기 때문입니다",
+        "각 단계의 고립된 지표는 다음 단계와의 상호작용 때문에 시스템 전체의 지표를 예측하지 못하므로, 동일한 qrels에 대해 파이프라인 전체를 엔드투엔드로 실행하는 것이 유일한 유효한 평가입니다"
+      ],
+      "correct": 3,
+      "explanation": "고립된 성과는 합쳐지지 않으며, 파이프라인은 결합된 출력으로 평가됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "답변 생성기에서 낮은 신뢰도 시 거절(refuse-on-low-confidence) 기능의 역할은 무엇입니까?",
+      "options": [
+        "모든 거절을 디스크에 기록합니다",
+        "리랭커의 top-1 점수가 코퍼스 특화 임계값보다 낮을 때 '모르겠습니다'를 반환하여, 검색된 컨텍스트가 쿼리에 응답하지 않을 때 환각(Hallucination)된 답변을 방지합니다",
+        "100 토큰보다 긴 쿼리를 차단합니다",
+        "다른 청커(chunker)를 사용하여 재검색을 트리거합니다"
+      ],
+      "correct": 1,
+      "explanation": "일관되게 낮은 rank-1 점수는 코퍼스에 이 쿼리에 대한 답이 없다는 모델의 신호입니다. 환각(Hallucination)을 생성하기보다 거절해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "리랭커 학습 삼중(triples)이 평가 쿼리와 분리되어 유지되는 이유는 무엇입니까?",
+      "options": [
+        "학습-테스트 누수를 방지하기 위해서입니다. 평가 쿼리가 리랭커 학습 세트와 겹치면 평가 결과가 마법처럼 보일 수 있으며, 회귀 테스트는 실제 드리프트를 감지하지 못합니다",
+        "RRF (상호 랭킹 융합)(Reciprocal Rank Fusion (RRF))가 겹치는 목록을 융합할 수 없기 때문입니다",
+        "크로스 인코더(cross-encoder)가 서로 다른 어휘(Vocabulary)를 요구하기 때문입니다",
+        "GPU 메모리를 절약하기 위해서입니다"
+      ],
+      "correct": 0,
+      "explanation": "엄격한 분리는 기본 위생입니다. 그렇지 않으면 리랭커 지표가 프로덕션 동작을 예측하지 못합니다."
+    },
+    {
+      "stage": "check",
+      "question": "자기 종료 데모의 exit code의 목적은 무엇입니까?",
+      "options": [
+        "Python에서 요구되기 때문입니다",
+        "리랭커가 이를 학습 신호로 사용하기 때문입니다",
+        "미관상 목적입니다",
+        "지표 임계값에 대한 통과/실패를 인코딩합니다. CI 스모크 테스트는 데모를 파이프라인에 연결하고 비-0 exit code를 병합 게이트로 사용할 수 있습니다"
+      ],
+      "correct": 3,
+      "explanation": "exit code 0은 임계값을 충족했음을 의미하고, 비-0은 회귀를 의미합니다. 이것이 CI 게이트가 소비하는 계약입니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 파이프라인에서 인용 앵커(citation anchor)는 어떤 형태입니까?",
+      "options": [
+        "JSON-RPC 엔벨로프",
+        "[doc_id:chunk_index]",
+        "소스 URL을 포함한 Markdown 링크",
+        "임베딩 벡터 그 자체"
+      ],
+      "correct": 1,
+      "explanation": "생성기는 (doc_id, chunk_index) 튜플을 앵커로 방출하여, 다운스트림 UI나 감사자가 모든 주장을 그 출처 청크로 매핑할 수 있게 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "모의(mock) 생성기에는 보이지 않으며, 출시 전에 실제 LLM (대규모 언어 모델)(LLM (Large Language Model))으로 테스트해야 하는 실패 모드(Failure Mode)는 무엇입니까?",
+      "options": [
+        "지연(Latency)",
+        "환각(Hallucination): 모의 생성기는 검색된 청크의 텍스트만 방출하고 내용을 발명할 수 없지만, 실제 LLM (대규모 언어 모델)(LLM (Large Language Model))은 청크를 무시하고 그라운딩(Grounding)되지 않은 답변을 생성할 수 있습니다",
+        "토큰화(Tokenization)",
+        "벡터 인덱스 크기"
+      ],
+      "correct": 1,
+      "explanation": "모의 생성기는 생성기의 환각(Hallucination) 콘텐츠에 대한 안전성을 테스트할 수 없으며, 실제 모델로 교체해야만 테스트할 수 있습니다."
+    }
+  ]
+}
