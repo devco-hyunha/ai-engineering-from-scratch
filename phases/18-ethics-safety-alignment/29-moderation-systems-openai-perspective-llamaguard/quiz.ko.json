@@ -1,0 +1,78 @@
+{
+  "lesson": "29-moderation-systems-openai-perspective-llamaguard",
+  "title": "모더레이션 시스템 - OpenAI, Perspective, Llama Guard",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "OpenAI의 omni-moderation-latest (2024)는 무엇인가요?",
+      "options": [
+        "C2PA 워터마킹 엔드포인트",
+        "텍스트와 이미지를 한 번의 호출로 처리하는 GPT-4o 기반 모더레이션 분류기로, 13개 카테고리 응답 스키마(괴롭힘, 증오, 자해, 성적인 내용, 폭력, 불법적인 내용 및 하위 카테고리)를 반환하며 대부분의 개발자에게 무료로 제공",
+        "RLHF 보상 모델",
+        "추론 중심의 프론티어 모델"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OpenAI 모더레이션의 주요 최상위 카테고리에 포함되지 않는 것은 무엇인가요?",
+      "options": [
+        "선거 간섭",
+        "폭력",
+        "자해",
+        "괴롭힘"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2026년 표준 모더레이션 패턴의 세 가지 계층은 무엇인가요?",
+      "options": [
+        "입력 모더레이션(생성 전), 출력 모더레이션(생성 후), 커스텀 모더레이션(도메인 규칙)",
+        "망원경식 / 페리스코프식 / 현미경식",
+        "프로브 / 탐지기 / 하네스",
+        "토크나이저 / 모델 / 디토크나이저"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Perspective API (Google Jigsaw)는 주로 무엇을 점수화하도록 설계되었나요?",
+      "options": [
+        "사용자 만족도에 대한 보상",
+        "추론 품질",
+        "워터마크 강도",
+        "독성(심각한 독성, 모욕, 욕설, 위협, 신원 공격 하위 차원 포함)을 LLM 이전 시대 콘텐츠 모더레이션의 기준선으로 점수화"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "입력 전용 모더레이션의 실패 모드 중 하나는 무엇인가요?",
+      "options": [
+        "모델 출력 실패나 환각을 잡지 못하며, 인코딩 공격(레슨 12-14)은 입력 분류기를 완전히 우회할 수 있음",
+        "GPU에서 실행할 수 없음",
+        "항상 합법적인 콘텐츠를 차단함",
+        "출력 분류기가 필요하지 않게 됨"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Azure Content Moderator의 폐기 및 마이그레이션 대상은 무엇인가요?",
+      "options": [
+        "Llama Guard 4에 통합됨",
+        "Perspective API로 대체됨",
+        "2024년 2월에 폐기, 2027년 3월 15일 은퇴; 마이그레이션 대상은 Azure AI Content Safety (LLM 기반, Azure OpenAI와 통합)",
+        "대체품 없이 즉시 폐기됨"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
