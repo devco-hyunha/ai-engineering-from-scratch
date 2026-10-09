@@ -1,0 +1,90 @@
+{
+  "lesson": "16-openai-agents-sdk",
+  "title": "OpenAI Agents SDK: 핸드오프, 가드레일, 추적",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "OpenAI Agents SDK의 다섯 가지 기본 요소(primitives)는 무엇인가요?",
+      "options": [
+        "Plan, Worker, Solver, Evaluator, Reflector",
+        "Tool, Prompt, Model, Memory, Trace",
+        "Agent, Handoff, Guardrail, Session, Tracing",
+        "Node, Edge, Reducer, Checkpointer, Subgraph"
+      ],
+      "correct": 2,
+      "explanation": "SDK는 이 다섯 가지 기본 요소를 제공합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "모델은 핸드오프(handoff)를 어떻게 인식하나요?",
+      "options": [
+        "특별한 토큰으로",
+        "시스템 메시지로",
+        "사용자 정의 HTTP 엔드포인트로",
+        "transfer_to_<agent_name>라는 이름의 도구로"
+      ],
+      "correct": 3,
+      "explanation": "핸드오프는 transfer_to_<agent> 형태의 이름을 가진 도구로 노출됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "SDK는 세 가지 가드레일(guardrail) 유형을 제공합니다. 그 유형은 무엇인가요?",
+      "options": [
+        "Hard, soft, and best-effort guardrails",
+        "Pre, post, and inline guardrails",
+        "Input, output, and tool guardrails",
+        "Static, dynamic, and federated guardrails"
+      ],
+      "correct": 2,
+      "explanation": "입력 가드레일(첫 번째 에이전트), 출력 가드레일(마지막 에이전트), 도구 가드레일(각 함수 도구)이 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "병렬(parallel) 가드레일과 차단(blocking) 가드레일의 차이점은 무엇인가요?",
+      "options": [
+        "병렬 가드레일은 메인 LLM과 함께 실행됩니다(낮은 지연 시간, 트리핑 시 토큰 낭비); 차단 가드레일은 먼저 실행됩니다(트리핑 시 토큰 낭비 없음)",
+        "차단 가드레일은 출력에만 작동합니다",
+        "병렬 가드레일은 항상 더 많은 비용이 듭니다",
+        "차단 가드레일은 비동기이고, 병렬 가드레일은 동기입니다"
+      ],
+      "correct": 0,
+      "explanation": "병렬 가드레일은 트리핑 시 토큰 낭비를 감수하며 지연 시간을 최적화합니다. 차단 가드레일은 토큰을 절약하지만 지연 시간을 추가합니다."
+    },
+    {
+      "stage": "check",
+      "question": "SDK에서 추적(tracing)은 어떻게 활성화되나요?",
+      "options": [
+        "호스팅된 대시보드에서만",
+        "기본적으로 꺼져 있으며, 에이전트별로 활성화해야 합니다",
+        "OpenTelemetry 수집기를 통해서만",
+        "기본적으로 켜져 있으며, OPENAI_AGENTS_DISABLE_TRACING=1 환경 변수로 비활성화할 수 있습니다"
+      ],
+      "correct": 3,
+      "explanation": "LLM, 도구, 핸드오프, 가드레일에 대한 스팬(span)이 기본적으로 생성되며, 환경 변수로 이를 비활성화할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "핸드오프 드리프트(handoff drift)란 무엇이며, 강의에서는 이를 어떻게 완화할 것을 권장하나요?",
+      "options": [
+        "에이전트 A가 B에게 핸드오프하고, B가 다시 A에게 핸드오프하는 루프가 발생합니다. 홉(hop) 카운터를 추가하세요",
+        "세션이 넘쳐흐릅니다. 오래된 세션을 아카이브하세요",
+        "추적이 뒤처집니다. 스팬(span) 볼륨을 줄이세요",
+        "가드레일이 동기화되지 않습니다. 재학습하세요"
+      ],
+      "correct": 0,
+      "explanation": "홉 카운터는 전송 체인이 무한히 루프하기 전에 이를 제한합니다."
+    },
+    {
+      "stage": "post",
+      "question": "내장 도구(built-in tools)가 가드레일 공백(gap)이 되는 이유는 무엇인가요?",
+      "options": [
+        "내장 도구는 핸드오프를 지원하지 않습니다",
+        "도구 가드레일은 함수 도구(function tools)에만 발동됩니다. 내장 도구(파일 리더, 웹 페치)는 별도의 정책이 필요합니다",
+        "내장 도구는 추적할 수 없습니다",
+        "내장 도구는 함수 도구보다 느립니다"
+      ],
+      "correct": 1,
+      "explanation": "도구별 가드레일은 함수 도구를 커버합니다. 내장 도구는 별도의 정책 계층이 필요합니다."
+    }
+  ]
+}
