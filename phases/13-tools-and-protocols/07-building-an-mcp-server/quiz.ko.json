@@ -1,0 +1,78 @@
+{
+  "lesson": "07-building-an-mcp-server",
+  "title": "MCP 서버 구축: 상태 비저장(Stateless) Python 및 TypeScript",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "최신 MCP 서버는 클라이언트 기능(capabilities)을 어디에서 읽습니까?",
+      "options": [
+        "Mcp-Session-Id에서",
+        "첫 번째 initialize 호출에서",
+        "모든 현재 요청에서",
+        "프로세스 환경에서"
+      ],
+      "correct": 2,
+      "explanation": "MCP 2026-07-28은 모든 요청의 params._meta에 클라이언트 기능을 담습니다."
+    },
+    {
+      "stage": "check",
+      "question": "최신 서버는 어떤 메서드를 구현해야 합니까?",
+      "options": [
+        "initialize",
+        "server/discover",
+        "resources/subscribe",
+        "shutdown"
+      ],
+      "correct": 1,
+      "explanation": "server/discover는 최신 서버에서 필수이며, 클라이언트가 다른 메서드를 먼저 호출할 수도 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "tools/list의 성공적인 결과에 필수적인 필드는 무엇입니까?",
+      "options": [
+        "protocolVersion 및 tools",
+        "resultType, ttlMs, cacheScope, tools",
+        "initialized 및 tools",
+        "sessionId 및 tools"
+      ],
+      "correct": 1,
+      "explanation": "최신 목록 결과는 타입이 지정되고 캐시 가능합니다."
+    },
+    {
+      "stage": "check",
+      "question": "서버는 왜 도구를 결정적으로(deterministically) 정렬해야 합니까?",
+      "options": [
+        "캐시 및 모델 컨텍스트를 안정화하기 위해",
+        "세션을 생성하기 위해",
+        "프로토콜을 협상하기 위해",
+        "권한 인증을 대체하기 위해"
+      ],
+      "correct": 0,
+      "explanation": "안정적인 순서는 동등한 레지스트리가 동등한 응답을 생성하도록 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "유효한 도구 호출이 실행되었지만 도메인 작업이 실패했습니다. 어떤 형태가 적합합니까?",
+      "options": [
+        "notifications/initialized",
+        "HTTP DELETE",
+        "isError가 true인 완전한 도구 결과",
+        "새로운 서버 요청"
+      ],
+      "correct": 2,
+      "explanation": "도구 수준의 실패는 content와 isError를 통해 모델에 가시적으로 유지됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "stdio 서버의 전송(transports) 수명을 종료해야 하는 것은 무엇입니까?",
+      "options": [
+        "stdin의 EOF",
+        "GET 요청",
+        "필수 shutdown RPC",
+        "Mcp-Session-Id 만료"
+      ],
+      "correct": 0,
+      "explanation": "EOF는 이식 가능한 stdio 종료 신호입니다. 이는 최신 프로토콜 세션을 닫지 않습니다."
+    }
+  ]
+}
