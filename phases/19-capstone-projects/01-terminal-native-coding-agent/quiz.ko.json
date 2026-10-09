@@ -1,0 +1,90 @@
+{
+  "lesson": "01-terminal-native-coding-agent",
+  "title": "캡스톤 01 — 터미널 네이티브 코딩 에이전트",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026년 터미널 코딩 에이전트들이 공유하는 루프 형태는 무엇인가요?",
+      "options": [
+        "가져오기, 임베딩, 랭킹, 합성",
+        "계획, 실행, 관찰, 복구",
+        "학습, 평가, 배포, 모니터링",
+        "인코딩, 디코딩, 샘플링, 스트리밍"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "하네스가 각 작업을 E2B 또는 Daytona 샌드박스 내에서 실행하는 이유는 무엇인가요?",
+      "options": [
+        "에이전트 루프에 GPU 접근을 허용하기 위해",
+        "모델 제공업체의 속도 제한을 우회하기 위해",
+        "파일시스템 및 도구 실행을 호스트로부터 격리하여 완료 시 워크트리를 제거할 수 있도록 하기 위해",
+        "콜드 캐시에서 토큰 처리량을 벤치마킹하기 위해"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "파괴적인 셸 명령이 실행되기 전에 차단하는 데 가장 자연스러운 내장 훅은 무엇인가요?",
+      "options": [
+        "Stop",
+        "PostToolUse",
+        "PreToolUse",
+        "SessionStart"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 캡스톤은 각 도구 결과를 약 4k 토큰으로 제한합니다. 이것이 주로 방지하는 실패 모드(FAILURE MODE)는 무엇인가요?",
+      "options": [
+        "도구 호출 추적에 대한 모델의 과적합(Overfitting)",
+        "악성 셸 메타문자를 통한 샌드박스 탈출",
+        "재개된 세션 전반에 걸친 오래된 계획 상태",
+        "도구가 큰 덤프를 반환할 때의 컨텍스트 오염 및 비용 폭주"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PreCompact 훅은 150k 토큰 지점에서 무엇을 수행하나요?",
+      "options": [
+        "실행을 취소하고 사용자 예산을 환불합니다",
+        "진행을 백업하기 위해 현재 브랜치를 강제 푸시합니다",
+        "이전 상태 블록으로 이전 턴들을 요약하여 계획과 새로운 관찰 결과가 여전히 fits 하도록 합니다",
+        "백킹 모델을 더 작은 초안 모델로 전환합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 캡스톤은 30개 이슈의 SWE-bench Pro 하위 집합에서 하네스를 어떤 기준선과 비교하나요?",
+      "options": [
+        "Aider",
+        "mini-swe-agent",
+        "Live-SWE-agent",
+        "OpenCode"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 산출물이 측정하는 지표 세트는 무엇인가요?",
+      "options": [
+        "WER, MOS, 및 첫 오디오 출력",
+        "MRR@10 및 nDCG@10",
+        "퍼플렉시티, BLEU, 및 ROUGE",
+        "pass@1, 작업당 턴 수, 및 작업당 비용"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
