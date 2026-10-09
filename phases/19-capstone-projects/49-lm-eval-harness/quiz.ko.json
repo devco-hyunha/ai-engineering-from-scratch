@@ -1,0 +1,78 @@
+{
+  "lesson": "49-lm-eval-harness",
+  "title": "언어 모델 평가 하네스",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "하네스의 JSONL 형식에서 작업 예제를 정의하는 네 가지 필드는 무엇인가요?",
+      "options": [
+        "id, prompt, targets, metric 및 지표가 필요로 하는 보조 데이터를 위한 선택적 extras dict",
+        "name, score, payload, vendor",
+        "weights와 bias",
+        "input과 output"
+      ],
+      "correct": 0,
+      "explanation": "JSONL 줄은 계약(contract)입니다. extras 필드를 통해 code_exec 지표가 prompt를 오염시키지 않고 io_pairs를 전달할 수 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "지표 함수의 시그니처가 (prediction, targets, extras) -> float인 이유는 무엇인가요?",
+      "options": [
+        "정수(integer)를 반환하기 때문",
+        "model 객체가 필요하기 때문",
+        "단일 타겟 문자열 일치, 다중 참조 rouge-l, 그리고 보조 데이터를 사용하는 code_exec을 처리하는 가장 작은 시그니처이며, 점수를 비교 가능한 [0.0, 1.0] 범위로 유지하기 때문",
+        "무작위 선택"
+      ],
+      "correct": 2,
+      "explanation": "[0,1] 범위의 float는 작업별 및 전체 점수가 해석 가능한 평균임을 의미합니다. extras 슬롯은 code_exec이 io_pairs를 가져오는 방법입니다."
+    },
+    {
+      "stage": "check",
+      "question": "code_exec 지표는 악성 예측에 어떻게 저항하나요?",
+      "options": [
+        "샌드박스 컨테이너를 사용함",
+        "stripped __builtins__ dict로 예측을 실행하여 네임스페이스가 몇 개의 안전한 이름만 노출하도록 함; import 문은 importer가 범위(scope)에 없으므로 실패함",
+        "저항하지 않음",
+        "def를 포함하는 모든 것을 거부함"
+      ],
+      "correct": 1,
+      "explanation": "교훈에서의 안전한 네임스페이스는 builtins를 몇 개의 이름으로 줄여줍니다. 테스트는 import os가 실행되는 대신 점수 0.0을 반환한다고 주장합니다."
+    },
+    {
+      "stage": "check",
+      "question": "모델 어댑터 추상화 abstraction는 무엇을 제공하나요?",
+      "options": [
+        "하네스 내의 유일한 모델 특정 코드입니다; 어댑터를 교체하여 새로운 벤더를 가리키면, 작업(tasks), 지표(metrics), 러너(runner), 리더보드 형식은 그대로 유지됩니다",
+        "torch에 의해 요구됨",
+        "아무것도 제공하지 않음",
+        "모델을 더 빠르게 만듦"
+      ],
+      "correct": 0,
+      "explanation": "교훈의 ToyAdapter는 결정적 패턴 매처입니다. 실제 벤더용 HttpAdapter는 동일한 generate(prompts) -> list[str] 인터페이스를 가집니다."
+    },
+    {
+      "stage": "check",
+      "question": "리더보드 JSON이 leaderboard.v1과 같은 schema 문자열을 포함하는 이유는 무엇인가요?",
+      "options": [
+        "미래의 형식 변경이 버전을 올리고, 다운스트림 대시보드가 조용히 깨지는 대신 이를 기준으로 분기(dispatch)할 수 있도록 하기 위해",
+        "파일을 압축하기 위해",
+        "SEO를 위해",
+        "무작위임"
+      ],
+      "correct": 0,
+      "explanation": "교훈 47의 체크포인트 payload와 동일한 트릭입니다. schema 필드는 마이그레이션 훅(migration hook)입니다."
+    },
+    {
+      "stage": "post",
+      "question": "리더보드를 읽을 때, overall_score는 어떻게 계산되며, 두 실행을 비교할 때 무엇을 주의해야 하나요?",
+      "options": [
+        "무작위 샘플",
+        "정답 수의 합",
+        "작업별 점수(각각 [0,1])의 평균; 비교할 때, 점수가 이동한 작업의 작업별 예측도 diff해야 합니다. 점수만으로는 어떤 예제가 후퇴(regressed)했는지 숨겨지기 때문입니다",
+        "최고 작업 점수"
+      ],
+      "correct": 2,
+      "explanation": "작업별 평균은 모든 작업에 동일한 가중치를 부여합니다. --include-per-example을 사용하여 점수 옆에 예측 수준의 증거를 유지함으로써 후퇴를 시각적으로 확인할 수 있습니다."
+    }
+  ]
+}
