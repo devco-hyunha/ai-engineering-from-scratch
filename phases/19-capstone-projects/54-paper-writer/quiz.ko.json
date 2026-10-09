@@ -1,0 +1,78 @@
+{
+  "lesson": "54-paper-writer",
+  "title": "논문 작성자",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "왜 작성자는 본문을 작성하기 전에 섹션, 그림, 인용을 데이터로 선언합니까?",
+      "options": [
+        "BibTeX가 순방향 참조를 해석할 수 없기 때문입니다",
+        "LaTeX가 순방향 선언을 요구하기 때문입니다",
+        "모델이 시스템 프롬프트를 필요로 하기 때문입니다",
+        "구조가 계약이기 때문입니다: 하네스가 본문 생성 전에 완전성을 검증할 수 있습니다"
+      ],
+      "correct": 3,
+      "explanation": "구조 우선 방식은 하네스가 본문 생성기를 호출하기 전에 고유성, 인용 커버리지, 그림 커버리지를 검증할 수 있게 합니다. 골격이 계약입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "그림 주입 단계는 실험 매니페스트로부터 무엇을 생성합니까?",
+      "options": [
+        "안정적인 ID와 논문 디렉토리에 정규화된 경로를 가진 Figure 레코드 목록",
+        "참고문헌 스텁",
+        "아티팩트에서 컴파일된 PDF",
+        "그림 설명이 포함된 모델 프롬프트"
+      ],
+      "correct": 0,
+      "explanation": "read_experiment_manifest는 Figure 레코드를 반환합니다. ID는 결정적이며, 경로는 정규화되고, 캡션은 매니페스트에서 가져옵니다."
+    },
+    {
+      "stage": "check",
+      "question": "어떤 검증 실패가 파일을 쓰기 전에 PaperValidationError를 발생시킵니까?",
+      "options": [
+        "200 단어보다 긴 초록",
+        "저자 수가 홀수인 경우",
+        "참고문헌에 선언되지 않은 키를 인용하는 섹션",
+        "디스크에 존재하지 않는 그림 경로"
+      ],
+      "correct": 2,
+      "explanation": "참고문헌 키 누락, 그림 ID 중복, 빈 제목, 빈 초록, 알 수 없는 그림 참조는 모두 PaperValidationError를 발생시킵니다. 디스크 상의 존재 여부는 LaTeX 컴파일러가 나중에 강제하므로 검증하지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 본문 생성기는 PaperWriter의 메서드가 아니라 PaperWriter에 주입되는 호출 가능한 객체입니까?",
+      "options": [
+        "테스트가 작성자를 건드리지 않고 모델 호출 대신 결정적인 MockProseGenerator로 교체할 수 있기 때문입니다",
+        "LaTeX가 콜백을 요구하기 때문입니다",
+        "데이터 클래스가 상태를 유지할 수 없기 때문입니다",
+        "Python은 메서드가 Paper를 인자로 받는 것을 허용하지 않기 때문입니다"
+      ],
+      "correct": 0,
+      "explanation": "작성자는 본문 생성기를 의존성으로 받습니다. 테스트는 MockProseGenerator로 대체합니다. 프로덕션은 모델 호출로 대체합니다. 작성자는 변경되지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "PaperWriter.write는 성공 시 어떤 세 개의 파일을 생성합니까?",
+      "options": [
+        "paper.tex, references.bib, manifest.json",
+        "manifest.json, prose.txt, paper.pdf",
+        "paper.tex, paper.pdf, references.bib",
+        "outline.json, paper.tex, figures.tar"
+      ],
+      "correct": 0,
+      "explanation": "paper.tex는 LaTeX 소스입니다. references.bib는 참고문헌입니다. manifest.json은 비평가 루프가 다음에 읽는 구조화된 아티팩트입니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 매니페스트는 LaTeX 파일뿐만 아니라 작성자의 계약의 일부입니까?",
+      "options": [
+        "다운스트림 도구(비평가, 대시보드)는 LaTeX가 아닌 구조화된 매니페스트를 읽기 때문입니다",
+        "BibTeX가 허용하는 유일한 파일이 manifest.json이기 때문입니다",
+        "LaTeX는 파싱하기에는 너무 크기 때문입니다",
+        "LaTeX 컴파일러가 타입이 지정되지 않은 섹션을 거부하기 때문입니다"
+      ],
+      "correct": 0,
+      "explanation": "매니페스트는 다운스트림 단계에 대한 안정적인 인터페이스입니다. 비평가와 대시보드는 manifest.json을 검사합니다. LaTeX는 사람이 읽을 수 있는 아티팩트이며, 기계 인터페이스가 아닙니다."
+    }
+  ]
+}
