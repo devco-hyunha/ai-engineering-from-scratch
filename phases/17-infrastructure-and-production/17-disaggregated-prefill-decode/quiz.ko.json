@@ -1,0 +1,78 @@
+{
+  "lesson": "17-disaggregated-prefill-decode",
+  "title": "분리형 프리필/디코딩 — NVIDIA Dynamo 및 llm-d",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "프리필(prefill)과 디코딩(decode)이 서로 다른 최적의 GPU 구성을 요구하는 이유는 무엇인가요?",
+      "options": [
+        "프리필은 AMD에서 실행해야 하고 디코딩은 NVIDIA에서 실행해야 합니다",
+        "두 단계가 서로 다른 모델 가중치(Weight)를 사용합니다",
+        "프리필은 행렬 곱 연산 처리량에 기반한 연산 집중(compute-bound)이고, 디코딩은 HBM 대역폭에 기반한 메모리 집중(memory-bound)이므로, 이를 한곳에 배치하면 한쪽 자원이 낭비됩니다",
+        "디코딩은 더 많은 네트워크 대역폭을 요구합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "NVIDIA Dynamo는 프리풀 풀(pool)과 디코딩 풀 사이에서 KV 캐시를 이동하기 위해 어떤 전송 방식을 사용하나요?",
+      "options": [
+        "gRPC 양방향(bidi) 전용",
+        "NIXL (RDMA/InfiniBand가 사용 가능할 경우, TCP 폴백(fallback))",
+        "단순 HTTP",
+        "NFS 공유 파일 시스템"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "교재에 따르면 분리형(disaggregation) 아키텍처가 효과가 없는 경우는 언제인가요?",
+      "options": [
+        "8K+ 접두어(prefix)를 사용하는 RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation))",
+        "Blackwell에서의 MoE (혼합 전문가)(MoE (Mixture of Experts)) 워크로드",
+        "공유 시스템 프롬프트(System Prompt)를 사용하는 멀티 테넌트 서빙(Model Serving)",
+        "프롬프트가 512 토큰(Token) 미만이고 출력이 200 토큰 미만인 경우로, KV 전송 비용이 이득을 압도합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Dynamo와 llm-d의 핵심적인 아키텍처 차이는 무엇인가요?",
+      "options": [
+        "Dynamo는 오픈 소스이고 llm-d는 클로즈드 소스입니다",
+        "Dynamo는 CPU에서 실행되고 llm-d는 GPU에서 실행됩니다",
+        "Dynamo는 vLLM/SGLang/TRT-LLM 위에 구축된 스택 상위의 오케스트레이션(Orchestration)이고, llm-d는 프리필/디코딩/라우터를 독립적인 서비스(Service)로 구성한 Kubernetes 네이티브 아키텍처입니다",
+        "Dynamo는 AMD가 필요하고 llm-d는 NVIDIA가 필요합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Dynamo의 어떤 구성 요소가 SLO (서비스 수준 목표)(SLO (Service Level Objective))를 위해 프리필:디코딩 비율을 자동으로 조정하나요?",
+      "options": [
+        "Marlin 커널(kernel)",
+        "Planner Profiler 및 SLA Planner",
+        "Cluster Autoscaler (자동 확장(Autoscaling))",
+        "사이드카(sidecar) 프록시(proxy) 및 Envoy 필터(filter)"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "분리형 아키텍처는 Phase 17 · 11의 캐시 인식(cache-aware) 라우팅과 어떻게 상호작용하나요?",
+      "options": [
+        "분리형 아키텍처는 KV 캐시 재사용을 완전히 비활성화합니다",
+        "캐시 인식 라우터(cache-aware router)는 요청을 해당 접두어(prefix)를 이미 보유한 디코딩 풀에 배치할 수 있으며, 캐시 미스(miss) 시 프리필 -> 디코딩 흐름으로 진행되므로 두 기법이 시너지를 냅니다",
+        "두 기법은 상호 배타적입니다",
+        "캐시 인식 라우팅은 한곳에 배치(colocated)된 서빙에만 적용됩니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
