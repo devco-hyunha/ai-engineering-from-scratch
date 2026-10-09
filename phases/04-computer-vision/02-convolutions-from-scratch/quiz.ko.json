@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "224x224 RGB 이미지를 kernel_size=3, stride=1, padding=0인 컨볼루션(conv)에 입력합니다. 출력 공간 크기는 얼마입니까?",
+      "options": [
+        "222x222",
+        "224x224",
+        "74x74",
+        "112x112"
+      ],
+      "correct": 0,
+      "explanation": "출력 크기 = (H - K + 2P) / S + 1 = (224 - 3 + 0) / 1 + 1 = 222. 패딩이 없으면 모든 3x3 컨볼루션은 각 축의 가장자리에서 한 픽셀씩 줄어 총 2픽셀만큼 특징 맵(feature map)을 축소합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "컨볼루션(conv) 레이어가 in_channels=3, out_channels=64, kernel_size=3이며 bias가 있습니다. 학습 가능한 매개변수(parameter)의 개수는 몇 개입니까?",
+      "options": [
+        "576",
+        "1,792",
+        "1,728",
+        "192"
+      ],
+      "correct": 1,
+      "explanation": "C_out * C_in * K * K + C_out = 64 * 3 * 3 * 3 + 64 = 1,728 + 64 = 1,792. +C_out는 출력 채널마다 하나의 bias를 의미합니다. 동일한 입력(224*224*3 -> 64 = 약 9.6M 매개변수)에 대한 dense layer와 비교해 보면, 왜 컨볼루션이 이미지에 대한 올바른 사전(prior)인지 알 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 현대 CNN(합성곱 신경망)(CNN (Convolutional Neural Network))은 단일 5x5 또는 7x7 conv보다 3x3 conv의 스택(stack)을 선호합니까?",
+      "options": [
+        "3x3은 패딩을 지원하는 유일한 커널(kernel) 크기입니다",
+        "큰 커널은 GPU 레지스터를 넘칩니다",
+        "3x3 conv는 하드웨어 가속을 지원하며, 더 큰 커널은 지원되지 않습니다",
+        "두 개의 3x3 conv는 더 적은 매개변수(2 * 9 vs 25)로 동일한 5x5 수용 영역(receptive field)을 커버하며, 그 사이에 추가적인 비선형성(non-linearity)을 더합니다"
+      ],
+      "correct": 3,
+      "explanation": "3x3 conv를 스택하면 하나의 큰 conv와 동일한 수용 영역을 가지면서 매개변수가 적고 비선형성이 많아져 표현력이 증가합니다. VGG가 이를 경험적으로 증명했으며, 모든 현대 계열(ResNet, ConvNeXt)이 이 설계를 계승했습니다."
+    },
+    {
+      "stage": "post",
+      "question": "im2col 변환은 실제로 무엇을 수행합니까?",
+      "options": [
+        "배치(batch) 내의 모든 이미지를 단일 2D 매트릭스로 연결(concatenate)합니다",
+        "입력에서 커널 크기의 수용 창(receptive window)을 모두 추출하여 열(column)로 쌓아 컨볼루션을 단일 매트릭스 곱(matrix multiply)으로 만듭니다",
+        "float32 픽셀을 int8로 변환하여 더 빠른 연산을 수행합니다",
+        "GPU 캐시에 맞추기 위해 이미지를 압축(compress)합니다"
+      ],
+      "correct": 1,
+      "explanation": "im2col은 입력을 재구성하여 각 열이 하나의 평탄화된 receptive field가 되도록 합니다. 커널을 행(row)으로 평탄화하면 컨볼루션이 cols @ w_flat.T, 즉 단일 GEMM 호출로 줄어들며, GPU는 이를 Python의 4중 루프보다 수천 배 빠르게 실행합니다. 모든 프로덕션(pro) conv 라이브러리는 이 변형의 일종입니다."
+    },
+    {
+      "stage": "post",
+      "question": "네 개의 3x3 conv를 스택(stack)합니다(모두 stride 1, 풀링(pooling) 없음). 최종 레이어의 뉴런(neuron)의 receptive field는 얼마입니까?",
+      "options": [
+        "3x3 — 각 conv는 3x3입니다",
+        "5x5 — 두 conv가 5x5를 만들며, 깊이는 도움이 되지 않습니다",
+        "9x9 — 모든 conv가 각 측면에 2를 더합니다: 1 + 4*(3-1) = 9",
+        "15x15 — 모든 conv가 receptive field를 세 배로 만듭니다"
+      ],
+      "correct": 2,
+      "explanation": "stride 1인 L개의 K x K conv를 스택할 경우, receptive field = 1 + L * (K - 1)입니다. L=4, K=3이면 1 + 4*2 = 9가 됩니다. stride가 있는 경우에도 동일한 공식이 일반화되며, receptive field는 strided layer를 통해 곱셈적으로 증가합니다. 이것이 다운샘플링(down-sampling)이 있는 깊은 네트워크가 10~15 블록으로 전체 이미지를 커버할 수 있는 이유입니다."
+    }
+  ]
+}
