@@ -1,0 +1,90 @@
+{
+  "lesson": "29-production-runtimes",
+  "title": "프로덕션 런타임: 큐, 이벤트, 크론",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "강의에서 나열한 6가지 런타임 형태는 무엇인가요?",
+      "options": [
+        "Map, filter, reduce, fold, scan, group",
+        "요청-응답, 스트리밍, 내구성 있는 실행(Durable Execution), 큐 기반, 이벤트 기반, 스케줄링",
+        "REST, gRPC, GraphQL, WebSocket, SSE, MQTT",
+        "Read, write, exec, fork, exit, wait"
+      ],
+      "correct": 1,
+      "explanation": "이것은 6가지 런타임 형태입니다. 프레임워크를 선택하기 전에 형태를 선택하세요."
+    },
+    {
+      "stage": "pre",
+      "question": "요청-응답이 부적합한 경우는 언제인가요?",
+      "options": [
+        "내부 서비스일 때",
+        "작업이 약 30초 이상 걸리고 사용자가 연결을 끊는 동안 워커가 쌓일 때",
+        "REST API일 때",
+        "1초 분류 작업일 때"
+      ],
+      "correct": 1,
+      "explanation": "동기식 HTTP는 짧은 작업에만 적합합니다. 긴 작업은 큐/내구성 있는 실행(Durable Execution)/이벤트 형태가 필요합니다."
+    },
+    {
+      "stage": "check",
+      "question": "내구성 있는 실행(Durable Execution)의 핵심 속성은 무엇인가요?",
+      "options": [
+        "낮은 토큰 비용",
+        "빠른 추론(Inference)",
+        "네이티브 음성 지원",
+        "모든 단계 후 상태가 체크포인트(Checkpoint)로 저장되어, 실패 시 런타임이 마지막 성공 단계에서 재개할 수 있음"
+      ],
+      "correct": 3,
+      "explanation": "체크포인트(Checkpoint) 및 재개가 차별점입니다. LangGraph는 강의의 참고 자료입니다."
+    },
+    {
+      "stage": "check",
+      "question": "긴 기간(long-horizon) 에이전트(Agent)에 큐 기반 런타임을 정당화하는 Anthropic의 관찰은 무엇인가요?",
+      "options": [
+        "작업은 동기식으로 실행되어야 합니다",
+        "작업은 항상 5초 안에 완료됩니다",
+        "컴퓨터 사용 발표: 작업당 수십에서 수백 단계가 정상입니다",
+        "크론(Cron)이 모든 것을 해결합니다"
+      ],
+      "correct": 2,
+      "explanation": "Anthropic은 작업당 수십에서 수백 단계가 정상이라고 지적했습니다. 그 워크로드에는 큐 또는 내구성 있는 실행(Durable Execution) 런타임이 필요합니다."
+    },
+    {
+      "stage": "check",
+      "question": "강의에서 '관측 가능성(Observability)은 하중을 지탱한다'는 것은 무엇을 의미하나요?",
+      "options": [
+        "제공자가 청구에 이를 요구합니다",
+        "로그가 보기 좋습니다",
+        "디스크가 가득 찹니다",
+        "OTel GenAI 스팬(span)과 Langfuse/Phoenix/Opik 백엔드 없이는 40번째 단계에서 실패한 다단계 에이전트(Agent)를 디버깅할 수 없습니다"
+      ],
+      "correct": 3,
+      "explanation": "다단계 에이전트(Agent)에 관측 가능성(Observability)은 선택 사항이 아닙니다. 디버깅과 처음부터 재생하는 것의 차이입니다."
+    },
+    {
+      "stage": "post",
+      "question": "큐 워커가 죽은 편지 큐(DLQ)를 가져야 하는 이유는 무엇인가요?",
+      "options": [
+        "DLQ는 작업을 더 빠르게 만듭니다",
+        "DLQ 없이는 실패한 작업이 조용히 사라집니다",
+        "DLQ는 암호화됩니다",
+        "DLQ는 AWS에 의해 요구됩니다"
+      ],
+      "correct": 1,
+      "explanation": "DLQ 없는 실패한 작업은 사라집니다. DLQ는 실패한 작업을 위한 주차장입니다."
+    },
+    {
+      "stage": "post",
+      "question": "강의는 크론(Cron) 형태의 에이전트(Agent)와 무엇을 짝지을 것을 권장하나요?",
+      "options": [
+        "실패한 야간 실행이 다음 틱(tick)에 재개되도록 내구성 있는 실행(Durable Execution)",
+        "WebRTC",
+        "GPU 자동 확장(Autoscaling)",
+        "스트리밍 SSE"
+      ],
+      "correct": 0,
+      "explanation": "크론(Cron) + 내구성 있는 실행(Durable Execution)은 실패한 스케줄링된 실행에서 깔끔하게 복구합니다."
+    }
+  ]
+}
