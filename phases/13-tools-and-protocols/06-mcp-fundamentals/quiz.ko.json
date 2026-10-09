@@ -1,0 +1,78 @@
+{
+  "lesson": "06-mcp-fundamentals",
+  "title": "MCP 기초: 상태 비저장 요청과 JSON-RPC",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "두 개의 MCP 2026-07-28 요청 사이에 프로토콜 상태를 생성하는 것은 무엇인가요?",
+      "options": [
+        "HTTP 연결",
+        "프로토콜 코어에는 아무것도 없음",
+        "Mcp-Session-Id",
+        "stdio 프로세스"
+      ],
+      "correct": 1,
+      "explanation": "현대 프로토콜 코어는 상태 비저장(Stateless)입니다. 각 요청은 자체 버전과 기능을 포함합니다."
+    },
+    {
+      "stage": "check",
+      "question": "모든 현대적 요청에서 필수인 두 개의 params._meta 필드는 무엇인가요?",
+      "options": [
+        "clientInfo 및 cacheScope",
+        "protocolVersion 및 clientCapabilities",
+        "sessionId 및 capabilities",
+        "serverInfo 및 ttlMs"
+      ],
+      "correct": 1,
+      "explanation": "프로토콜 버전과 클라이언트 기능이 필수입니다. 클라이언트 식별 정보는 권장됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "사전 발견(up-front discovery)을 위해 모든 현대적 MCP 서버가 구현해야 하는 메서드는 무엇인가요?",
+      "options": [
+        "tools/list",
+        "initialize",
+        "server/discover",
+        "notifications/initialized"
+      ],
+      "correct": 2,
+      "explanation": "server/discover는 지원되는 버전, 기능, 지침 및 서버 식별 정보를 알립니다."
+    },
+    {
+      "stage": "check",
+      "question": "오류 코드 -32022는 무엇을 의미하나요?",
+      "options": [
+        "내부 오류",
+        "헤더 불일치",
+        "메서드를 찾을 수 없음",
+        "지원되지 않는 프로토콜 버전"
+      ],
+      "correct": 3,
+      "explanation": "UnsupportedProtocolVersionError는 요청된 버전과 서버가 지원하는 버전을 포함합니다."
+    },
+    {
+      "stage": "post",
+      "question": "MCP 2026-07-28에서 ttlMs와 cacheScope가 필요한 결과는 무엇인가요?",
+      "options": [
+        "JSON-RPC 오류",
+        "tools/list 결과",
+        "tools/call 결과",
+        "취소 알림"
+      ],
+      "correct": 1,
+      "explanation": "목록 결과와 resources/read는 필수 캐시 힌트를 가진 캐시 가능한 결과입니다."
+    },
+    {
+      "stage": "post",
+      "question": "서버는 현재 요청에 대한 기능을 어떻게 선택해야 하나요?",
+      "options": [
+        "Mcp-Session-Id에서 읽기",
+        "프로세스에서 추론하기",
+        "첫 번째 요청의 선언을 재사용하기",
+        "현재 요청 메타데이터에서 읽기"
+      ],
+      "correct": 3,
+      "explanation": "서버는 연결이나 이전 요청 상태에서 현대적 기능을 추론해서는 안 됩니다."
+    }
+  ]
+}
