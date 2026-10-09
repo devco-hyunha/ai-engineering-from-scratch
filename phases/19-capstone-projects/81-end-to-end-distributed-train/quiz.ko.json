@@ -1,0 +1,78 @@
+{
+  "lesson": "81-end-to-end-distributed-train",
+  "title": "엔드투엔드 분산 학습",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "각 레슨에 자체 테스트가 이미 있는데, 왜 캡스톤 프로젝트가 중요한가요?",
+      "options": [
+        "구성(Composition)은 독립적인 속성입니다. 개별 요소는 단위 테스트를 통과할 수 있지만, 통합 실행 시 데드락이 발생하거나 손실(loss)가 발산하거나 메모리가 증가할 수 있습니다.",
+        "미관상 이유",
+        "속도가 느려짐",
+        "채점이 쉬워짐"
+      ],
+      "correct": 0,
+      "explanation": "엔드투엔드 테스트는 개별 단위 테스트로는 잡을 수 없는 연결(wiring) 버그를 포착합니다. 이는 렌더부스(rendezvous), 배리어 순서, gather 계약 등을 포함합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "데모는 어떤 네 가지 불변 조건(invariants)을 검증하나요?",
+      "options": [
+        "속도",
+        "초당 토큰 수 (TPS)",
+        "하드웨어",
+        "(a) 20 스텝까지 손실(loss)이 NaN 없이 실행됨, (b) 모든 랭크(rank)의 매개변수(norm)가 일치함, (c) 랭크별 옵티마이저 메모리가 ZeRO-1 공식과 일치함, (d) 10 스텝 체크포인트가 바이트 단위로 동일하게 재로드됨"
+      ],
+      "correct": 3,
+      "explanation": "각 불변 조건은 서로 다른 구성 버그를 포착합니다. NaN은 발산(divergence)을, 매개변수 일치(norm-agree)는 동기화 드리프트(sync drift)를, 메모리 조건은 샤딩(sharding) 버그를, 체크포인트 조건은 쓰기 원자성(write atomicity)을 포착합니다."
+    },
+    {
+      "stage": "check",
+      "question": "왜 모델이 MLP가 아닌 작은 GPT인가요?",
+      "options": [
+        "필수 요구사항",
+        "멋져 보임",
+        "GPT는 MLP가 숨길 수 있는 LayerNorm 런닝 통계, 임베딩 임베딩 gradient shape, softmax+cross-entropy 엣지 케이스를 추가합니다.",
+        "속도가 빠름"
+      ],
+      "correct": 2,
+      "explanation": "MLP의 gradient sync는 레슨 77에서 검증되었습니다. 캡스톤 프로젝트는 실제 연산에서의 구성(composition)을 증명하기 위해 더 많은 엣지 케이스를 가진 모델이 필요합니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 맥락에서 '자기 종료(self-terminating)'는 무엇을 의미하나요?",
+      "options": [
+        "프로세스가 스스로 종료됨",
+        "고정된 스텝 수(20), 완료 시 exit 0, 인간 개입 루프(HITL) 없음. 만약 어떤 부분이 데드락에 빠지면 데모가 반환되지 않으며 CI가 이를 포착합니다.",
+        "크래시 복구",
+        "수동 조작"
+      ],
+      "correct": 1,
+      "explanation": "exit 0으로 종료되는 유한한 실행은 테스트 리그(test rig)가 종료를 단언(assert)할 수 있게 합니다. while-True 루프는 데드락을 숨길 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "데모는 DDP와 ZeRO를 어떻게 결합하나요?",
+      "options": [
+        "ZeRO만 사용",
+        "동시에 둘 다 사용",
+        "초기화 시 DDP 스타일의 broadcast로 매개변수 동기화, ZeRO-1의 reduce_scatter+allgather가 optimiser.step을 대체. DDP의 gradient allreduce는 ZeRO의 reduce_scatter에 흡수됨",
+        "DDP만 사용"
+      ],
+      "correct": 2,
+      "explanation": "ZeRO-1은 reduce_scatter를 통해 gradient sync를 담당하므로, DDP의 별도 allreduce는 필요하지 않습니다. 초기화 시의 broadcast는 유일하게 남는 DDP 전용 호출입니다."
+    },
+    {
+      "stage": "post",
+      "question": "왜 프로덕션에서는 스텝 수 대신 벽시계(wall-clock) 체크포인트 주기(cadence)를 사용하나요?",
+      "options": [
+        "더 깔끔해 보임",
+        "속도가 빠름",
+        "NCCL의 필수 요구사항",
+        "스텝 시간은 시퀀스 길이와 마이크로배치 수에 따라 변동합니다. 10분 주기는 모델 크기와 무관하게 동일한 연산량을 포착합니다."
+      ],
+      "correct": 3,
+      "explanation": "레슨에서는 명확성을 위해 스텝 기반을 사용하지만, 프로덕션 실행은 일반적으로 벽시계 시간으로 5~15분마다 저장합니다."
+    }
+  ]
+}
