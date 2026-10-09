@@ -1,0 +1,78 @@
+{
+  "lesson": "07-tensorrt-llm-blackwell",
+  "title": "하드웨어 특화 추론 컴파일 — Blackwell에서의 FP8 및 NVFP4",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "비교 가능한 120B급 워크로드에서 Blackwell + TRT-LLM + Dynamo와 H100 + vLLM 간의 토큰 백만 개당 비용 격차는 대략 어느 정도인가요?",
+      "options": [
+        "약 2배",
+        "약 7배",
+        "약 1.1배",
+        "약 100배"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Blackwell에서 KV 캐시를 NVFP4가 아닌 FP8로 유지할 것을 권장하는 이유는 무엇인가요?",
+      "options": [
+        "NVFP4 KV 캐시는 아직 어떤 엔진에서도 지원되지 않습니다",
+        "KV 캐시는 넓은 동적 범위를 가지며, FP4 양자화는 어텐션 점수에서 치명적인 정확도 손실을 유발합니다",
+        "FP8은 FP4보다 메모리를 적게 사용합니다",
+        "FP8은 NVLink 5가 지원하는 유일한 정밀도입니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "TRT-LLM은 Blackwell의 어떤 기능을 활용하여 학습 후 변환 단계 없이 모델을 로드할 수 있게 합니까?",
+      "options": [
+        "BF16 KV 캐시",
+        "FP64 어텐션",
+        "bitsandbytes를 통한 INT2 가중치",
+        "모델 제공자가 제공하는 Day-0 FP4 가중치"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "TRT-LLM 스택을 선택할 때의 주요한 트레이드오프는 무엇인가요?",
+      "options": [
+        "완전 자율적인 복구 조치(requirements)가 필요합니다",
+        "MoE 모델을 서빙할 수 없습니다",
+        "소규모 환경에서만 작동합니다",
+        "NVIDIA 하드웨어에 종속됩니다 — AMD, Intel, ARM은 지원되지 않습니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Blackwell의 일반적인 구성으로 설명되는 정밀도 조합은 무엇인가요?",
+      "options": [
+        "모든 것을 BF16으로",
+        "가중치 NVFP4, 활성화 NVFP4, KV 캐시 FP8, 어텐션 누적기 FP32",
+        "가중치 INT8, 활성화 FP32, KV 캐시 INT4",
+        "가중치 FP4, KV 캐시 FP4, 어텐션 INT8"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "NVFP4 가중치 변환으로 인해 MATH 정확도가 몇 포인트 하락하는 추론 중심 워크로드의 경우, 권장 사항은 무엇인가요?",
+      "options": [
+        "AMD MI300X로 전환",
+        "추론적 디코딩(Speculative Decoding) 비활성화",
+        "모델별로 평가 세트에서 작업 품질을 검증; 팀은 종종 FP8 가중치 + FP4 활성화 조합을 사용하거나 H200에서 전체 FP8을 유지합니다",
+        "비용 절감이 우세하므로 NVFP4를 배포"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
