@@ -1,0 +1,78 @@
+{
+  "lesson": "37-loading-pretrained-weights",
+  "title": "사전 학습된 가중치 로드",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "로더가 이름 맵(name map)을 필요로 하는 이유는 무엇인가요?",
+      "options": [
+        "공개된 GPT-2 가중치는 wte, wpe, h.N.attn.c_attn과 같은 이름을 사용하며, 로컬 모델은 tok_embed, pos_embed, blocks.N.attn.qkv를 사용합니다. 로더는 이 둘을 서로 변환합니다.",
+        "Safetensors 파일은 암호화되어 있습니다.",
+        "사전 학습된 텐서와 로컬 매개변수는 동일한 이름을 공유합니다.",
+        "Torch가 이를 요구합니다."
+      ],
+      "correct": 0,
+      "explanation": "두 가지 명명 규칙은 서로 다른 역사적 배경을 가지고 있으며, 맵은 레이어별로 확장된 리터럴 사전(literal dict)입니다."
+    },
+    {
+      "stage": "check",
+      "question": "conv1d 전치(transpose)란 무엇이며, 어떤 텐서에 이것이 필요합니까?",
+      "options": [
+        "모든 가중치 텐서",
+        "공개된 GPT-2는 c_attn, c_proj, c_fc 가중치를 tensorflow conv1d 레이아웃으로 저장하며, 이는 nn.Linear.weight가 기대하는 형태의 전치(transpose)입니다. 로더는 할당 과정에서 .t()를 호출합니다.",
+        "임베딩만",
+        "LayerNorm 스케일만"
+      ],
+      "correct": 1,
+      "explanation": "세 가지 접미사가 전치되어야 합니다. 편향(bias)과 LayerNorm은 이미 올바른 형태를 가지고 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "LM head가 safetensors 파일에 없는 이유는 무엇인가요?",
+      "options": [
+        "너무 크기 때문입니다.",
+        "별도의 파일에서 로드됩니다.",
+        "logits로부터 런타임에 계산됩니다.",
+        "가중치 공유(weight tying): LM head는 토큰 임베딩(wte)과 저장 공간을 공유하므로, wte를 로드한 후 lm_head.weight = tok_embed.weight로 별칭(aliasing)을 설정하면 헤드가 복원됩니다."
+      ],
+      "correct": 3,
+      "explanation": "wte가 로드된 후 lm_head.weight = tok_embed.weight를 설정하면 별칭이 복원됩니다. 복사(copying)하면 매개변수 수가 두 배가 됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "로더는 형태(shape) 불일치(mismatch)가 발생하면 어떻게 처리합니까?",
+      "options": [
+        "더 작은 텐서를 패딩(pads)합니다.",
+        "프로세스를 충돌(crashes)시킵니다.",
+        "LoadReport.shape_mismatch에 불일치를 기록하고 할당을 거부하여, 로컬 매개변수를 건드리지 않습니다.",
+        "더 큰 텐서를 잘라냅니다(truncates)."
+      ],
+      "correct": 2,
+      "explanation": "반만 로드된 모델은 조용히 실패하는 기계입니다. 할당을 거부하는 것은 보고서를 정확히 유지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "데모의 스텁(stub) 픽스처(fixture)가 실제 GPT-2 다운로드가 아닌 이유는 무엇인가요?",
+      "options": [
+        "실제 파일은 safetensors 형식이 아닙니다.",
+        "실제 가중치는 암호화되어 있습니다.",
+        "데모는 오프라인에서 빠르게 실행되어야 합니다. 스텁은 정확한 사전 학습 명명 규칙을 사용하므로 로더 코드 경로가 동일하며, 실제 파일로 교체해도 로더에는 아무런 변화가 없습니다.",
+        "Safetensors는 큰 텐서를 저장할 수 없습니다."
+      ],
+      "correct": 2,
+      "explanation": "동일한 코드 경로, 더 작은 페이로드. 로더는 둘 다에 대해 작동합니다."
+    },
+    {
+      "stage": "post",
+      "question": "로드 전후에 샘플을 생성하는 이유는 무엇인가요?",
+      "options": [
+        "추론 속도를 측정하기 위해",
+        "난수 시드(random seed)를 설정하기 위해",
+        "로드 후 샘플이 로드 전 샘플과 동일하다면, 로드가 모델을 변경하지 않았다는 의미이며, 이는 매핑이 모든 텐서를 조용히 놓쳤다는 뜻입니다.",
+        "GPU 캐시를 워밍업(warm up)하기 위해"
+      ],
+      "correct": 2,
+      "explanation": "샌ity 생성은 가장 저렴한 게이트입니다. 변경되지 않는 샘플 지문(fingerprint)은 LoadReport 요약이 단독으로 잡아내지 못하는 깨진 로드를 노출합니다."
+    }
+  ]
+}
