@@ -1,0 +1,78 @@
+{
+  "lesson": "27-finops-llms",
+  "title": "LLM을 위한 FinOps — 단위 경제학 및 멀티 테넌트 귀속",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "전통적인 FinOps가 LLM 비용에서 실패하는 이유는 무엇인가요?",
+      "options": [
+        "LLM은 비용이 들지 않습니다",
+        "클라우드 제공업체가 항목별 명세를 거부합니다",
+        "LLM 청구서는 항상 무료입니다",
+        "비용은 자원 가동 시간(resource-uptime)이 아닌 토큰 거래(token-transactions)이며, 태그가 API 호출에서 자동으로 전파되지 않으므로 호출 지점에서 사용자/작업/테넌트를 명시적으로 기록해야 합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 강의가 첫날부터 계측(instrumenting)을 요구하는 세 가지 귀속 차원은 무엇인가요?",
+      "options": [
+        "제공업체, 모델, API 버전",
+        "지역, 가용 영역(AZ), 데이터센터",
+        "사용자별(user_id), 작업별(task_id + route), 테넌트별(tenant_id)",
+        "GPU, CPU, RAM"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "비용 귀속 시 분리해야 할 네 가지 토큰 계층은 무엇인가요?",
+      "options": [
+        "GPU, CPU, RAM, 스토리지",
+        "캐시, 모델, 게이트웨이, 관측 가능성",
+        "입력, 출력, 네트워크, 디스크",
+        "프롬프트, 도구, 메모리, 응답"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "강제 실행(enforcement) 사다리에서 킬 스위치(kill-switch) 트리거는 무엇인가요?",
+      "options": [
+        "1분 내 지출이 $1 초과",
+        "임의의 5xx 응답",
+        "테넌트 지출의 z-score가 기준선 대비 4 초과; 테넌트를 자동 일시중지하고 온콜(on-call) 담당자에게 페이지 알림",
+        "레이턴시 P50 > 2초"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의는 $/M 토큰 대신 어떤 단위 지표를 권장하나요?",
+      "options": [
+        "초당 비용",
+        "GPU 시간당 비용",
+        "제품 결과당 비용 (예: 해결된 지원 티켓당 비용, 생성된 기사당 비용, 성공한 에이전트 작업당 비용)",
+        "게이트웨이당 비용"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의가 성숙한 팀이 사용하는 가장 정확한 귀속 패턴으로 지목하는 것은 무엇인가요?",
+      "options": [
+        "태그 및 집계만 사용",
+        "모델 기반 할당",
+        "텔레메트리 조인(telemetry joiner) — 추적(traces)을 추적 ID(trace IDs)를 통해 청구서와 조인(join)",
+        "샘플링 및 외삽(extrapolation)"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
