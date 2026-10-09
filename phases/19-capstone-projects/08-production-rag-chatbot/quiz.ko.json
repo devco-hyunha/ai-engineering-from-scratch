@@ -1,0 +1,90 @@
+{
+  "lesson": "08-production-rag-chatbot",
+  "title": "캡스톤 08 — 규제 대상 산업용 프로덕션 RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation)) 챗봇",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "규제 대상 산업의 RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation)) 챗봇에서 프롬프트 캐싱이 그토록 중요한 이유는 무엇입니까?",
+      "options": [
+        "환각(Hallucination)을 완전히 제거합니다",
+        "60-80%의 적중률로 안정적 접두어 토큰에 할인율을 적용하여 쿼리당 비용을 3-5배 절감합니다",
+        "벡터 데이터베이스(Vector Database)의 필요성을 없앱니다",
+        "리랭커(Reranker) 단계의 재현율을 개선합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "각 요청의 캐시 헤더와 캐시되지 않은 접미사에는 각각 무엇이 포함됩니까?",
+      "options": [
+        "캐시 크기를 맞추기 위한 랜덤 텍스트 패딩",
+        "검색된 문서만",
+        "사용자 질문이 먼저, 시스템 프롬프트(System Prompt)가 마지막",
+        "시스템 프롬프트(System Prompt)와 정적 정책은 캐시 헤더에, 리랭킹된 컨텍스트는 캐시 확장으로, 사용자 질문은 캐시되지 않은 접미사로 처리합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "검색 계층은 GDPR이나 HIPAA와 같은 관할권 태그를 어떻게 준수합니까?",
+      "options": [
+        "지역별로 사용자 질문을 재작성합니다",
+        "생성 후 응답만 차단합니다",
+        "국가별로 별도의 인덱스를 실행합니다",
+        "역할 및 관할권 필터가 하이브리드 검색(Hybrid Retrieval) 병합 전에 적용되어, 사용자의 범위 밖에 있는 청크는 리랭킹되지 않습니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "합성 단계는 출력물을 어떤 다층 가드레일(Guardrails) 조합을 통해 통과시킵니까?",
+      "options": [
+        "출력 PII 정규식만",
+        "입력에만 Llama Guard 4 적용",
+        "Llama Guard 4, NeMo Guardrails 정책 레일, Presidio PII 스크럽, 그리고 인용 강제",
+        "단일 LLM (대규모 언어 모델)(LLM (Large Language Model)) 판사의 충실성 체크"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "드리프트 대시보드는 무엇을 알람합니까?",
+      "options": [
+        "기저 LLM (대규모 언어 모델)(LLM (Large Language Model)) 제공자의 변경",
+        "200ms를 초과하는 지연",
+        "검색 품질 저하, 예를 들어 nDCG 또는 인용 점수의 주간 대비 5% 감소",
+        "인덱스에 추가된 모든 새 문서"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "산출물의 정확성 평가 기준을 게이트하기 위해 사용되는 골든 세트의 크기는 얼마나 됩니까?",
+      "options": [
+        "인용이 포함된 전문가 라벨링된 질문/답변 쌍 200개",
+        "데모 쿼리 5개",
+        "합성 질문 2000개",
+        "질문 20개"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "턴(turn)마다 온라인으로 추적되는 RAGAS 점수는 무엇입니까?",
+      "options": [
+        "BLEU, ROUGE, METEOR",
+        "토큰 수와 비용",
+        "충실성, 답변 관련성, 컨텍스트 정밀도",
+        "처리량, GPU 사용률, 큐 깊이"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
