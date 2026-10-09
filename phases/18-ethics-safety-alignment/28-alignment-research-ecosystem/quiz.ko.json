@@ -1,0 +1,78 @@
+{
+  "lesson": "28-alignment-research-ecosystem",
+  "title": "정렬 연구 생태계 - MATS, Redwood, Apollo, METR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MATS는 무엇을 수행하며, 그 규모는 대략 어느 정도인가요?",
+      "options": [
+        "ML 정렬 및 이론 학자(MATS): 2021년 이후 527명 이상의 학자를 배출한 연구 멘토링 프로그램으로, 180편 이상의 논문을 발표했으며, 2025년 이전 졸업생의 약 80%가 안전/보안 분야에서 활동 중입니다",
+        "보상 모델 훈련 서비스",
+        "EU가 소유한 프론티어 안전 연구소",
+        "AI 수출 라이선스를 발급하는 규제 기관"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Redwood Research는 어떤 의제를 도입했나요?",
+      "options": [
+        "LLM을 위한 차등 프라이버시",
+        "SynthID를 통한 워터마킹",
+        "헌법적 AI",
+        "AI 통제(AI Control)(Lesson 10): U / T / H 프로토콜을 통한 전복에도 안전을 유지하는 방법"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "인컨텍스트 스키밍(In-Context Scheming) 논문과 'AI 스키밍을 위한 안전 사례(Towards Safety Cases for AI Scheming)' 프레임워크를 작성한 기관은 어디인가요?",
+      "options": [
+        "Eleos AI",
+        "METR",
+        "Apollo Research",
+        "MATS"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "정렬 생태계에서 METR의 독특한 방법론적 스타일은 무엇인가요?",
+      "options": [
+        "베이스 모델의 적대적 훈련",
+        "하드웨어로 증명된 검증 가능한 추론",
+        "클로즈드 소스 레드 티밍만 수행",
+        "태스크 기반 능력 평가, 자율 태스크 시간 범위 연구, 그리고 프레임워크 종합(예: '프론티어 AI 안전 정책의 공통 요소(Common Elements of Frontier AI Safety Policies)')"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "안전 관련 주장에 대해 다중 기관 공동 저자가 중요한 이유는 무엇인가요?",
+      "options": [
+        "자사 모델을 평가하는 연구실은 구조적인 이해상충이 있으며, 외부 평가자(Redwood, Apollo, METR, Eleos, UK AISI)는 연구실이 축소 보고할 수 있는 실패 모드들을 제기하고 검증할 수 있습니다",
+        "인용 횟수를 증가시키기 때문입니다",
+        "EU AI Act가 이를 의무화하기 때문입니다",
+        "출판 속도를 높이기 때문입니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Eleos AI Research가 생태계에 기여하는 주요 내용은 무엇인가요?",
+      "options": [
+        "캘리포니아 훈련 데이터 법률 초안 작성",
+        "워터마킹 표준",
+        "배포 전 모델 복지 평가(Lesson 19), Claude Opus 4 시스템 카드의 외부 복지 평가 포함",
+        "AI 통제 벤치마크"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
