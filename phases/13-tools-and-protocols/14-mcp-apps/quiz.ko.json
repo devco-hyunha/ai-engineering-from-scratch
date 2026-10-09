@@ -1,0 +1,78 @@
+{
+  "lesson": "14-mcp-apps",
+  "title": "상태 비저장 프로토콜에서의 MCP 앱",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "현대적인 MCP 앱은 UI 리소스를 도구와 어디에 바인딩해야 합니까?",
+      "options": [
+        "최종 텍스트 결과에서만",
+        "독립적인 HTTP GET 스트림에서",
+        "MCP 세션 쿠키에서",
+        "tools/list가 반환하는 도구 정의에서"
+      ],
+      "correct": 3,
+      "explanation": "도구 정의에 중첩된 _meta.ui.resourceUri는 호스트가 호출 전에 UI를 사전 로드하고 검토할 수 있게 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "2026-07-28 클라이언트는 MCP 앱 지원 기능을 어떻게 광고합니까?",
+      "options": [
+        "notifications/initialized를 통해",
+        "Mcp-Session-Id를 통해",
+        "각 요청의 io.modelcontextprotocol/clientCapabilities.extensions에서",
+        "모든 ui:// 리소스를 허용함으로써"
+      ],
+      "correct": 2,
+      "explanation": "확장 기능은 요청별 클라이언트 기능(capabilities) 맵을 통해 옵트인(opt-in) 방식으로 선택됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "ui/initialize는 무엇을 초기화합니까?",
+      "options": [
+        "프로토콜 수준의 서버 세션",
+        "OAuth 클라이언트 등록",
+        "iframe과 호스트 간의 앱 postMessage 브리지",
+        "스트리밍 HTTP GET 채널"
+      ],
+      "correct": 2,
+      "explanation": "ui/initialize는 앱 브리지 방언에 속하며, 제거된 MCP 코어 핸드셰이크와 별개입니다."
+    },
+    {
+      "stage": "check",
+      "question": "사용자 독립적인 번들 앱에 대해 가장 안전한 리소스 응답은 무엇입니까?",
+      "options": [
+        "resultType이 없고 캐시 정책도 없음",
+        "resultType complete, 제한된 ttlMs, 공개 cacheScope, 그리고 우선 거부(deny-first) CSP",
+        "HTML에 내장된 세션 토큰",
+        "무제한 ttlMs와 와일드카드 CSP 도메인"
+      ],
+      "correct": 1,
+      "explanation": "완전한 결과, 명시적인 캐시 힌트, 그리고 좁은 CSP는 전송 및 브라우저 정책을 검사 가능하게 만듭니다."
+    },
+    {
+      "stage": "post",
+      "question": "호스트가 하나의 URI에 대한 resources/read 본문을 받지만 다른 Mcp-Name 헤더가 있는 경우, 어떻게 처리해야 합니까?",
+      "options": [
+        "두 리소스를 모두 열기",
+        "헤더를 우선시하기",
+        "본문을 우선시하기",
+        "JSON-RPC 오류 -32020와 함께 HTTP 400을 반환하기"
+      ],
+      "correct": 3,
+      "explanation": "버전 지원이나 기능 정책을 평가하기 전에 라우팅 헤더와 본문이 일치해야 하며, 전송 계층은 JSON-RPC 오류 -32020와 함께 HTTP 400을 반환합니다."
+    },
+    {
+      "stage": "post",
+      "question": "MCP 앱 지원 기능이 없는 호스트에 대한 올바른 폴백(fallback)은 무엇입니까?",
+      "options": [
+        "신뢰할 수 있는 호스트 크롬(chrome)으로 HTML을 반환하기",
+        "일반적인 텍스트 또는 구조화된 출력으로 도구를 사용 가능하게 유지하고 UI 바인딩을 생략하기",
+        "숨겨진 세션을 만들고 재시도하기",
+        "확장 기능을 자동으로 부여하기"
+      ],
+      "correct": 1,
+      "explanation": "선택적인 확장 기능은 이를 협상하지 않는 클라이언트에 대해 기초 도구를 사용 불가능하게 만들어서는 안 됩니다."
+    }
+  ]
+}
