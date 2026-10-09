@@ -1,0 +1,102 @@
+{
+  "lesson": "03-word-embeddings-word2vec",
+  "title": "단어 임베딩 — Word2Vec 원리",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "분포 가설(distributional hypothesis)이란 무엇인가요?",
+      "options": [
+        "모든 단어를 300차원 공간에 임베딩할 수 있다",
+        "자주 등장하는 단어가 가장 많은 의미를 담고 있다",
+        "단어는 그 주변에 함께 등장하는 단어를 통해 알 수 있다",
+        "단어는 문서 전체에 균일하게 분포되어 있다"
+      ],
+      "correct": 2,
+      "explanation": "Firth(1957)의 분포 가설: 유사한 문맥은 유사한 의미를 함의합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Word2Vec에서 어휘 전체에 대한 단순 softmax가 비실용적인 이유는 무엇인가요?",
+      "options": [
+        "softmax는 확률을 모델링할 수 없다",
+        "softmax에는 기울기가 없다",
+        "10만 개 이상의 어휘에 대해 softmax를 계산하는 것은 학습 단계마다 비용이 너무 크다",
+        "기울기 소실(vanishing gradients)을 유발한다"
+      ],
+      "correct": 2,
+      "explanation": "전체 어휘에 대한 softmax는 비용이 너무 높습니다. 음 샘플링(negative sampling)은 이를 이진 분류로 재공식화합니다."
+    },
+    {
+      "stage": "check",
+      "question": "skip-gram과 CBOW의 차이점은 무엇인가요?",
+      "options": [
+        "skip-gram은 중심 단어에서 주변 단어를 예측하고, CBOW는 주변 단어에서 중심 단어를 예측한다",
+        "skip-gram은 주변 단어에서 중심 단어를 예측하고, CBOW는 그 반대다",
+        "skip-gram은 깊은 네트워크를 학습하고, CBOW는 얕은 네트워크다",
+        "skip-gram은 bigram을 사용하고, CBOW는 unigram을 사용한다"
+      ],
+      "correct": 0,
+      "explanation": "Skip-gram: 중심 → 주변. CBOW: 주변 → 중심."
+    },
+    {
+      "stage": "check",
+      "question": "음 샘플링(negative sampling)에서 양의 쌍(중심, 주변)의 목적 함수는 무엇인가요?",
+      "options": [
+        "내적(dot product)을 최소화한다",
+        "벡터를 직교하도록 강제한다",
+        "sigmoid(W[center] · W'[context])가 1에 가까워지도록 최대화한다",
+        "벡터 간 상관성을 제거한다"
+      ],
+      "correct": 2,
+      "explanation": "양의 쌍은 sigmoid가 1에 가까워지도록 학습하고, 샘플링된 음의 쌍은 sigmoid가 0에 가까워지도록 학습합니다."
+    },
+    {
+      "stage": "check",
+      "question": "Word2Vec 학습 후, 어떤 가중치 행렬이 단어 임베딩이 되나요?",
+      "options": [
+        "학습 후 별도 투영(projection)을 수행한다",
+        "두 행렬을 곱한 결과",
+        "은층에서 출력층으로 가는 W' 행렬",
+        "입력층에서 은층으로 가는 W 행렬(중심 단어 테이블)"
+      ],
+      "correct": 3,
+      "explanation": "중심 단어 테이블 W가 표준 임베딩 출력입니다. W'는 보통 버리거나 W에 평균하여 합칩니다."
+    },
+    {
+      "stage": "post",
+      "question": "Word2Vec이 다의어(polysemy, 예: 'bank')에 실패하는 이유는 무엇인가요?",
+      "options": [
+        "음 샘플링이 드문 의미를 제거한다",
+        "드문 단어를 무시한다",
+        "윈도우 크기가 너무 작다",
+        "단어당 하나의 고정 벡터를 할당하므로 'river bank'와 'financial bank'가 같은 벡터를 공유한다"
+      ],
+      "correct": 3,
+      "explanation": "정적 임베딩은 의미를 변별할 수 없습니다. 문맥 임베딩(ELMo/BERT)이 이를 해결합니다."
+    },
+    {
+      "stage": "post",
+      "question": "2026년에도 트랜스포머 대신 Word2Vec을 선택하는 경우는 언제인가요?",
+      "options": [
+        "대화 품질이 중요할 때",
+        "문맥 기반 변별이 필요할 때",
+        "가벼운 온디바이스 도메인 특화 검색으로, 단일 행 조회가 지연(latency) 예산인 경우",
+        "입력이 매우 길 때"
+      ],
+      "correct": 2,
+      "explanation": "Word2Vec은 매우 작은 지연 예산, 온디바이스 추론, 빠른 도메인 특화 학습에서 유리합니다."
+    },
+    {
+      "stage": "post",
+      "question": "'king - man + woman ≈ queen'이라는 유명한 유추가 가능한 이유는 무엇인가요?",
+      "options": [
+        "skip-gram이 왕실 관련 어휘로 학습된다",
+        "벡터 연산이 'royal' 같은 선형 방향을 포착하여 성별 간에 전이된다",
+        "모델이 왕실임을 플래그 비트로 인코딩한다",
+        "코사인 유사도가 성별에 대해 불변이다"
+      ],
+      "correct": 1,
+      "explanation": "임베딩 공간의 방향이 관계적 특성을 인코딩하므로, 더하기/빼기 연산이 체계적으로 이동합니다."
+    }
+  ]
+}
