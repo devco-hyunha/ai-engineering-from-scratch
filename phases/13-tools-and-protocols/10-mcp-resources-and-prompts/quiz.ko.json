@@ -1,0 +1,78 @@
+{
+  "lesson": "10-mcp-resources-and-prompts",
+  "title": "MCP 리소스 및 프롬프트",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "호스트가 URI를 통해 안정적인 아키텍처 노트를 검색해야 합니다. 가장 적합한 MCP 원시 요소는 무엇입니까?",
+      "options": [
+        "리소스",
+        "취소 알림",
+        "프로토콜 세션",
+        "파괴적 도구"
+      ],
+      "correct": 0,
+      "explanation": "리소스는 URI를 통해 주소 지정 가능한 콘텐츠를 노출합니다. 도구는 작업을 수행하며, 세션과 취소는 읽기 가능한 콘텐츠를 모델링하지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "resources/read가 알 수 없는 리소스 URI를 수신할 때 2026-07-28 서버는 무엇을 반환해야 합니까?",
+      "options": [
+        "resources/list_changed 알림",
+        "JSON-RPC 오류 -32601",
+        "빈 성공 콘텐츠 배열",
+        "JSON-RPC 오류 -32602"
+      ],
+      "correct": 3,
+      "explanation": "현재 Resources 계약은 유효하지 않거나 알 수 없는 리소스 URI에 대해 코드 -32602인 유효하지 않은 매개변수를 사용합니다. 빈 성공 응답은 호출자의 오류를 숨길 것입니다."
+    },
+    {
+      "stage": "check",
+      "question": "resources/read가 반환하는 사용자 소유 노트에 대해 가장 안전한 캐시 정책은 무엇입니까?",
+      "options": [
+        "URI가 안정적이므로 공개",
+        "MIME 유형이 일치할 때 사용자 간 공유",
+        "제한된 TTL을 가진 비공개",
+        "무제한 TTL을 가진 공개"
+      ],
+      "correct": 2,
+      "explanation": "사용자 소유 결과는 신원 경계를 넘어서는 안 됩니다. 제한된 비공개 캐시는 인증 컨텍스트를 보존하면서 반복적인 읽기를 줄일 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "subscriptions/listen 응답 스트림의 모든 알림을 식별하는 것은 무엇입니까?",
+      "options": [
+        "구독 메타데이터의 원본 listen 요청 ID",
+        "리소스 MIME 유형",
+        "새로 생성된 프로토콜 세션",
+        "서버 프로세스 ID"
+      ],
+      "correct": 0,
+      "explanation": "subscriptions/listen의 JSON-RPC ID는 io.modelcontextprotocol/subscriptionId가 되며, 승인 및 이후 모든 이벤트에 반복됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "동일한 요청 입력에 대해 resources/list와 prompts/list가 결정적이어야 하는 이유는 무엇입니까?",
+      "options": [
+        "반환된 모든 항목에 공개 접근을 부여하기 위해",
+        "페이지네이션 커서 검증을 피하기 위해",
+        "캐시, 스냅샷 및 호스트 인터페이스를 안정화하기 위해",
+        "목록 멤버십이 이전 읽기에 의존하게 만들기 위해"
+      ],
+      "correct": 2,
+      "explanation": "안정적인 멤버십과 순서는 노이즈가 많은 캐시 미스 및 변경되는 인터페이스를 방지합니다. 자격 증명은 명시적인 요청 입력이므로 인증이 가시성에 영향을 미칠 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "클라이언트가 resources/list를 직접 호출할 수 있더라도 현재 MCP 서버는 무엇을 노출해야 합니까?",
+      "options": [
+        "모든 URI에 대한 resources/subscribe 메서드",
+        "프로토콜 세션을 생성하는 initialize 메서드",
+        "독립적인 HTTP GET 이벤트 스트림",
+        "지원되는 개정 및 기능을 포함하는 server/discover"
+      ],
+      "correct": 3,
+      "explanation": "서버는 클라이언트가 하나의 기능 및 버전 스냅샷을 얻을 수 있도록 server/discover를 구현해야 합니다. 이 호출은 클라이언트에게 선택 사항이며, 클라이언트는 다른 메서드를 호출하고 구조화된 버전 오류를 처리할 수 있습니다."
+    }
+  ]
+}
