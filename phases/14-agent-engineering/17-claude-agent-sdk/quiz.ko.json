@@ -1,0 +1,90 @@
+{
+  "lesson": "17-claude-agent-sdk",
+  "title": "라이브러리로서의 하네스 — 서브 에이전트와 세션 스토어",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic Client SDK와 Claude Agent SDK의 차이점은 무엇인가요?",
+      "options": [
+        "Client SDK는 원시 Messages API이며, Agent SDK는 내장 도구, MCP, 훅, 서브 에이전트, 세션 스토어를 갖춘 Claude Code 하네스 형태입니다",
+        "차이점이 없습니다",
+        "Client SDK는 Python 전용입니다",
+        "Client SDK는 유료이며, Agent SDK는 무료입니다"
+      ],
+      "correct": 0,
+      "explanation": "Client SDK는 루프를 제공하며, Agent SDK는 루프가 미리 구축되어 제공됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "서브 에이전트의 두 가지 문서화된 목적은 무엇인가요?",
+      "options": [
+        "인증 및 권한 부여",
+        "로깅 및 메트릭",
+        "캐싱 및 속도 제한",
+        "병렬화 및 컨텍스트 격리"
+      ],
+      "correct": 3,
+      "explanation": "서브 에이전트는 독립적인 작업을 동시에 실행하며, 컨텍스트를 격리하여 오케스트레이터의 컨텍스트 예산을 보존합니다."
+    },
+    {
+      "stage": "check",
+      "question": "세션 스토어 인터페이스에 포함되지 않는 메서드는 무엇인가요?",
+      "options": [
+        "append",
+        "compile_prompt",
+        "load",
+        "list_subkeys"
+      ],
+      "correct": 1,
+      "explanation": "세션 스토어는 append, load, list_sessions, delete, list_subkeys를 제공합니다. compile_prompt는 세션 API가 아닙니다."
+    },
+    {
+      "stage": "check",
+      "question": "Claude Agent SDK의 라이프사이클 훅이 아닌 것은 무엇인가요?",
+      "options": [
+        "PreEmbedding",
+        "PreToolUse",
+        "PostToolUse",
+        "PreCompact"
+      ],
+      "correct": 0,
+      "explanation": "훅에는 PreToolUse, PostToolUse, SessionStart/End, UserPromptSubmit, PreCompact, Stop, Notification이 포함됩니다. PreEmbedding은 훅이 아닙니다."
+    },
+    {
+      "stage": "check",
+      "question": "추적 컨텍스트는 에이전트와 CLI 하위 프로세스 간에 어떻게 전파되나요?",
+      "options": [
+        "제공자의 대시보드를 통해서만",
+        "파일 시스템을 통해",
+        "환경 변수를 통해서만",
+        "CLI 하위 프로세스에 전달되는 W3C 추적 컨텍스트 헤더를 통해"
+      ],
+      "correct": 3,
+      "explanation": "호출자의 OTel 스팬은 W3C 추적 컨텍스트를 통해 CLI 하위 프로세스로 전파되므로, 전체 다중 프로세스 실행은 하나의 추적입니다."
+    },
+    {
+      "stage": "post",
+      "question": "서브 에이전트 과다 생성(subagent over-spawn)이란 무엇이며, 언제 발생하나요?",
+      "options": [
+        "CPU 코어 수보다 많은 서브 에이전트를 생성하는 것",
+        "SessionStart 전에 생성하는 것",
+        "100개의 작은 작업에 대해 100개의 서브 에이전트를 생성하여 오버헤드가 지배적인 경우; 대신 배치 처리해야 함",
+        "서브 에이전트를 닫는 것을 잊는 것"
+      ],
+      "correct": 2,
+      "explanation": "서브 에이전트에는 오버헤드가 있습니다. 각각을 생성하는 대신 작은 작업들을 배치 처리해야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "Claude Managed Agents는 자체 호스팅 SDK와 비교하여 무엇을 트레이드오프로 삼나요?",
+      "options": [
+        "스트리밍을 위한 추적",
+        "메모리를 위한 도구",
+        "비용을 위한 지연",
+        "관리형 인프라(장기 실행 비동기, 내장 프롬프트 캐싱, 내장 컴팩션)를 위한 제어"
+      ],
+      "correct": 3,
+      "explanation": "Managed Agents는 장기 실행 비동기 작업을 위한 호스팅 대안입니다. 제어 능력이 적고, 운영 표면이 적습니다."
+    }
+  ]
+}
