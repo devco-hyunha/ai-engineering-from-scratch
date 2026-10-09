@@ -1,0 +1,90 @@
+{
+  "lesson": "42-agent-workbench-capstone",
+  "title": "캡스톤: 재사용 가능한 에이전트(Agent) 워크벤치 팩 출시",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "캡스톤은 무엇을 산출합니까?",
+      "options": [
+        "모니터링 대시보드",
+        "7개 표면(surface)과, 이를 멱등적으로 설치하는 bin/install.sh를 포함하는 버전 관리된 드롭인 디렉터리(agent-workbench-pack/)",
+        "연구 논문",
+        "새로운 LLM (대규모 언어 모델)(LLM (Large Language Model))"
+      ],
+      "correct": 1,
+      "explanation": "팩은 레시피이며, 각 설치는 서빙입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "팩 레이아웃에 포함되지 않는 것은 무엇입니까?",
+      "options": [
+        "vendor_proprietary_weights/",
+        "schemas/",
+        "AGENTS.md + docs/",
+        "scripts/"
+      ],
+      "correct": 0,
+      "explanation": "팩 레이아웃은 AGENTS.md, docs/, schemas/, scripts/, bin/, README.md입니다. 팩은 프레임워크 및 벤더에 독립적입니다."
+    },
+    {
+      "stage": "check",
+      "question": "팩이 VERSION 파일을 포함하는 이유는 무엇입니까?",
+      "options": [
+        "에이전트(Agent) IQ를 추적하기 위해",
+        "SEO를 위해",
+        "Hacker News에 광고하기 위해",
+        "마이그레이션이 필요한 스키마/스크립트 변경에는 메이저 버전이, 추가에는 마이너 버전이, 문서 전용 변경에는 패치 버전이 사용되며, 대상 저장소는 설치된 버전을 기록합니다"
+      ],
+      "correct": 3,
+      "explanation": "npm, Cargo, pyproject.toml과 동일한 형태입니다. VERSION은 계약이며 마케팅이 아닙니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 팩에서 도구 간 배포는 어떻게 이루어집니까?",
+      "options": [
+        "단일 소스 파일에 심링크(ln -s AGENTS.md CLAUDE.md, .cursor/rules/, .github/copilot-instructions.md)를 사용하여 동일한 소스가 모든 코딩 에이전트(Agent)로 확장됩니다",
+        "도구별 수동 복사",
+        "각 도구의 경로를 하드코딩",
+        "도구별 벤더 락인"
+      ],
+      "correct": 0,
+      "explanation": "Nx의 nx ai-setup이 참조 기준이며, 팩의 설치 프로그램은 심링크를 사용하여 동일한 작업을 수행합니다."
+    },
+    {
+      "stage": "check",
+      "question": "교재는 언인스톨러가 어떻게 동작해야 한다고 권장합니까?",
+      "options": [
+        "문서만 삭제",
+        "비자명한 상태에서는 거부; 사용자 agent_state.json, task_board.json, outputs/는 절대 삭제하지 않으며, 스키마, 스크립트, 문서 및 AGENTS.md만 (옵트아웃과 함께) 제거",
+        "상태를 포함하여 모든 것을 삭제",
+        "git 비활성화"
+      ],
+      "correct": 1,
+      "explanation": "상태는 사용자의 소유이며, 팩은 이를 소유하지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "팩에 포함되지 않는 것은 무엇입니까?",
+      "options": [
+        "스크립트",
+        "스키마",
+        "프로젝트별 작업, 벤더 SDK 호출, 팀 온보딩 산문 — 팩은 프레임워크에 독립적이며 온보딩 옆에 위치하며 그 내부에 있지 않습니다",
+        "설치 프로그램"
+      ],
+      "correct": 2,
+      "explanation": "작업은 대상 저장소의 보드에 속하며 팩에 속하지 않습니다. 벤더 SDK 호출은 팩을 하나의 프레임워크에 락인합니다."
+    },
+    {
+      "stage": "post",
+      "question": "팩은 어떤 채널을 통해 여러 코딩 에이전트(Agent)로 동시에 배포됩니까?",
+      "options": [
+        "SkillKit 스타일 배포(skillkit install agent-workbench-pack)는 단일 소스에서 32개 AI 에이전트(Agent)에 걸쳐 팩을 설치합니다",
+        "이메일 첨부",
+        "수동 복사",
+        "GitHub 릴리스 노트 전용"
+      ],
+      "correct": 0,
+      "explanation": "팩 저장소는 진실의 원천이며, SkillKit은 배포 채널입니다. 벤더 락인은 사라집니다."
+    }
+  ]
+}
