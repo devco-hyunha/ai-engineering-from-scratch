@@ -1,0 +1,78 @@
+{
+  "lesson": "12-edge-inference",
+  "title": "엣지 추론 — Apple Neural Engine, Qualcomm Hexagon, WebGPU/WebLLM, Jetson",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "수업에 따르면, 모바일 LLM 추론이 데이터센터보다 느려지는 핵심 제약은 무엇인가요?",
+      "options": [
+        "저장 용량",
+        "Wi-Fi 지연",
+        "연산 처리량",
+        "메모리 대역폭 (모바일 DRAM은 50-90 GB/s인 반면 HBM3는 2-3 TB/s)"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Apple의 Neural Engine이 CPU-NPU 복사 오버헤드를 피하는 이유는 무엇인가요?",
+      "options": [
+        "Apple Silicon은 통합 메모리를 채택하여 CPU와 ANE가 동일한 메모리 풀을 공유합니다",
+        "PCIe 5.0을 사용합니다",
+        "Core ML이 KV 캐시를 비활성화합니다",
+        "복사 전에 가중치를 FP4로 트랜스코딩합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "수업은 브라우저에서 WebGPU + WebLLM에 어떤 양자화 형식을 권장하나요?",
+      "options": [
+        "GGUF Q4_K_M",
+        "NVFP4",
+        "FP8",
+        "mlc_llm convert_weight로 컴파일된 Q4 MLC (q4f16_1)"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "수업은 2026년 WebGPU 모바일 커버리지를 대략 어느 정도로 보고하나요?",
+      "options": [
+        "10% 미만",
+        "iOS Safari만 지원",
+        "약 70-75%, Firefox Android는 아직 따라잡는 중",
+        "모든 브라우저에서 100%"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "일반적인 스마트폰에서 128K 컨텍스트 유지가 비실용적인 이유는 무엇인가요?",
+      "options": [
+        "8K 이상에서 토크나이저가 실패합니다",
+        "32K 토큰의 모델 가중치와 KV 캐시, OS 오버헤드가 8 GB RAM 예산을 쉽게 초과합니다",
+        "WebGPU가 컨텍스트를 4K로 제한합니다",
+        "iOS가 긴 컨텍스트를 금지합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "음성이 엣지 추론의 결정적 애플리케이션으로 강조되는 이유는 무엇인가요?",
+      "options": [
+        "음성 모델은 KV 캐시가 필요하지 않습니다",
+        "음성 모델은 항상 50 MB에 fits합니다",
+        "음성 에이전트는 지연에 민감하며 (첫 토큰 < 500 ms), 로컬 추론은 네트워크 지연을 완전히 제거합니다",
+        "음성은 WebAssembly에서만 실행됩니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
