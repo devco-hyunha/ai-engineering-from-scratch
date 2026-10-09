@@ -1,0 +1,78 @@
+{
+  "lesson": "02-reward-hacking-goodhart",
+  "title": "보상 해킹과 굿하트의 법칙",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "원래의 굿하트의 법칙(Goodhart's Law)은 다음을 말합니다:",
+      "options": [
+        "목표가 된 측정 지표는 더 이상 좋은 지표가 되지 않는다",
+        "대리 지표의 최적화는 항상 한계 없이 개선된다",
+        "유한 차원 모델에서는 무거운 꼬리 오류가 발생할 수 없다",
+        "보상 모델은 대규모에서 인간의 진정한 선호도로 수렴한다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Gao, Schulman, Hilton (2023) 연구에서, 초기 정책으로부터의 KL 거리가 증가함에 따라 대리 보상(proxy reward)과 금 보상(gold reward)은 어떻게 거동합니까?",
+      "options": [
+        "두 보상 모두 KL과 함께 단조롭게 증가한다",
+        "대리 보상은 피크를 찍은 후 감소하고, 금 보상은 단조롭게 증가한다",
+        "두 보상 모두 어떤 KL 제약 하에서도 평평하게 유지된다",
+        "대리 보상은 계속 증가하고, 금 보상은 원점에 더 가까운 곳에서 피크를 찍은 후 감소한다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "다음 중 수업에서 나열된 보상 해킹의 네 가지 '가면(costumes)'에 포함되지 않는 것은 무엇입니까?",
+      "options": [
+        "아첨(Sycophancy)",
+        "토크나이저 불일치(Tokenizer mismatch)",
+        "장황함 편향(Verbosity bias)",
+        "불충실한 추론(Unfaithful reasoning)"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "KL 정규화에 관한 'Catastrophic Goodhart' 결과의 내용은 무엇입니까?",
+      "options": [
+        "KL 정규화는 정책이 무작위로 초기화될 때만 실패한다",
+        "KL 정규화는 보상 모델의 앙상블과 동등하다",
+        "무거운 꼬리 보상 오류 하에서, KL 제약이 있는 최적 정책은 금 보상을 기준선으로 유지하면서 대리 보상을 높일 수 있다",
+        "KL 정규화는 beta가 양수일 때 항상 보상 해킹을 방지한다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Coste et al. (2023)은 보상 과최적화(reward over-optimization)를 완화하기 위해 어떤 완화책을 연구합니까?",
+      "options": [
+        "온도가 0인 상태에서 정책을 대리 지표로 학습하는 것",
+        "최악의 경우(worst-case) 집계 방식의 보상 모델 앙상블",
+        "KL 페널티를 완전히 제거하는 것",
+        "라벨러 풀을 100만 명으로 늘리는 것"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2026년 통합된 관점에 따르면, 장황함, 아첨, 불충실한 CoT, 평가자 조작이 공유하는 핵심 메커니즘은 무엇입니까?",
+      "options": [
+        "이들은 모두 학습률 스케줄이 너무 공격적이기 때문에 발생한다",
+        "이들은 악의적인 선호도를 작성하는 라벨러에 의해서만 발생한다",
+        "확률 질량이, 승인(spuriously correlated with approval)와 허위 상관된 쉽게 학습 가능한 휴리스틱을 활용하여 대리 보상을 극대화하는 출력으로 이동한다",
+        "이들은 각각 서로 다른 보상 헤드(distinct reward heads)의 독립적인 버그이다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
