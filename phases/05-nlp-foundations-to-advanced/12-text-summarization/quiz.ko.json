@@ -1,0 +1,102 @@
+{
+  "lesson": "12-text-summarization",
+  "title": "텍스트 요약",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "추출형 요약과 생성형 요약의 핵심적인 행동 차이는 무엇인가요?",
+      "options": [
+        "추출형은 다국어 전용입니다",
+        "추출형은 원문에서 문장을 그대로 반환하며, 생성형은 새로운 텍스트를 생성하여 환각(Hallucination)이 발생할 수 있습니다",
+        "추출형은 TF-IDF를 사용하며, 생성형은 Word2Vec을 사용합니다",
+        "추출형은 생성형보다 느립니다"
+      ],
+      "correct": 1,
+      "explanation": "추출형은 문장을 원문 그대로 가져오며, 생성형은 문장을 다시 작성하며 환각(Hallucination) 위험이 있습니다."
+    },
+    {
+      "stage": "pre",
+      "question": "ROUGE는 무엇을 측정하나요?",
+      "options": [
+        "토큰 단위 퍼플렉시티(Perplexity)",
+        "임베딩 유사도",
+        "시스템 요약과 참조 요약 간의 N-gram 및 최장 공통 부분 수열(LCS) 겹침",
+        "읽기 시간"
+      ],
+      "correct": 2,
+      "explanation": "ROUGE-1/2/L은 참조 요약과의 단음절(unigram), 이중음절(bigram), LCS 겹침을 측정합니다."
+    },
+    {
+      "stage": "check",
+      "question": "추출형 요약에서 TextRank는 문장을 어떻게 점수화하나요?",
+      "options": [
+        "문장 간 유사도 가중치를 간선으로 하는 그래프에서 PageRank 스타일의 반복을 실행하여",
+        "질문에 대한 임베딩 코사인 유사도로",
+        "참조 요약과 비교하여",
+        "단순 단어 수로"
+      ],
+      "correct": 0,
+      "explanation": "TextRank는 문장 유사도 그래프에 대해 PageRank를 사용하며, 연결도가 높은 문장이 가장 높은 점수를 받습니다."
+    },
+    {
+      "stage": "check",
+      "question": "ROUGE를 계산할 때 어간 추출(stemming)을 활성화하는 이유는 무엇인가요?",
+      "options": [
+        "어간 추출을 하지 않으면 'running'과 'run'이 서로 다른 토큰으로 간주되어 ROUGE가 실제 겹침을 과소평가합니다",
+        "어간 추출은 대소문자를 정규화합니다",
+        "rouge-score 패키지가 어간 추출을 요구합니다",
+        "ROUGE의 속도를 높이기 위해"
+      ],
+      "correct": 0,
+      "explanation": "어간 추출은 형태론적 변형을 병합하여 ROUGE가 의미적으로 동등한 형태에 점수를 부여하도록 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "2026년 메트릭 중 NLI 함의(entailment)를 통해 요약 환각(Hallucination)을 탐지하기 위해 특별히 설계된 것은 무엇인가요?",
+      "options": [
+        "원문과 요약 주장 간의 NLI를 사용하는 충실성 검사(Faithfulness checks, 예: FactCC 또는 RAGAS faithfulness)",
+        "BLEU",
+        "chrF",
+        "ROUGE-L"
+      ],
+      "correct": 0,
+      "explanation": "NLI 기반 충실성 점수는 원문에 함의되지 않는 요약 내의 주장을 표시합니다."
+    },
+    {
+      "stage": "post",
+      "question": "규제 관련 콘텐츠에 추출형 요약을 선호하는 이유는 무엇인가요?",
+      "options": [
+        "추출형은 더 긴 출력을 지원합니다",
+        "출력이 원문에서 그대로 가져오므로 생성형의 환각(Hallucination) 유형을 제거합니다",
+        "더 빠릅니다",
+        "ROUGE 점수가 더 높습니다"
+      ],
+      "correct": 1,
+      "explanation": "원문 그대로의 추출은 내용을 발명할 수 없으며, 이는 사실성이 규제되는 분야에서 중요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "모니터링해야 할 생성형 환각(Hallucination) 유형은 무엇인가요?",
+      "options": [
+        "긴 문장",
+        "엔티티 교체(예: 'John Smith'가 'John Brown'으로 렌더링됨), 숫자 변위, 극성 반전, 또는 사실 발명",
+        "구두점 변위",
+        "불용어 제거"
+      ],
+      "correct": 1,
+      "explanation": "엔티티 교체, 숫자 변위, 극성 반전, 발명된 사실은 생성형의 전형적인 실패 모드입니다."
+    },
+    {
+      "stage": "post",
+      "question": "BART-large-CNN 대신 Pegasus 체크포인트(Checkpoint)를 사용하는 경우는 언제인가요?",
+      "options": [
+        "BLEU를 평가할 때",
+        "추출형 출력이 필요할 때",
+        "Pegasus의 간격 문장(gap-sentence) 사전 학습 목표가 더 잘 맞는 과학적 초록과 같은 분야에서",
+        "입력이 짧을 때"
+      ],
+      "correct": 2,
+      "explanation": "Pegasus의 간격 문장 목표는 긴 형식의 분야별 요약(예: pubmed)에 뛰어납니다."
+    }
+  ]
+}
