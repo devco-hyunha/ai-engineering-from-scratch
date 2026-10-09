@@ -1,0 +1,78 @@
+{
+  "lesson": "15-mcp-security-tool-poisoning",
+  "title": "MCP 보안: 오염된 메타데이터, 라우팅 및 MRTR 상태",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "인증된 클라이언트 식별자로 안전하게 사용할 수 있는 MCP 필드는 무엇입니까?",
+      "options": [
+        "자기 보고된 clientInfo 필드 중 어느 것도 안전하지 않음",
+        "clientInfo.name",
+        "clientInfo.version",
+        "clientCapabilities"
+      ],
+      "correct": 0,
+      "explanation": "클라이언트 정보 및 기능은 프로토콜 메타데이터이며, 인증 증거가 아닙니다."
+    },
+    {
+      "stage": "check",
+      "question": "도구를 승인한 후 게이트웨이는 무엇을 해싱해야 합니까?",
+      "options": [
+        "설명, 스키마 및 관련 주석을 포함한 표준화된 전체 설명자",
+        "도구 이름만",
+        "서버 표시 이름만",
+        "현재 세션 식별자"
+      ],
+      "correct": 0,
+      "explanation": "전체 설명자 고정(pinning)은 설명 전용 해싱이 놓칠 수 있는 스키마 및 주석 변경을 감지합니다."
+    },
+    {
+      "stage": "check",
+      "question": "게이트웨이가 둘 다 'search'로 명명된 두 백엔드 도구를 어떻게 노출해야 합니까?",
+      "options": [
+        "모델이 서버를 추론하도록 요청",
+        "백엔드를 무작위로 선택",
+        "notes.search 및 issues.search와 같은 안정된 수식 이름을 사용",
+        "마지막으로 발견된 도구를 유지"
+      ],
+      "correct": 2,
+      "explanation": "수식 이름은 라우팅, 승인, 감사 및 헤더 검증이 하나의 안정된 도구를 참조하도록 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MCP 양식 유도(elicitation)를 지원하는 클라이언트 기능 선언은 무엇입니까?",
+      "options": [
+        "elicitation: {}의 암시적 선언 또는 elicitation: {form: {}}의 명시적 선언 중 하나",
+        "비어 있지 않은 extensions 객체",
+        "form이 활성화된 프로토콜 세션만",
+        "elicitation.url만"
+      ],
+      "correct": 0,
+      "explanation": "빈 elicitation 객체는 양식 지원을 암시하며, form: {}는 이를 명시적으로 선언합니다. URL 전용 지원은 양식 요청에 충분하지 않습니다."
+    },
+    {
+      "stage": "post",
+      "question": "requestState가 무결성 보호를 받아야 하고 정확한 인자(arguments)에 바인딩되어야 하는 이유는 무엇입니까?",
+      "options": [
+        "캐시 범위를 선택하기 위해",
+        "OAuth를 대체하기 위해",
+        "클라이언트가 다른 작업에 대해 확인(confirm)을 재사용하거나 변경하는 것을 방지하기 위해",
+        "JSON을 더 작게 만들기 위해"
+      ],
+      "correct": 2,
+      "explanation": "requestState는 신뢰할 수 없는 피어(peer)를 왕복하므로, 서버는 변조 및 컨텍스트 변경을 감지해야 합니다. 공유된 원자적 nonce 클레임은 핸들러 인스턴스 간 재사용을 방지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "현대적인 게이트웨이의 올바른 순서는 무엇입니까?",
+      "options": [
+        "clientInfo를 신뢰, 실행, 그 후 감사",
+        "선언된 기능을 권한으로 수용",
+        "인증, 와이어 및 헤더 검증, 기능 호환성 확인, 권한 부여, 그 후 실행",
+        "세션 생성, 발견 순서에 따라 라우팅, 그 후 권한 부여"
+      ],
+      "correct": 2,
+      "explanation": "와이어 모호성과 식별자는 권한 부여 및 실행 전에 해결되어야 합니다."
+    }
+  ]
+}
