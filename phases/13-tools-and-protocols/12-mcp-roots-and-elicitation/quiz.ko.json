@@ -1,0 +1,78 @@
+{
+  "lesson": "12-mcp-roots-and-elicitation",
+  "title": "명시적 범위와 상태 비저장 요청",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP Roots가 제공한 보안 보장은 무엇인가요?",
+      "options": [
+        "정보적 워크스페이스 안내이며, 권한 부여나 샌드박싱이 아님",
+        "모든 서버 프로세스에 대한 운영체제 격리",
+        "호출자가 루트 아래 모든 파일을 소유한다는 증명",
+        "심볼릭 링크 탈출의 자동 방지"
+      ],
+      "correct": 0,
+      "explanation": "Roots는 정보적이며 2026-07-28에 폐기되었습니다. 서버는 여전히 권한 부여, 격리 및 샌드박싱이 필요합니다."
+    },
+    {
+      "stage": "check",
+      "question": "도구 호출마다 워크스페이스 범위가 변경될 때 가장 명확한 현대적 대체 방법은 무엇인가요?",
+      "options": [
+        "전송 세션에 저장된 숨겨진 값",
+        "변경 후 전송되는 roots/list 요청",
+        "자체 보고된 clientInfo 이름",
+        "서버가 승인하는 명시적 워크스페이스 URI 인자"
+      ],
+      "correct": 3,
+      "explanation": "명시적 핸들(handle)은 가시적이고 재생 가능하지만, 서버는 인증된 주체(principal)에 대해 이를 승인해야 합니다."
+    },
+    {
+      "stage": "check",
+      "question": "MCP 2026-07-28에서 양식 모드(form-mode) 요청은 어떻게 전달되나요?",
+      "options": [
+        "server/discover에서의 HTTP 리다이렉트",
+        "notifications/roots/list_changed를 통해",
+        "Mcp-Session-Id 스트림을 통한 역방향 요청",
+        "input_required 결과의 inputRequests 내부"
+      ],
+      "correct": 3,
+      "explanation": "MRTR (다중 왕복 요청)(Multi Round-Trip Request (MRTR))은 inputRequests에 elicitation/create를 포함하며, 이후 클라이언트는 inputResponses를 사용하여 원본 작업을 재시도합니다. Elicitation {} 및 elicitation.form은 양식 모드를 지원하며, URL 전용 지원은 data.requiredCapabilities.elicitation.form과 함께 -32021을 반환합니다."
+    },
+    {
+      "stage": "check",
+      "question": "양식 모드 요청을 통해 절대 수집해서는 안 되는 값은 무엇인가요?",
+      "options": [
+        "파괴적 작업 확인용 부울 값",
+        "열거형(enum)에서 선택된 노트 ID",
+        "API 접근 토큰",
+        "민감하지 않은 표시 선호도"
+      ],
+      "correct": 2,
+      "explanation": "비밀 및 자격 증명은 MCP 클라이언트를 통해 전송되어서는 안 됩니다. 민감한 외부 상호작용을 위해 신중하게 바인딩된 URL 모드 흐름을 사용하십시오."
+    },
+    {
+      "stage": "post",
+      "question": "사용자가 삭제 요청을 거부했습니다. 안전한 결과는 무엇인가요?",
+      "options": [
+        "모델이 이미 노트를 선택했으므로 삭제",
+        "누락된 내용을 암묵적 동의(interpretation)로 간주",
+        "완전한 비오류 거절(non-error refusal) 결과를 반환하고 노트를 보존",
+        "사용자가 수락할 때까지 동일한 대화 반복"
+      ],
+      "correct": 2,
+      "explanation": "거부는 명시적 거절입니다. 이를 동의, 오류 루프 프롬팅, 또는 변경(mutation)으로 변환해서는 안 됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "파괴적 확인을 사용자가 본 내용과 안전하게 바인딩하는 설계는 무엇인가요?",
+      "options": [
+        "서명 없이 선택된 노트 ID를 Base64 인코딩",
+        "주체(principal), 원본 인자 다이제스트, 후보 ID, 단계(phase), 만료 시간을 서명하고, 라이브 대상을 재확인",
+        "clientInfo를 권위 있는 사용자 식별자로 사용",
+        "action accept와 함께 반환된 모든 노트 ID를 신뢰"
+      ],
+      "correct": 1,
+      "explanation": "무결성 보호된 상태는 변조를 방지합니다. 공유된 원자적 일회성 논스(nonce) 클레임은 재생(replay)을 방지하며, 최종 라이브 체크는 변경(mutation) 전의 레이스(race) 조건을 처리합니다."
+    }
+  ]
+}
