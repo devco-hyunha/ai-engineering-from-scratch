@@ -1,0 +1,90 @@
+{
+  "lesson": "41-workbench-for-real-repos",
+  "title": "실제 저장소에서의 워크벤치",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "동일한 작업을 프롬프트 전용 파이프라인과 워크벤치 가이드 파이프라인을 통해 실행하는 목표는 무엇인가요?",
+      "options": [
+        "GPU를 벤치마킹하기 위해",
+        "모델을 비교하기 위해",
+        "숫자로, 논쟁이 아닌, 회의론자에게 전달할 수 있는 전후(before/after) 보고서를 생성하기 위해",
+        "벤더를 선택하기 위해"
+      ],
+      "correct": 2,
+      "explanation": "숫자가 논쟁을 대신하며, 장난감 같은 작업이 아닌 실제적인 작업에서 사례가 만들어집니다."
+    },
+    {
+      "stage": "pre",
+      "question": "측정되는 다섯 가지 결과 중 하나가 아닌 것은 무엇인가요?",
+      "options": [
+        "files_outside_scope",
+        "model_perplexity",
+        "acceptance_met",
+        "tests_actually_run"
+      ],
+      "correct": 1,
+      "explanation": "다섯 가지 결과는 tests_actually_run, acceptance_met, files_outside_scope, handoff_quality, reviewer_total입니다."
+    },
+    {
+      "stage": "check",
+      "question": "LangChain의 Anatomy of an Agent Harness는 Terminal Bench 2.0에서 무엇을 측정했나요?",
+      "options": [
+        "최상위 모델이 25위 하락함",
+        "모든 모델이 상위 3위에 수렴함",
+        "하네스 변경이 순위를 이동시키지 못함",
+        "하네스만 변경하여 동일 모델이 상위 30위 밖에서 5위로 이동함"
+      ],
+      "correct": 3,
+      "explanation": "동일 모델에서의 25위 차이는 하네스 대 모델의 핵심 증거입니다."
+    },
+    {
+      "stage": "check",
+      "question": "preprints.org 논문은 기업 에이전트 프로젝트의 실패율을 무엇으로 인용하고 있나요?",
+      "options": [
+        "8%",
+        "약 88%가 프로덕션에 도달하지 못하며, 실패는 추론이 아닌 런타임에 집중됨",
+        "약 50%",
+        "전부 실패하지 않음"
+      ],
+      "correct": 1,
+      "explanation": "Harness Engineering for Language Agents 프리프린트는 실패가 런타임 문제(오래된 상태, 취약한 재시도, 과잉된 컨텍스트)에 기인한다고 추적합니다."
+    },
+    {
+      "stage": "check",
+      "question": "WebAgent의 기준 정확도는 긴 컨텍스트 조건에서 어떻게 변하나요?",
+      "options": [
+        "평평하게 유지됨",
+        "40-50%에서 10% 미만으로 하락하며, 주로 무한 루프와 목표 상실로 인한 것임",
+        "30% 상승함",
+        "절반으로 줄지만 30% 이상 유지됨"
+      ],
+      "correct": 1,
+      "explanation": "긴 컨텍스트 붕괴는 Ralph Loop와 핸드오프 패킷이 흡수하기 위해 존재하는 것입니다."
+    },
+    {
+      "stage": "post",
+      "question": "교훈은 프롬프트 전용이 더 빠른 경우인 거짓 음(false negatives)에 대해 무엇이라고 말하나요?",
+      "options": [
+        "단일 단계 사실적 작업, 한 줄 린트, 포매터 실행은 프롬프트 전용이 더 빠름; 워크벤치가 과잉으로 묘사되지 않도록 정직하게 나열함",
+        "워크벤치가 실패함을 증명함",
+        "존재하지 않음",
+        "하네스 논지를 무효화함"
+      ],
+      "correct": 0,
+      "explanation": "프롬프트 전용이 가장 빠른 경우를 정직하게 나열하는 것은 하네스 논지를 신뢰성 있게 유지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "이 교훈의 보고서는 어디에서 인용하나요?",
+      "options": [
+        "내부 HR 리뷰",
+        "해커톤에서만",
+        "누군가 '이번 스프린트만' 검증 게이트를 제거하려 할 때, 또는 새로운 에이전트 제품이 출시되어 이동 가능한 시간 절약 벤치마크가 필요할 때",
+        "마케팅 자료에서만"
+      ],
+      "correct": 2,
+      "explanation": "숫자는 설명보다 더 멀리 이동합니다; 압력이 표면(short-circuit surfaces)을 우회하려 할 때 보고서를 인용하십시오."
+    }
+  ]
+}
