@@ -1,0 +1,62 @@
+[
+  {
+    "question": "모멘텀(momentum)은 경사 하강법(gradient descent)에서 어떤 문제를 해결합니까?",
+    "options": [
+      "과적합(overfitting)을 방지합니다",
+      "학습률(learning rate)의 필요성을 없앱니다",
+      "메모리 사용량을 줄입니다",
+      "과거 기울기(gradient)를 누적하여 진동을 감쇠하고, 일관된 방향에서의 이동을 가속화합니다"
+    ],
+    "correct": 3,
+    "explanation": "좁은 골짜기에서는 기울기가 골짜기 횡방향으로 진동하며 골짜기 방향으로는 느린 진전을 보입니다. 모멘텀은 과거 기울기를 누적하여, 일관된 방향은 증폭하고 진동하는 방향은 상쇄함으로써 더 매끄럽고 빠른 수렴을 달성합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "Adam과 AdamW의 주요 차이점은 무엇입니까?",
+    "options": [
+      "AdamW는 더 높은 학습률을 사용합니다",
+      "AdamW는 트랜스포머(transformer)에서만 작동합니다",
+      "AdamW는 가중치 감쇠(weight decay)를 기울기를 통해 적용하는 대신 가중치에 직접 적용하여 적절한 정규화(regularization)를 제공합니다",
+      "AdamW는 모멘텀을 사용하지 않습니다"
+    ],
+    "correct": 2,
+    "explanation": "Adam + L2에서는 적응형 학습률이 매개변수마다 정규화 항을 다르게 스케일링합니다. AdamW는 가중치 감쇠를 기울기 업데이트에서 분리(decouple)하여, 기울기 통계에 관계없이 균일한 축소를 적용합니다.",
+    "stage": "pre"
+  },
+  {
+    "question": "Adam은 초기 학습 단계에서 왜 편향 보정(bias correction)을 사용합니까?",
+    "options": [
+      "과적합을 방지하기 위해",
+      "모멘트 추정값(moment estimate)이 0으로 초기화되므로 초기 값은 0에 편향되어 있습니다. 보정은 이러한 콜드 스타트(cold start)를 보상합니다",
+      "큰 기울기를 클리핑(clipping)하기 위해",
+      "수렴을 가속화하기 위해"
+    ],
+    "correct": 1,
+    "explanation": "beta1=0.9인 경우 1단계에서 m_1 = 0.1 * gradient (10배 너무 작음)가 됩니다. (1 - 0.9^1) = 0.1로 나누면 실제 기울기로 보정됩니다. 이 보정은 약 50단계 이후에는 무시할 수 있는 수준이 됩니다.",
+    "stage": "post"
+  },
+  {
+    "question": "Adam의 표준 기본 하이퍼파라미터(hyperparameter)는 무엇입니까?",
+    "options": [
+      "lr=0.0001, beta1=0.8, beta2=0.9",
+      "lr=0.01, beta1=0.99, beta2=0.99",
+      "lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8",
+      "lr=0.1, beta1=0.5, beta2=0.5"
+    ],
+    "correct": 2,
+    "explanation": "원래 Adam 논문(Kingma & Ba, 2014)은 lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8을 권장했습니다. 이 기본값은 대부분의 문제에 잘 작동합니다.",
+    "stage": "post"
+  },
+  {
+    "question": "트랜스포머(transformer) 및 LLM (대규모 언어 모델)(LLM (Large Language Model)) 학습의 현대적 기본 옵티마이저(optimizer)는 무엇입니까?",
+    "options": [
+      "모멘텀이 있는 SGD (확률적 경사 하강법)(SGD (Stochastic Gradient Descent))",
+      "RMSProp",
+      "AdamW",
+      "순수 SGD (Vanilla SGD)"
+    ],
+    "correct": 2,
+    "explanation": "AdamW (가중치 감쇠가 분리(decoupled)된 Adam)는 BERT, GPT, LLaMA 및 거의 모든 현대적 트랜스포머를 학습하는 데 사용됩니다. 적응형 학습률과 적절한 가중치 감쇠 정규화를 결합합니다.",
+    "stage": "post"
+  }
+]
