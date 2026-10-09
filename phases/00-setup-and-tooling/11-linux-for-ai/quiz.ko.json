@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Linux 파일 경로에서 '~' 기호는 무엇을 나타냅니까?",
+      "options": [
+        "파일 시스템의 루트 디렉터리",
+        "임시 파일 디렉터리",
+        "현재 사용자의 홈 디렉터리",
+        "시스템 프로그램이 설치된 디렉터리"
+      ],
+      "correct": 2,
+      "explanation": "틸드(~)는 현재 사용자의 홈 디렉터리를 나타내는 단축키로, Linux에서는 일반적으로 /home/username입니다. 'cd ~'는 어디에서든 홈 디렉터리로 이동합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "명령어 앞에 'sudo'를 붙이는 목적은 무엇입니까?",
+      "options": [
+        "명령어를 root(관리자) 권한으로 실행합니다",
+        "명령어를 샌드박스 환경에서 실행합니다",
+        "명령어 실행 속도를 높입니다",
+        "명령어 출력을 시스템 파일에 기록합니다"
+      ],
+      "correct": 0,
+      "explanation": "sudo(superuser do)는 단일 명령에 대해 일시적으로 root 수준의 권한으로 상승시킵니다. apt로 패키지를 설치하는 것과 같은 시스템 수준의 작업에 필요합니다."
+    },
+    {
+      "stage": "post",
+      "question": "셸 스크립트를 실행하려고 할 때 'Permission denied'가 발생합니다. 이 문제를 해결하는 명령어는 무엇입니까?",
+      "options": [
+        "chown root script.sh",
+        "mv script.sh /usr/bin/",
+        "chmod +x script.sh",
+        "sudo rm script.sh"
+      ],
+      "correct": 2,
+      "explanation": "chmod +x는 파일에 실행 권한을 추가합니다. 실행 비트가 설정되지 않으면, 소유자라 하더라도 셸이 스크립트 실행을 거부합니다."
+    },
+    {
+      "stage": "post",
+      "question": "원격 GPU 서버에서 학습 데이터가 디스크를 가득 채웠습니다. 공간을 가장 많이 소비하는 가장 큰 디렉터리를 표시하는 명령어는 무엇입니까?",
+      "options": [
+        "ls -la /",
+        "cat /proc/meminfo",
+        "du -h --max-depth=1 / | sort -hr | head -20",
+        "free -h"
+      ],
+      "correct": 2,
+      "explanation": "du -h는 디렉터리별 디스크 사용량을 표시하며, --max-depth=1은 최상위 디렉터리로 제한하고, sort -hr는 크기를 내림차순으로 정렬합니다. 이를 통해 가장 많은 공간을 소비하는 디렉터리를 파악할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "macOS와 Linux 버전의 'sed -i'의 주요 차이점은 무엇입니까?",
+      "options": [
+        "Linux sed가 macOS sed보다 빠릅니다",
+        "Linux sed는 정규식을 지원하지 않습니다",
+        "macOS sed는 파일을 제자리에서 수정할 수 없습니다",
+        "macOS sed는 -i 뒤에 빈 문자열 인자('sed -i \"\"')가 필요하며, Linux는 필요하지 않습니다"
+      ],
+      "correct": 3,
+      "explanation": "macOS는 BSD sed를 사용하므로 'sed -i \"\" pattern file' 형식이 필요하며, Linux는 GNU sed를 사용하므로 'sed -i pattern file'을 허용합니다. 이는 시스템 간에 스크립트를 이동할 때 흔한 함정입니다."
+    }
+  ]
+}
