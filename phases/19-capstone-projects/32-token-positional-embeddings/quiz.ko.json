@@ -1,0 +1,78 @@
+{
+  "lesson": "32-token-positional-embeddings",
+  "title": "토큰 및 위치 임베딩",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "임베딩 단계는 (B, T) ids에서 어떤 형태를 생성합니까?",
+      "options": [
+        "D가 모델 차원인 (B, T, D)",
+        "(B, V)",
+        "V가 어휘 크기인 (B, T, V)",
+        "(B, T)"
+      ],
+      "correct": 0,
+      "explanation": "각 id는 D차원 벡터로 매핑됩니다. 배치(batch)는 B와 T를 유지하며 새로운 특징 차원 D가 추가됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "이 강의에서는 토큰 임베딩과 위치 임베딩을 어떻게 결합합니까?",
+      "options": [
+        "추가 선형 투사를 통해",
+        "원소별 최대값(elementwise maximum)을 취하여",
+        "원소별 합(elementwise sum)으로, 위치 벡터를 배치 축에 브로드캐스팅하여",
+        "특징 축을 따라 연결(concatenation)하여"
+      ],
+      "correct": 2,
+      "explanation": "(B, T, D)와 (T, D) 형태의 두 텐서가 합산됩니다. 브로드캐스팅은 위치 테이블을 배치 축에 복제합니다."
+    },
+    {
+      "stage": "check",
+      "question": "SinusoidalPositionalEmbedding은 몇 개의 학습 가능한 매개변수를 기여합니까?",
+      "options": [
+        "max_context_length * d_model",
+        "0",
+        "max_context_length",
+        "d_model"
+      ],
+      "correct": 1,
+      "explanation": "사인(sinusoidal) 테이블은 공식으로 계산되어 버퍼로 저장됩니다. 매개변수를 기여하지 않습니다."
+    },
+    {
+      "stage": "check",
+      "question": "구축 한계보다 긴 시퀀스를 허용할 수 없는 위치 인코딩은 무엇입니까?",
+      "options": [
+        "사인 위치 임베딩",
+        "둘 다 아님",
+        "둘 다",
+        "학습된 위치 임베딩"
+      ],
+      "correct": 2,
+      "explanation": "이 강의 구현에서는 두 클래스 모두 forward 시 max_context_length를 강제합니다. 학습된 임베딩은 본질적으로 테이블에 의해 제한되며, 사인 임베딩도 사전 구축된 테이블을 사용하므로 여기서도 제한됩니다."
+    },
+    {
+      "stage": "post",
+      "question": "사인(sinusoidal) 방식은 왜 인접한 특징 쌍에 sin과 cos를 모두 사용합니까?",
+      "options": [
+        "위치 p+k의 벡터가 위치 p의 벡터의 선형 함수가 되도록 하기 위해",
+        "cos 단독으로는 역전파(backpropagation)가 불가능하기 때문에",
+        "sin 단독으로는 주기적이지 않기 때문에",
+        "매개변수 수를 두 배로 늘리기 위해"
+      ],
+      "correct": 0,
+      "explanation": "같은 파장에서 sin과 cos를 쌍으로 묶으면 위치 k만큼의 이동은 회전(rotation)이 되며, 이는 선형 맵입니다. 따라서 어텐션은 선형 투사를 통해 상대적 오프셋을 학습할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "임베딩의 backward pass는 왜 배치에 나타난 토큰 테이블의 행만 업데이트합니까?",
+      "options": [
+        "forward pass에서 건드려지지 않은 행은 연쇄 법칙(chain rule)에 의해 기울기가 0이 됩니다",
+        "옵티마이저는 본 적 없는 행을 건너뜁니다",
+        "PyTorch는 비-0 항목에 대해서만 기울기를 저장합니다",
+        "토큰 id는 희소(sparse) 데이터 구조에 저장됩니다"
+      ],
+      "correct": 0,
+      "explanation": "출력에 기여하지 않은 행은 손실(loss)에 대한 도함수가 0이므로, 해당 단계에서 기울기가 0입니다."
+    }
+  ]
+}
