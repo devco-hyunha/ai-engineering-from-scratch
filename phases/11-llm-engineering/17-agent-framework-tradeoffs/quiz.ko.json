@@ -1,0 +1,65 @@
+{
+  "lesson": "phase-11/17-agent-framework-tradeoffs",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "크래시 후 재개(resume)가 필수이고, 실행 중 인간 승인(human approval)을 받아야 하며, 세 개의 리트리버(retriever)로 병렬 분산(fan out)해야 하는 워크플로우에 가장 적합한 첫 선택 프레임워크는 무엇입니까?",
+      "options": [
+        "LangGraph",
+        "Agno",
+        "AutoGen",
+        "CrewAI"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "LLM 선택 라우팅(LLM-selected routing)이 명시적 라우팅(explicit routing)보다 턴(turn)당 토큰 비용이 더 높은 이유는 무엇입니까?",
+      "options": [
+        "플래너(planner) LLM 호출이 매 턴마다 다음 단계를 선택하므로, 모든 결정에 프롬프트 및 완료(completion) 토큰이 추가됩니다.",
+        "크루(crew) 내 모든 에이전트(agent)에 대해 도구(tool) 목록이 중복됩니다.",
+        "전체 대화 기록(conversation history)이 검증자(verifier) 모델로 전송됩니다.",
+        "레이턴시(latency) 헤지(hedge)를 위해 다음 노드(node)를 병렬로 사전 가져옵니다."
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "코드 리뷰(code review)에서의 제안자-비평가(proposer-critic) 대화는 어떤 프레임워크의 핵심 추상화(core abstraction)에 자연스럽게 매핑됩니까?",
+      "options": [
+        "LangGraph의 StateGraph",
+        "AutoGen의 GroupChat / ConversableAgent 쌍(pair)",
+        "CrewAI의 순차적 Crew",
+        "Agno의 도구(tools)를 가진 단일 Agent"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Agent 클래스에 세션(session) 및 메모리(memory) 지속성을 위해 내장된 스토리지 드라이버(storage drivers) (SQLite, Postgres, Redis, Mongo, DynamoDB)가 직접 연결된 프레임워크는 무엇입니까?",
+      "options": [
+        "Agno",
+        "CrewAI",
+        "AutoGen",
+        "LangGraph"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "두 번 호출하는 요약기(summarizer)가 있습니다: 텍스트를 가져오고 요약합니다. 올바른 프레임워크 선택은 무엇입니까?",
+      "options": [
+        "AutoGen GroupChat — 두 에이전트(agent)가 최선의 요약(best summary)에 대해 논쟁할 수 있습니다.",
+        "제공자 SDK(provider SDK)를 사용한 순수 Python — 작은 파이프라인(pipeline)에 프레임워크는 가장 빠른 프레임워크가 아닙니다.",
+        "연구자(researcher) + 요약기(summarizer) 역할(role)을 가진 CrewAI — 역할이 더 명확하게 만듭니다.",
+        "LangGraph StateGraph — 신뢰성(reliability)을 위해 항상 프레임워크를 사용하십시오."
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
