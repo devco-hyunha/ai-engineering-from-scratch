@@ -1,0 +1,78 @@
+{
+  "lesson": "15-indirect-prompt-injection",
+  "title": "간접 프롬프트 주입(Indirect Prompt Injection) - 프로덕션 공격 표면",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "간접 프롬프트 주입(IPI)은 직접 프롬프트 주입과 어떻게 구별됩니까?",
+      "options": [
+        "IPI는 제일브레이크(Jailbreaking)의 동의어입니다",
+        "IPI는 에이전트가 정상적인 운영 중에 소비하는 외부 콘텐츠(웹 페이지, 이메일, 도구 출력)에 지침을 내장하며, 공격자는 사용자의 프롬프트에 직접 개입하지 않습니다",
+        "IPI는 멀티모달 모델에서만 작동합니다",
+        "IPI는 대상 모델을 미세 조정(Fine-tuning)해야 합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "다음 중 강의에서 언급된 세 가지 IPI 전달 벡터(delivery vectors)에 포함되지 않는 것은 무엇입니까?",
+      "options": [
+        "사용자가 직접 시스템 프롬프트(System Prompt)를 수정하는 것",
+        "도구 출력",
+        "받은 편지함 / 문서 워크플로우",
+        "RAG (검색 증강 생성)(RAG (Retrieval-Augmented Generation)) (오염된 검색)"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "사용자 입력 필터가 IPI를 놓치는 이유는 무엇입니까?",
+      "options": [
+        "필터가 JSON을 읽을 수 없습니다",
+        "필터는 모델이 응답한 후에만 실행됩니다",
+        "사용자 입력 필터는 대소문자를 구분합니다",
+        "페이로드(payload)는 사용자의 입력에 나타나지 않으며, 검색되거나 도구에서 제공된 콘텐츠에 나타납니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "AI 에이전트(Agent)를 위한 정보 흐름 제어(Information Flow Control, IFC)의 핵심 원칙은 무엇입니까?",
+      "options": [
+        "모든 도구를 기본적으로 비활성화합니다",
+        "모든 검색된 콘텐츠를 암호화합니다",
+        "콘텐츠를 출처에 따라 신뢰(trusted) 또는 비신뢰(untrusted)로 라벨링하며, 비신뢰 콘텐츠에 의해 트리거된 행동은 실행 전에 신뢰 콘텐츠에 의해 비준(ratified)되어야 합니다",
+        "단일 턴(single-turn) 프롬프트만 사용합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Nasr et al. (2025년 10월, 'The Attacker Moves Second')는 적응형 공격(adaptive attacks)을 통해 12개의 공개된 IPI 방어에 대해 무엇을 발견했습니까?",
+      "options": [
+        "적응형 공격은 평가하기에 너무 비용이 많이 들었습니다",
+        "보고된 거의 0%의 ASR(공격 성공률)은 적응형 공격에서도 유지되었습니다",
+        "적응형 공격(기울기, RL, 랜덤 검색, 인간 레드 티밍(Red Teaming))은 원래 거의 0%의 ASR 주장에도 불구하고 그 중 90% 이상을 무너뜨렸습니다",
+        "오직 하나의 방어만 무너졌습니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2025년 OWASP LLM Top 10에서 프롬프트 주입(Prompt Injection)은 어느 순위에 랭크되어 있습니까?",
+      "options": [
+        "LLM10 (최하위)",
+        "LLM01 (최상위, #1 애플리케이션 계층 위협)",
+        "목록에 없음",
+        "LLM05"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
