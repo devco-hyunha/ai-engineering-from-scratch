@@ -1,0 +1,32 @@
+{
+  "hostMode": "결정적 픽스처",
+  "requirements": {
+    "companionFiles": true,
+    "scriptExecution": true,
+    "runtimeExtensions": []
+  },
+  "minimumNativeHosts": 1,
+  "hosts": [
+    {
+      "name": "디렉토리 번들 호스트",
+      "loadsCoreSkill": true,
+      "preservesCompanionFiles": true,
+      "runsBundledScripts": true,
+      "supportedExtensions": []
+    },
+    {
+      "name": "단일 파일 호스트",
+      "loadsCoreSkill": true,
+      "preservesCompanionFiles": false,
+      "runsBundledScripts": false,
+      "supportedExtensions": []
+    },
+    {
+      "name": "프롬프트 전용 호스트",
+      "loadsCoreSkill": false,
+      "preservesCompanionFiles": false,
+      "runsBundledScripts": false,
+      "supportedExtensions": []
+    }
+  ]
+}

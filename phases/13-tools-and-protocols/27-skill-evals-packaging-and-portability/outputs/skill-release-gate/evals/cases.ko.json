@@ -1,0 +1,49 @@
+{
+  "triggerTerms": [
+    "skill",
+    "package",
+    "bundle",
+    "trigger",
+    "portability",
+    "evaluate",
+    "release"
+  ],
+  "evaluationMode": "결정적 픽스처",
+  "threshold": 2,
+  "runs": 5,
+  "minimumPrecision": 0.8,
+  "minimumRecall": 0.8,
+  "minimumRepeatRate": 0.9,
+  "cases": [
+    {
+      "id": "양성 패키지",
+      "prompt": "출시 전 스킬 패키지 평가",
+      "expected": true
+    },
+    {
+      "id": "양성 트리거",
+      "prompt": "스킬 트리거 정밀도 및 재현율 측정",
+      "expected": true
+    },
+    {
+      "id": "양성 이식성",
+      "prompt": "호스트 간 스킬 번들 이식성 확인",
+      "expected": true
+    },
+    {
+      "id": "준 릴리스 노트",
+      "prompt": "릴리스 노트 게시",
+      "expected": false
+    },
+    {
+      "id": "준 모델 평가",
+      "prompt": "모델 응답 품질 평가",
+      "expected": false
+    },
+    {
+      "id": "준 의존성",
+      "prompt": "패키지 의존성 설치",
+      "expected": false
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "artifactMode": "fixture",
+  "contract": {
+    "requiredHeadings": [
+      "결정",
+      "증거"
+    ],
+    "requiredTerms": [
+      "precision",
+      "recall"
+    ],
+    "forbiddenTerms": [
+      "보장된 이식성"
+    ]
+  },
+  "baseline": "릴리스는 문제가 없습니다.",
+  "withSkill": "# 결정\n\n통과.\n\n# 증거\n\n정밀도: 1.0. 재현율: 1.0."
+}

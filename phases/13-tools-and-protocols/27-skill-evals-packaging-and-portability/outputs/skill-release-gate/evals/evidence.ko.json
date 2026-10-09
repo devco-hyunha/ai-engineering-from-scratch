@@ -1,0 +1,32 @@
+{
+  "evidenceMode": "deterministic-fixture",
+  "scriptChecks": [
+    {
+      "id": "unit-fixtures",
+      "passed": true,
+      "evidence": "결정적 스크립트 픽스처가 통과되었습니다."
+    },
+    {
+      "id": "repeat-run",
+      "passed": true,
+      "evidence": "반복된 픽스처 실행이 동일한 결과를 산출했습니다."
+    }
+  ],
+  "safetyChecks": [
+    {
+      "id": "path-traversal",
+      "passed": true,
+      "evidence": "경로 순회 참조가 거부되었습니다."
+    },
+    {
+      "id": "undeclared-network",
+      "passed": true,
+      "evidence": "평가자가 네트워크 권한을 요청하지 않았습니다."
+    },
+    {
+      "id": "external-write",
+      "passed": true,
+      "evidence": "평가자가 외부 상태를 기록하지 않았습니다."
+    }
+  ]
+}
