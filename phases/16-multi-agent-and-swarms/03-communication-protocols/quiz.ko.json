@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP (모델 컨텍스트 프로토콜)(MCP (Model Context Protocol))는 AI 에이전트(Agent)가 어떤 문제를 해결합니까?",
+      "options": [
+        "에이전트(Agent) 간 통신을 암호화합니다",
+        "대형 컨텍스트 윈도우(Context Window)를 압축하여 더 작은 모델에 맞추는 역할을 합니다",
+        "외부 서버가 노출한 도구를 에이전트(Agent)가 표준화된 방식으로 발견하고 사용할 수 있게 하며, 도구 구현을 에이전트(Agent) 코드에 하드코딩하지 않도록 합니다",
+        "학습 데이터에 대한 표준 형식을 제공합니다"
+      ],
+      "correct": 2,
+      "explanation": "MCP (모델 컨텍스트 프로토콜)(MCP (Model Context Protocol))는 도구 접근을 표준화합니다. 서버가 JSON 스키마로 도구를 노출하면, MCP 호환 에이전트(Agent)는 이를 발견하고 호출할 수 있습니다. 이렇게 하면 도구 구현이 에이전트(Agent) 코드와 분리됩니다."
+    },
+    {
+      "stage": "pre",
+      "question": "MCP와 A2A의 차이점은 무엇입니까?",
+      "options": [
+        "MCP는 Python 에이전트(Agent)용이고 A2A는 JavaScript 에이전트(Agent)용입니다",
+        "MCP는 오픈 소스이고 A2A는 독점 소프트웨어입니다",
+        "MCP는 에이전트(Agent)를 도구(Tool)에 연결(에이전트(Agent)-도구(Tool))하고, A2A는 에이전트(Agent)를 다른 에이전트(Agent)에 연결(에이전트(Agent)-에이전트(Agent))하여 작업 위임(Delegation)을 수행합니다",
+        "MCP는 동기식이고 A2A는 비동기식입니다"
+      ],
+      "correct": 2,
+      "explanation": "MCP는 도구 접근을 위한 프로토콜입니다(에이전트(Agent)가 도구(Tool)를 호출). A2A는 에이전트(Agent) 간 협업을 위한 프로토콜입니다(에이전트(Agent)가 다른 에이전트(Agent)에 작업을 위임(Delegation)). 두 프로토콜은 통신 문제의 서로 다른 계층을 해결합니다."
+    },
+    {
+      "stage": "post",
+      "question": "A2A에서 '에이전트(Agent) 카드'란 무엇이며, 왜 중요합니까?",
+      "options": [
+        "에이전트(Agent)의 신원을 인증하는 보안 자격 증명",
+        "에이전트(Agent)의 시스템 프롬프트(System Prompt)를 설정하는 구성 파일",
+        "에이전트(Agent) 성능 지표를 보여주는 시각적 대시보드",
+        "잘 알려진 URL에 위치한 JSON 문서로, 에이전트(Agent)의 기능, 스킬(Skill), 엔드포인트를 설명하여 다른 에이전트(Agent)가 이를 발견하고 작업을 위임(Delegation)할 수 있게 합니다"
+      ],
+      "correct": 3,
+      "explanation": "에이전트(Agent) 카드( /.well-known/agent-card.json 에 호스팅됨)는 에이전트(Agent)가 자신을 광고하는 방식입니다. 스킬(Skill), 지원되는 입력/출력 형식, 작업 엔드포인트가 나열됩니다. 다른 에이전트(Agent)는 이 카드를 읽어 작업을 위임(Delegation)할지, 어떻게 위임할지 결정합니다."
+    },
+    {
+      "stage": "post",
+      "question": "멀티 에이전트(Multi-Agent) 시스템은 에이전트(Agent) 간에 문자열만 전달하는 것보다 왜 구조화된 통신 프로토콜이 필요합니까?",
+      "options": [
+        "LLM (대규모 언어 모델)(LLM (Large Language Model))에서 문자열 파싱은 연산 비용이 높습니다",
+        "구조화된 프로토콜은 타입 안전성, 발견 가능성, 오류 처리, 그리고 서로 다른 팀이 서로 다른 프레임워크로 구축한 에이전트(Agent) 간 상호 운용성을 제공합니다",
+        "문자열은 HTTP로 전송하기에는 너무 큽니다",
+        "모든 클라우드 제공업체가 구조화된 프로토콜을 요구합니다"
+      ],
+      "correct": 1,
+      "explanation": "구조화된 계약이 없으면, 서로 다른 팀의 에이전트(Agent)가 서로의 출력을 오해하고, 오류 처리가 즉흥적이며, 다른 에이전트(Agent)가 무엇을 할 수 있는지 발견할 방법이 없습니다. 프로토콜은 멀티 에이전트(Multi-Agent) 시스템을 신뢰할 수 있게 만드는 공유 언어를 제공합니다."
+    },
+    {
+      "stage": "post",
+      "question": "ACP (에이전트(Agent) 통신 프로토콜)(ACP (Agent Communication Protocol))는 설계 목표에서 A2A와 어떻게 다릅니까?",
+      "options": [
+        "ACP는 WebSocket을 사용하고 A2A는 HTTP를 사용합니다",
+        "ACP는 실시간 애플리케이션에서 A2A보다 빠릅니다",
+        "ACP는 단일 조직 내에서만 작동하고 A2A는 조직 간에 작동합니다",
+        "ACP는 전체 메시지 기록과 컴플라이언스 추적 등 기업 감사 가능성을 강조하는 반면, A2A는 경량 작업 위임(Delegation)에 초점을 맞춥니다"
+      ],
+      "correct": 3,
+      "explanation": "ACP는 모든 에이전트(Agent) 상호작용이 감사 가능하고, 추적 가능하고, 컴플라이언스를 준수해야 하는 기업 환경을 위해 설계되었습니다. A2A는 더 단순하며 작업 완성에 초점을 맞춥니다. ACP는 규제 산업이 요구하는 거버넌스 계층을 추가합니다."
+    }
+  ]
+}
