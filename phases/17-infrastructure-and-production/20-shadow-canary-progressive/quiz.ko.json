@@ -1,0 +1,78 @@
+{
+  "lesson": "20-shadow-canary-progressive",
+  "title": "LLM을 위한 섀도 트래픽, 카나리 릴리스, 점진적 공개",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LLM 릴리스 시 섀도, 카나리, A/B 테스트를 올바른 순서로 배치하는 방법은 무엇인가요?",
+      "options": [
+        "섀도를 완전히 생략한다",
+        "섀도 (영향 없는 비교), 그 다음 카나리 (게이트가 있는 점진적 라이브 트래픽), 안정성이 확인된 후 distinct alternatives에 대한 A/B 테스트",
+        "카나리 먼저, 그 다음 섀도, 그 다음 A/B",
+        "A/B 먼저, 그 다음 섀도, 그 다음 카나리"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "교재에서는 카나리 진행을 어떤 5가지 지표에 대해 게이트로 설정하나요?",
+      "options": [
+        "GPU 온도, 팬 속도, 큐 깊이, 비용, 지연",
+        "순수 처리량(Goodput)만",
+        "지연 백분위수, 요청당 비용, 오류/거부율, 출력 길이 분포, 사용자 피드백율",
+        "오프라인 평가(Evaluation (Eval))의 정확도만"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "교재에서는 LLM의 동일한 입력에 대해 실행 간 정확도 변동이 대략 어느 정도라고 인용하나요?",
+      "options": [
+        "0.1% 미만",
+        "GPU FP 비결합성 및 배치 크기(Batch Size) 변동으로 인해 약 15%까지",
+        "항상 50%",
+        "실행 간에 동일한 출력"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "교재의 관점에서 섀도 모드(shadow mode)의 목적은 무엇인가요?",
+      "options": [
+        "평가를 대체하는 완전한 품질 테스트",
+        "비용 급증, 길이 회귀, 거부 변화, 하드 에러를 잡는 스모크 테스트 — 품질 보장이 아님",
+        "롤백(Rollback)의 대체",
+        "최종 프로덕션 릴리스 단계"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "교재에 따르면 올바른 롤백(Rollback) 설계는 무엇인가요?",
+      "options": [
+        "각 pod에 SSH로 수동 접속",
+        "새로운 모델 digest로 재배포하여 몇 시간 소요",
+        "정책 플래그를 뒤집고 고정된 모델 digest를 몇 초 만에 되돌림 — 재배포 없음",
+        "다음 릴리스 창을 기다림"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "왜 비용이 지연(latency) 및 품질과 함께 게이트로 나열되나요?",
+      "options": [
+        "20% 더 좋은 모델이 호출당 3배 더 비싸질 수 있으며, 비용 게이트 없이 이를 배포하면 단위 경제성이 무너짐",
+        "비용은 모든 제공자(provider)에서 동일함",
+        "비용은 모든 제공자(provider)에 의해 자동으로 상한이 설정됨",
+        "비용은 허영 지표(vanity metric)임"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
