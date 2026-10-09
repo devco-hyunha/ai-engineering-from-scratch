@@ -1,0 +1,78 @@
+{
+  "lesson": "09-production-quantization",
+  "title": "프로덕션 양자화 — AWQ, GPTQ, GGUF K-quant, FP8, MXFP4/NVFP4",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의는 CPU 및 엣지 서빙의 프로덕션 기본값으로 어떤 양자화 형식을 지칭합니까?",
+      "options": [
+        "GGUF Q4_K_M / Q5_K_M",
+        "NVFP4",
+        "FP8",
+        "AWQ INT4"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "vLLM에서 다중 LoRA가 필요할 때, 데이터센터 GPU 서빙용으로 이 강의가 선택하는 형식은 무엇입니까?",
+      "options": [
+        "NVFP4",
+        "GGUF Q4_K_M",
+        "Marlin 커널을 사용한 GPTQ",
+        "AWQ"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "AWQ에서 \"내 모델이 이제 4GB다\"라는 함정은 무엇입니까?",
+      "options": [
+        "AWQ는 실제로 가중치를 줄이지 않습니다",
+        "AWQ는 vLLM과 호환되지 않습니다",
+        "AWQ는 가중치만 줄이며, KV 캐시와 활성화는 별개이며 프로덕션 배치 크기에서 30-50GB를 추가할 수 있습니다",
+        "AWQ는 INT8 KV 캐시를 요구합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "AWQ를 범용 웹 텍스트로 보정(calibration)하면 도메인 모델에 왜 해롭습니까?",
+      "options": [
+        "모델 크기가 증가합니다",
+        "AMD GPU에서만 작동합니다",
+        "알고리즘이 보호할 가중치에 대해 잘못된 결정을 내려 도메인 정확도가 떨어집니다 (예: HumanEval에서 Pass@1 점수 몇 포인트 감소)",
+        "Marlin 커널이 비활성화됩니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "품질이 타협할 수 없는 추론 중심 워크로드의 경우, 이 강의는 기본적으로 어떤 정밀도를 권장합니까?",
+      "options": [
+        "NVFP4 가중치",
+        "GPTQ INT4",
+        "FP8 가중치",
+        "INT2 GGUF"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의가 2026년 초 NVFP4에 대해 지적하는 2026년 양자화 한계는 무엇입니까?",
+      "options": [
+        "FP8 KV 캐시와 결합할 수 없습니다",
+        "CPU에서만 실행됩니다",
+        "LoRA 지원이 아직 없습니다",
+        "H100에서 지원되지 않습니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
