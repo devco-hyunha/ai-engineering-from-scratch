@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LLM (대규모 언어 모델) 서비스를 호출할 때 API 키는 어떤 용도로 사용됩니까?",
+      "options": [
+        "서버로 전송되는 데이터를 암호화하는 것",
+        "신원을 인증하고 요청을 승인하는 것",
+        "요청을 압축하여 대역폭을 줄이는 것",
+        "서버가 사용하는 프로그래밍 언어를 선택하는 것"
+      ],
+      "correct": 1,
+      "explanation": "API 키는 계정을 식별하고, 요청을 승인하며, 제공자가 사용량 및 청구 내역을 추적할 수 있도록 하는 고유한 문자열입니다."
+    },
+    {
+      "stage": "pre",
+      "question": "API 키를 소스 코드에 직접 하드코딩하지 않아야 하는 이유는 무엇입니까?",
+      "options": [
+        "Python은 50자 이상의 문자열 리터럴을 읽을 수 없습니다",
+        "API 제공자는 소스 파일에 있는 키를 차단합니다",
+        "하드코딩된 키는 코드의 실행 속도를 느리게 만듭니다",
+        "git에 실수로 커밋되어 공개적으로 노출될 수 있습니다"
+      ],
+      "correct": 3,
+      "explanation": "소스 코드에 하드코딩된 키는 버전 관리에 커밋되어 공개 저장소에 푸시될 위험이 있으며, 그곳에서 다른 사람이 스크래핑하여 악용할 수 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "로컬 개발 환경에서 API 키를 저장하는 권장 방법은 무엇입니까?",
+      "options": [
+        ".gitignore에 포함된 .env 파일에 저장",
+        "쉬운 접근을 위해 README.md에 저장",
+        "스크립트 상단의 Python 변수에 저장",
+        "패키지 버전과 함께 requirements.txt에 저장"
+      ],
+      "correct": 0,
+      "explanation": ".env 파일은 키를 환경 변수로 저장하며, 버전 관리에 커밋되지 않도록 .gitignore에 추가해야 합니다. SDK는 환경 변수에서 키를 자동으로 읽습니다."
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic의 원시(raw) HTTP API 호출에서, API 키는 어떤 헤더에 담겨 있습니까?",
+      "options": [
+        "Authorization: Bearer sk-ant-...",
+        "Content-Type: application/json",
+        "anthropic-version: 2023-06-01",
+        "x-api-key: sk-ant-..."
+      ],
+      "correct": 3,
+      "explanation": "Anthropic의 API는 더 일반적인 'Authorization: Bearer' 패턴이 아닌 'x-api-key' 헤더를 인증에 사용합니다. 이는 Anthropic API 설계에 특화된 사항입니다."
+    },
+    {
+      "stage": "post",
+      "question": "API의 속도 제한(rate limit)을 초과하면 어떻게 됩니까?",
+      "options": [
+        "요청이 큐에 대기되어 나중에 자동으로 처리됩니다",
+        "서버가 오류(일반적으로 HTTP 429)를 반환하며, 재시도하기 전에 대기해야 합니다",
+        "API 키가 영구적으로 취소됩니다",
+        "API가 응답 없이 요청을 조용히 드롭(drops)합니다"
+      ],
+      "correct": 1,
+      "explanation": "속도 제한은 HTTP 429 (Too Many Requests)를 반환합니다. 대기한 후 재시도해야 하며, 일반적으로 지수 백오프(exponential backoff)를 사용합니다. 속도 제한은 남용을 방지하고 공정한 사용을 보장합니다."
+    }
+  ]
+}
