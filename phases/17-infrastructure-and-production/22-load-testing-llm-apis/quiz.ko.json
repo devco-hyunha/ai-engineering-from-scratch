@@ -1,0 +1,78 @@
+{
+  "lesson": "22-load-testing-llm-apis",
+  "title": "LLM API 부하 테스트 — k6와 Locust가 거짓말하는 이유",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Locust 기반 LLM 부하 테스트에서 GIL 함정은 무엇인가요?",
+      "options": [
+        "클라이언트 측 토큰화가 Python GIL 하에서 실행되어 요청 생성 뒤에 대기하며, 보고된 토큰 간 지연 (ITL)(Inter-Token Latency (ITL))을 부풀립니다",
+        "Locust는 CUDA가 필요합니다",
+        "Locust는 Windows에서만 작동합니다",
+        "Locust는 HTTP를 지원하지 않습니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "프롬프트 균일성 함정은 무엇인가요?",
+      "options": [
+        "균일한 프롬프트는 항상 서버를 느리게 만듭니다",
+        "실제 분포에서 샘플링하면 긴 프롬프트가 과소 표현됩니다",
+        "동일한 프롬프트를 반복하면 접두어 캐싱(Prefix Caching)이 완전한 동시 디코딩처럼 보이며, 보고된 처리량이 부풀려집니다",
+        "균일한 프롬프트는 스트리밍(Streaming)이 필요합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 강의가 권장하는 네 가지 부하 패턴은 무엇인가요?",
+      "options": [
+        "버스트(Burst)만",
+        "수동 클릭 테스트",
+        "정상 상태, 램프, 스파이크, 소크(Soak)",
+        "10일 동안 1 RPS로 일정하게 유지"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "이 강의는 현실적인 프롬프트 분포를 구축하는 방법을 어떻게 권장하나요?",
+      "options": [
+        "요청마다 랜덤 문자 사용",
+        "캐시 적중률을 극대화하기 위해 항상 동일한 프롬프트 사용",
+        "5개의 프롬프트를 직접 작성하고 셔플",
+        "평균과 표준 편차를 사용하여 실제 분포에서 샘플링 (예: LLMPerf의 --mean-input-tokens / --stddev-input-tokens)하거나 실제 트래픽을 재생"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "CI/CD SLA 게이트와 Kubernetes 네이티브 분산 실행에 가장 적합하다고 평가되는 2026년 도구 조합은 무엇인가요?",
+      "options": [
+        "guidellm만",
+        "Vegeta만",
+        "k6 v2026.1.0과 k6 Operator 1.0 GA (TestRun / PrivateLoadZone CRDs)",
+        "Locust 2.43.3 스톡"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "소크(Soak) 부하 패턴이 포착하는 장애 모드(Failure Mode)는 무엇인가요?",
+      "options": [
+        "콜드 스타트 꼬리 지연(Tail Latency)",
+        "토크나이저 GIL 경합",
+        "수 시간에 걸친 메모리 누수, 연결 풀 드리프트, 관측 가능성(Observability) 오버플로",
+        "캐시 퇴거 폭풍"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
