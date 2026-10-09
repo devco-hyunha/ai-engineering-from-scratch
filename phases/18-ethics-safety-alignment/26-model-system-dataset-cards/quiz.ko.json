@@ -1,0 +1,78 @@
+{
+  "lesson": "26-model-system-dataset-cards",
+  "title": "모델 카드, 시스템 카드, 데이터셋 카드",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "원래 Mitchell et al. (2019)의 모델 카드(Model Card)를 가장 잘 설명하는 것은 무엇입니까?",
+      "options": [
+        "모델 체크포인트 매니페스트만 포함",
+        "규제적 법적 계약",
+        "ML 모델에 대한 '영양 성분표': 학습 데이터, 의도된 사용, 요인, 지표, 평가 데이터, 정량적 분리 분석, 윤리적 고려 사항, 주의 사항",
+        "OpenAPI 사양"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Oreamuno et al. (2023)는 Hugging Face 모델 카드의 윤리적 고려 사항 채택에 대해 무엇을 발견했습니까?",
+      "options": [
+        "모델 카드에 텍스트가 전혀 없다",
+        "약 0.3%가 윤리적 고려 사항을 문서화한다",
+        "약 80%가 윤리적 고려 사항을 문서화한다",
+        "모든 모델 카드가 윤리적 고려 사항을 문서화한다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Pushkarna et al. (Google 2022)의 데이터 카드(Data Cards)가 제공하는 망원경(telescopic) / 페리스코프(periscopic) / 현미경(microscopic) 계층화는 무엇을 제공합니까?",
+      "options": [
+        "RLHF 이전 감사 체크리스트",
+        "망원경 테마의 시각화 라이브러리",
+        "경계 객체(boundary-object) 프레이밍으로, 동일한 문서가 세 가지 상세 수준(zoom levels)을 통해 서로 다른 독자(비전문가, ML 실무자, 감사자)에게 서비스됨",
+        "개인정보 보호 쿼리 인터페이스"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "시스템 카드(System Card)는 모델 카드(Model Card)가 다루지 않는 어떤 범위를 포함합니까?",
+      "options": [
+        "토크나이저만",
+        "엔드투엔드 AI 시스템: 모델 + 안전 스택 + 배포 컨텍스트, 보안 기능, 프롬프트 인젝션(Prompt Injection) 보호, 데이터 유출(Data Exfiltration) 탐지, 정렬(Alignment), 인시던트 대응(Incident Response) 포함",
+        "프롬프트 템플릿만",
+        "데이터셋만"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Liang et al. (2024)는 모델 카드의 상세도와 Hugging Face 다운로드율에 대해 무엇을 보고했습니까?",
+      "options": [
+        "윤리적 고려 사항 섹션만 다운로드에 영향을 미쳤다",
+        "상세도가 다운로드율을 감소시켰다",
+        "상세한 모델 카드는 HF에서 처리군과 대조군 간 주당 다운로드가 +29.0% 상승하는 것을 drove한다 (diff-in-diff); 채택 압력은 이제 시장 주도적이며, 규제 준수 주도적만은 아니다",
+        "상세도는 다운로드에 영향을 미치지 않았다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Laminator (Duddu et al. 2024)는 문서화에 무엇을 기여합니까?",
+      "options": [
+        "자동화된 벤치마킹 하네스",
+        "하드웨어 TEE / 암호화 서명을 통한 검증 가능한 증명(attestations)을 제공하여, 카드가 단순한 주장이 아닌 주장에 대한 증명(proof-of-claim)을 담을 수 있게 함",
+        "LLM 기반 요약 생성기",
+        "데이터셋 명세서(Datasheet for Datasets) 표준의 대체품"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}
