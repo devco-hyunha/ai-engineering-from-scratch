@@ -1,0 +1,12 @@
+{
+  "kind": "write",
+  "target": "reports/summary.json",
+  "command": [],
+  "url": null,
+  "payload": "공개 요약 데이터",
+  "influencedByUntrustedContent": false,
+  "approved": false,
+  "claimedPermissions": [
+    "임의 위치 쓰기"
+  ]
+}
