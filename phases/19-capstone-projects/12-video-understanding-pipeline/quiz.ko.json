@@ -1,0 +1,90 @@
+{
+  "lesson": "12-video-understanding-pipeline",
+  "title": "캡스톤 12 — 영상 이해 파이프라인 (장면, QA, 검색)",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "긴 컨텍스트 비전-언어 모델 (VLM)(Vision-Language Model (VLM))이 2시간짜리 영상을 네이티브로 읽을 수 있음에도 불구하고, 왜 장면 수준 인덱스가 여전히 필요합니까?",
+      "options": [
+        "장면 컷은 VLM이 이해하는 유일한 요소입니다",
+        "벡터 인덱스는 영상 파일을 지원하지 않습니다",
+        "긴 컨텍스트 VLM은 스트리밍 출력을 할 수 없습니다",
+        "개별 영상을 통째로 읽을 수 있더라도, 100시간의 영상을 질의 가능한 코퍼스로 흡수하려면 장면 수준 검색이 필요합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "다중 벡터 인덱스에서 각 장면은 어떤 세 가지 벡터 유형을 얻습니까?",
+      "options": [
+        "오디오 파형, 멜 스펙트로그램, MFCC",
+        "포즈, 깊이, 광학 흐름",
+        "해시, gzip, CRC",
+        "캡션 임베딩(Embedding), 키프레임 임베딩, 전사 임베딩"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "질의 시 세 가지 검색 스트림의 결과는 어떻게 병합됩니까?",
+      "options": [
+        "세 개의 랭킹된 목록에 걸쳐 상호 랭킹 융합 (RRF)(Reciprocal Rank Fusion (RRF))를 통해",
+        "코사인 유사도(Cosine Similarity)를 평균하여",
+        "캡션 히트만 선택하여",
+        "채점 없이 합집합을 취하여"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "시간적 접지(Temporal Grounding) 단계는 상위 장면 내에서 무엇을 정제합니까?",
+      "options": [
+        "답변을 포함하는 (시작, 종료) 타임스탬프 윈도우",
+        "키프레임 임베딩의 차원 수",
+        "Whisper의 전사 단어 타임스탬프",
+        "Qdrant에 저장된 벡터의 개수"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "알려진 환각(Hallucination) 핫스팟이므로 별도로 보고되는 질문 클래스는 무엇입니까?",
+      "options": [
+        "번역 질문",
+        "화자 식별 질문",
+        "VLM이 개수를 잘못 세거나 이벤트 순서를 잘못 정렬하는 세기 및 행동 유형 질문",
+        "풍경에 대한 서술적 질문"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "루브릭은 홀드아웃 세트에서 어떤 접지 지표(grounding metric)를 측정합니까?",
+      "options": [
+        "퍼플렉시티(Perplexity)",
+        "시간적 접지의 교차 유니온 (IoU)(Temporal-grounding intersection-over-union (IoU))",
+        "수락률",
+        "MRR@10"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "파이프라인이 답변에서 인용된 타임스탬프를 요구하는 이유는 무엇입니까?",
+      "options": [
+        "Whisper 출력에 타임스탬프가 필수로 요구됩니다",
+        "Qdrant 페이로드에 타임스탬프가 필수로 요구됩니다",
+        "임베딩 차원을 줄이기 때문입니다",
+        "시청자가 정확한 (video_id, start, end) 위치로 이동하여 주장을 검증할 수 있게 해주기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
