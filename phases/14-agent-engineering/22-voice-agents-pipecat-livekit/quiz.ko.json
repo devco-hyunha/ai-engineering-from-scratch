@@ -1,0 +1,90 @@
+{
+  "lesson": "22-voice-agents-pipecat-livekit",
+  "title": "음성 에이전트: Pipecat 및 LiveKit",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Pipecat 파이프라인은 어떤 두 가지 흐름 방향을 사용합니까?",
+      "options": [
+        "읽기 및 쓰기",
+        "핫 및 콜드",
+        "인바운드 및 아웃바운드",
+        "DOWNSTREAM (소스에서 싱크로) 및 UPSTREAM (피드백, 취소, 바지인)"
+      ],
+      "correct": 3,
+      "explanation": "프레임은 소스에서 싱크로 다운스트림으로 흐르며, 제어 및 취소를 위해 업스트림으로 흐릅니다."
+    },
+    {
+      "stage": "pre",
+      "question": "Pipecat의 표준 음성 파이프라인은 무엇입니까?",
+      "options": [
+        "VAD -> STT -> LLM -> TTS -> 전송",
+        "오디오 -> JSON -> SQL -> 응답",
+        "LLM -> 임베딩 -> 검색 -> 답변",
+        "TTS -> STT -> LLM -> VAD"
+      ],
+      "correct": 0,
+      "explanation": "VAD는 음성 활동을 감지하고, STT는 전사하며, LLM은 응답하고, TTS는 발화하며, 전송 계층이 전달합니다."
+    },
+    {
+      "stage": "check",
+      "question": "LiveKit Agents는 어떤 두 가지 음성 에이전트 클래스를 제공합니다?",
+      "options": [
+        "BatchAgent 및 StreamAgent",
+        "TextAgent 및 SpeechAgent",
+        "MultimodalAgent (직접 오디오) 및 VoicePipelineAgent (STT/LLM/TTS 캐스케이드)",
+        "LocalAgent 및 CloudAgent"
+      ],
+      "correct": 2,
+      "explanation": "MultimodalAgent는 직접 오디오(Realtime 스타일)를 사용하며, VoicePipelineAgent는 텍스트 수준 제어에 STT->LLM->TTS를 사용합니다."
+    },
+    {
+      "stage": "check",
+      "question": "바지인(barge-in)이란 무엇이며 어떻게 처리됩니까?",
+      "options": [
+        "LLM 비용 급증; 토큰 감소",
+        "에이전트가 말하는 동안 사용자가 중단하는 것; UPSTREAM 취소 프레임이 발화 중 TTS를 중단시킴",
+        "캡차 실패; 재시도",
+        "제공자 장애; 지역 전환"
+      ],
+      "correct": 1,
+      "explanation": "바지인은 사용자 중단이며, Pipecat는 UPSTREAM 취소를 통해 이를 깔끔하게 처리합니다."
+    },
+    {
+      "stage": "check",
+      "question": "강의에서 프리미엄으로 설명한 엔드투엔드 지연은 얼마입니까?",
+      "options": [
+        "약 450-600 ms",
+        "약 1500 ms",
+        "약 50 ms",
+        "약 5000 ms"
+      ],
+      "correct": 0,
+      "explanation": "프리미엄 스택은 약 450-600 ms에 위치하며, 800-1200 ms가 일반적이고, 1500 ms 이상은 깨진 것처럼 느껴집니다."
+    },
+    {
+      "stage": "post",
+      "question": "STT 신뢰도를 무시하면 어떤 문제가 발생합니까?",
+      "options": [
+        "통화 비용이 저렴해짐",
+        "지연이 개선됨",
+        "TTS가 빨라짐",
+        "신뢰도가 낮은 전사가 LLM에 진리처럼 입력되어 잘못된 답변을 생성함; 신뢰도로 게이트하거나 확인을 요청해야 함"
+      ],
+      "correct": 3,
+      "explanation": "신뢰도가 낮은 STT를 진리로 취급하는 것은 음성 에이전트의 주요 실패 모드입니다."
+    },
+    {
+      "stage": "post",
+      "question": "강의는 출시 전에 구성 요소 지연을 합산할 것을 권장하는 이유는 무엇입니까?",
+      "options": [
+        "지연은 WebRTC에 필수적임",
+        "각 구성 요소가 50-200 ms를 추가하며, 합산 값이 경험이 깨진 것처럼 느껴지는지 결정함",
+        "제공자가 지연에 따라 청구함",
+        "컴플라이언스 요구 사항을 충족함"
+      ],
+      "correct": 1,
+      "explanation": "출시 전에 체인(VAD + STT + LLM + TTS + 전송)을 합산하십시오; 목표는 엄격합니다."
+    }
+  ]
+}
