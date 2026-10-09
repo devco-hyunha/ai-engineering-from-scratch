@@ -1,0 +1,78 @@
+{
+  "lesson": "86-constitutional-rules-engine",
+  "title": "캡스톤 86 — 헌법 규칙 엔진",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "임시 코드 검사 대신 선언형 YAML 헌법을 사용하는 이유는 무엇입니까?",
+      "options": [
+        "YAML이 앵커를 지원하기 때문입니다",
+        "YAML이 Python보다 파싱 속도가 빠르기 때문입니다",
+        "YAML의 규칙은 비엔지니어가 검토할 수 있고, 버전 관리에 포함되며, 코드 변경 없이 교체할 수 있기 때문입니다",
+        "표준 라이브러리가 YAML을 선호하기 때문입니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "모든 규칙이 최소한 포함해야 하는 필드는 무엇입니까?",
+      "options": [
+        "name, regex, fix",
+        "id, owner, timestamp",
+        "predicate, severity, owner",
+        "name, severity, must, explanation"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "엔진은 술어(predicate)를 어떻게 조합합니까?",
+      "options": [
+        "규칙당 단일 contains_regex를 통해서만 조합합니다",
+        "신뢰 점수를 곱하여 조합합니다",
+        "신경 분류기를 통해 조합합니다",
+        "all_of, any_of, not_를 통해 원자 술어를 재귀적으로 래핑하여 조합합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "applies_when의 역할은 무엇입니까?",
+      "options": [
+        "심각도(severity)를 덮어씁니다",
+        "수정(fixer) 연산을 선택합니다",
+        "must 술어를 게이트하여, 적용되지 않는 규칙은 위반이 아닌 not_applicable로 기록되도록 합니다",
+        "항상 true로 평가됩니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Fixer는 무엇을 수행합니까?",
+      "options": [
+        "텍스트를 복구하기 위해 원격 모델을 호출합니다",
+        "규칙별 선언형 수정(append, prepend, replace_regex)을 적용하여 수정된 텍스트를 생성합니다",
+        "규칙 파일을 재작성합니다",
+        "수정 내용으로부터 심각도를 계산합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "데모는 Fixer 실행 후 엔진을 두 번째로 실행하는 이유는 무엇입니까?",
+      "options": [
+        "첫 번째 패스는 드라이 런(dry run)일 뿐이기 때문입니다",
+        "헌법을 다시 로드하기 위해 실행합니다",
+        "보고서 크기를 부풀리기 위해 실행합니다",
+        "수정된 텍스트가 규칙을 충족하는지 검증하고, Fixer가 로컬에서 복구할 수 없는 규칙을 드러내기 위해 실행합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

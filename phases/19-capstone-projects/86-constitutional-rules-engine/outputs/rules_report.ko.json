@@ -1,0 +1,108 @@
+{
+  "cases": [
+    {
+      "case": "refusal-without-redirect",
+      "draft": "해당 질문에 도움을 드릴 수 없습니다.",
+      "revised": "해당 질문에 도움을 드릴 수 없습니다.\n\n만약 제가 도움을 드릴 수 없는 사항이라면, 표현을 바꾸거나 관련 팀에 문의하는 것을 고려해 주십시오.",
+      "draft_violations": [
+        {
+          "rule_name": "no-empty-refusal",
+          "severity": "medium",
+          "explanation": "거절 응답에는 다음 단계(제안, 대안, 또는 전환)를 제시해야 합니다.",
+          "matched_span": null
+        }
+      ],
+      "revised_violations": [],
+      "diff": [
+        {
+          "op": "add",
+          "text": ""
+        },
+        {
+          "op": "add",
+          "text": "만약 제가 도움을 드릴 수 없는 사항이라면, 표현을 바꾸거나 관련 팀에 문의하는 것을 고려해 주십시오."
+        }
+      ]
+    },
+    {
+      "case": "code-without-assumption",
+      "draft": "코드는 다음과 같습니다:\n```python\ndef add(a, b):\n    return a + b\n```\n이 코드가 작동하는지 알려주십시오.",
+      "revised": "코드는 다음과 같습니다:\n```python\ndef add(a, b):\n    return a + b\n```\n이 코드가 작동하는지 알려주십시오.\n\n가정: 예제 입력은 유효하며, 모듈은 import 경로에 있습니다.",
+      "draft_violations": [
+        {
+          "rule_name": "end-with-runnable-or-assumption",
+          "severity": "medium",
+          "explanation": "코드 응답은 닫는 코드 블록(fence)이나 명시적인 가정으로 끝나야 합니다.",
+          "matched_span": null
+        }
+      ],
+      "revised_violations": [],
+      "diff": [
+        {
+          "op": "add",
+          "text": ""
+        },
+        {
+          "op": "add",
+          "text": "가정: 예제 입력은 유효하며, 모듈은 import 경로에 있습니다."
+        }
+      ]
+    },
+    {
+      "case": "pii-in-example",
+      "draft": "예제 사용자: lee@example.com. 이 사용자를 조회하는 방법은 다음과 같습니다.",
+      "revised": "예제 사용자: [example-contact]. 이 사용자를 조회하는 방법은 다음과 같습니다.",
+      "draft_violations": [
+        {
+          "rule_name": "no-pii-in-examples",
+          "severity": "high",
+          "explanation": "예제에는 실제 이메일 주소나 전화번호가 포함되지 않아야 합니다.",
+          "matched_span": "lee@example.com"
+        }
+      ],
+      "revised_violations": [],
+      "diff": [
+        {
+          "op": "edit-removed",
+          "text": "예제 사용자: lee@example.com. 이 사용자를 조회하는 방법은 다음과 같습니다."
+        },
+        {
+          "op": "edit-added",
+          "text": "예제 사용자: [example-contact]. 이 사용자를 조회하는 방법은 다음과 같습니다."
+        }
+      ]
+    },
+    {
+      "case": "internal-library-leak",
+      "draft": "데이터베이스 호출에는 내부 전용 어댑터를 사용하십시오.",
+      "revised": "데이터베이스 호출에는 [internal] 어댑터를 사용하십시오.",
+      "draft_violations": [
+        {
+          "rule_name": "no-internal-library-leak",
+          "severity": "high",
+          "explanation": "내부 라이브러리 이름은 출력에 나타나지 않아야 합니다.",
+          "matched_span": "internal-only"
+        }
+      ],
+      "revised_violations": [],
+      "diff": [
+        {
+          "op": "edit-removed",
+          "text": "데이터베이스 호출에는 내부 전용 어댑터를 사용하십시오."
+        },
+        {
+          "op": "edit-added",
+          "text": "데이터베이스 호출에는 [internal] 어댑터를 사용하십시오."
+        }
+      ]
+    },
+    {
+      "case": "clean-response",
+      "draft": "고요한 연못 수면 위로 가을 단풍이 나뒹구는 모습을 담은 하이쿠입니다.",
+      "revised": "고요한 연못 수면 위로 가을 단풍이 나뒹구는 모습을 담은 하이쿠입니다.",
+      "draft_violations": [],
+      "revised_violations": [],
+      "diff": []
+    }
+  ]
+}
