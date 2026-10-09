@@ -1,0 +1,78 @@
+{
+  "lesson": "23-watermarking-synthid-stable-signature-c2pa",
+  "title": "워터마킹 - SynthID, Stable Signature, C2PA",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Kirchenbauer 스타일(SynthID-text) 토큰 워터마킹은 신호를 어떻게 삽입합니까?",
+      "options": [
+        "출력을 공개 키로 암호화하여",
+        "각 디코딩 단계에서 이전 K개 토큰을 해싱하여 어휘를 초록/빨강 집합으로 분할하고 초록 쪽으로 샘플링에 편향을 주며; 탐지 시 초록 토큰을 z-점수로 계산합니다",
+        "숨겨진 HTML 주석을 삽입하여",
+        "프롬프트 템플릿을 수정하여"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "패러프레이즈(paraphrase)에 대한 텍스트 워터마크의 주요 한계는 무엇입니까?",
+      "options": [
+        "패러프레이즈는 이미지 워터마크에만 영향을 미칩니다",
+        "패러프레이즈를 실제로 견디는 것",
+        "패러프레이즈가 워터마크를 강화하는 것",
+        "텍스트의 재구성이나 패러프레이즈가 초록 토큰의 통계적 신호를 파괴합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Stable Signature (Fernandez et al., ICCV 2023)는 무엇을 수행합니까?",
+      "options": [
+        "이미지 모서리에 가시적인 워터마크를 추가합니다",
+        "메타데이터를 개인 키로 서명합니다",
+        "C2PA를 사용하여 업로드 시 이미지를 서명합니다",
+        "잠재 확산(latent diffusion) 디코더를 미세 조정하여, 생성된 모든 이미지가 잠재 공간(latent)에서 탐지 가능한 고정된 내장 메시지를 담도록 합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2024년 5월의 'Stable Signature is Unstable' 결과는 무엇을 입증합니까?",
+      "options": [
+        "워터마크가 수학적으로 위조 불가능함을 증명합니다",
+        "워터마크가 작동하려면 C2PA가 필요합니다",
+        "워터마크가 JPEG 압축에서만 실패합니다",
+        "생성 후 디코더의 미세 조정으로 이미지 품질을 유지하면서 워터마크를 제거할 수 있어, 적대적 강건성(adversarial robustness)이 훼손됨을 입증합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "C2PA 메타데이터와 워터마킹은 어떻게 상호 보완적입니까?",
+      "options": [
+        "C2PA가 워터마크를 완전히 대체합니다",
+        "메타데이터는 제거될 수 있지만 풍부한 출처(provenance) 체인을 담고; 워터마크는 트랜스코딩을 견디지만 몇 비트만 담습니다; 계층적으로 결합하면 유용한 출처 스토리를 제공합니다",
+        "워터마크가 C2PA와 동일한 키로 서명됩니다",
+        "양자가 상호 교환 가능합니다"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "'SynthID 신호 없음'이 진위(인간 작성)의 증거가 아닌 이유는 무엇입니까?",
+      "options": [
+        "SynthID가 클로즈드 소스이기 때문에",
+        "SynthID가 인간 텍스트에 항상 오탐(false positive)을 발생시키기 때문에",
+        "SynthID는 SynthID가 활성화된 모델의 생성물에만 워터마크를 부여하므로, SynthID가 없는 모델의 콘텐츠는 기본적으로 워터마크가 없습니다",
+        "SynthID가 Gemini 출력에만 작동하기 때문에"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
