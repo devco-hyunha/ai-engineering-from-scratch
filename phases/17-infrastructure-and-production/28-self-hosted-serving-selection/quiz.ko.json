@@ -1,0 +1,78 @@
+{
+  "lesson": "28-self-hosted-serving-selection",
+  "title": "셀프 호스팅 서빙 선택 — 엔진을 하드웨어 및 규모에 매칭하기",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "이 강의는 개발용 노트북에서 한 명령어로 실행하는 기본 엔진으로 무엇을 선택합니까?",
+      "options": [
+        "llama.cpp",
+        "vLLM",
+        "TGI",
+        "Ollama"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025년 어떤 사건이 신규 프로젝트에서 TGI를 기본값에서 제외하게 만듭니까?",
+      "options": [
+        "TGI가 2025년 12월 11일 유지보수 모드에 진입했으며, 이후에는 버그 수정만 진행됩니다",
+        "TGI가 CUDA 지원을 중단했습니다",
+        "TGI가 가격을 인상했습니다",
+        "TGI가 Anthropic에 인수되었습니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "어떤 하드웨어 제약이 llama.cpp를 강제하고 vLLM / TRT-LLM을 제외합니까?",
+      "options": [
+        "CPU 전용 (가속기 없음)",
+        "AMD MI300X",
+        "NVIDIA Hopper",
+        "Apple M4"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "RadixAttention 덕분에 에이전트형 멀티턴 및 접두어 중심 워크로드에 이 강의가 위치시키는 엔진은 무엇입니까?",
+      "options": [
+        "SGLang",
+        "Ollama",
+        "TGI",
+        "llama.cpp"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "이 강의는 동일한 GGUF 또는 HF 가중치에 대해 어떤 개발-프로덕션 파이프라인을 권장합니까?",
+      "options": [
+        "모든 환경에서 TGI",
+        "개발에서 Ollama, 프로덕션에서 Ollama",
+        "개발에서 Ollama, 스테이징에서 llama.cpp, 프로덕션에서 vLLM (접두어 중심의 경우 SGLang)",
+        "최상단부터 최하단까지 오직 TRT-LLM만 사용"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "공유 프로덕션 환경에서 Ollama가 권장되지 않는 이유는 무엇입니까?",
+      "options": [
+        "GGUF를 로드할 수 없습니다",
+        "Windows에서만 실행됩니다",
+        "클로즈드 소스입니다",
+        "Go HTTP 직렬화가 오버헤드를 추가하고, 동시성 관리가 vLLM보다 단순하며, OpenTelemetry 지원이 뒤처져 있습니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}
