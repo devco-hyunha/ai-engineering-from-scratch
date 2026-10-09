@@ -1,0 +1,53 @@
+{
+  "status": "grounded",
+  "issues": [],
+  "direct_evidence_ratio": 0.67,
+  "friction_points": [
+    "소유자 조회",
+    "컨텍스트 전환"
+  ],
+  "steps": [
+    {
+      "order": 1,
+      "actor": "온콜 엔지니어",
+      "action": "알림을 열다",
+      "evidence": [
+        {
+          "source": "화면 녹화 01",
+          "observation": "알림에 서비스 소유자 정보 없음",
+          "direct": true,
+          "confidence": 0.95
+        }
+      ],
+      "friction": "소유자 조회"
+    },
+    {
+      "order": 2,
+      "actor": "온콜 엔지니어",
+      "action": "대시보드 검색",
+      "evidence": [
+        {
+          "source": "인시던트 184",
+          "observation": "세 개의 대시보드가 열림",
+          "direct": true,
+          "confidence": 0.9
+        }
+      ],
+      "friction": "컨텍스트 전환"
+    },
+    {
+      "order": 3,
+      "actor": "인시던트 지휘관",
+      "action": "완화 조치 승인",
+      "evidence": [
+        {
+          "source": "runbook",
+          "observation": "프로덕션 쓰기 작업은 승인 필요",
+          "direct": false,
+          "confidence": 0.8
+        }
+      ],
+      "friction": ""
+    }
+  ]
+}
