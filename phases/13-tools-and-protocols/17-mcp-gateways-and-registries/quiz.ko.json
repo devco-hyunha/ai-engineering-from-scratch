@@ -1,0 +1,78 @@
+{
+  "lesson": "17-mcp-gateways-and-registries",
+  "title": "상태 비저장 MCP 게이트웨이 및 레지스트리 수용",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "현재 MCP 게이트웨이는 일반적인 클라이언트 요청 간에 무엇을 보존해야 합니까?",
+      "options": [
+        "백엔드당 하나의 Mcp-Session-Id",
+        "마지막 HTTP 연결",
+        "독립적인 GET 이벤트 스트림",
+        "프로토콜 세션 없음; 각 요청은 검증 및 라우팅에 필요한 정보를 포함합니다"
+      ],
+      "correct": 3,
+      "explanation": "MCP 2026-07-28의 일반적인 요청은 자기 완결적(self-contained)이며, 건강한 게이트웨이 인스턴스라면 어디든 도달할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "주체(principal) 필터링된 tools/list 결과는 일반적으로 어떤 캐시 범위를 사용해야 합니까?",
+      "options": [
+        "public",
+        "global",
+        "private",
+        "session"
+      ],
+      "correct": 2,
+      "explanation": "사용자별 도구 목록은 인증 컨텍스트 간에 공유되어서는 안 됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "게이트웨이는 현재 백엔드로 도구 호출을 어떻게 전달해야 합니까?",
+      "options": [
+        "먼저 GET 스트림을 열기",
+        "외부 베어러 토큰과 세션 ID를 복사하기",
+        "외부 JSON-RPC ID를 내구성 있는 상태로 재사용하기",
+        "게이트웨이 클라이언트 메타데이터와 중개된 기능을 포함하는 새로운 자기 완결적 요청을 생성하기"
+      ],
+      "correct": 3,
+      "explanation": "게이트웨이는 백엔드의 클라이언트이며, 독립적으로 유효한 새로운 요청을 생성합니다."
+    },
+    {
+      "stage": "check",
+      "question": "게이트웨이는 수용(admission) 중에 공식 Registry server.json 레코드를 어떻게 사용해야 합니까?",
+      "options": [
+        "게시 형식을 검증한 후, 별도로 검증된 게시자, 출처 증명(Provenance Attestation), 정책 및 승인 상태와 결합하기",
+        "게시를 완료된 보안 리뷰로 취급하기",
+        "임의의 레코드 필드에서 검증 주장을 복사하기",
+        "이름이 익숙해 보이는 모든 레코드를 신뢰하기"
+      ],
+      "correct": 0,
+      "explanation": "server.json은 게시 메타데이터를 담고 있습니다. 검증된 출처 증명과 게이트웨이의 승인 결정은 외부 수용 증거로 남아 있습니다."
+    },
+    {
+      "stage": "post",
+      "question": "현대적인 Streamable HTTP에서 장기적인 목록 변경 알림은 어떻게 열립니까?",
+      "options": [
+        "응답이 SSE인 POST subscriptions/listen 요청을 통해",
+        "resources/subscribe를 통해",
+        "Last-Event-ID가 있는 독립적인 GET를 통해",
+        "notifications/initialized를 통해"
+      ],
+      "correct": 0,
+      "explanation": "subscriptions/listen은 이전의 비자발적 GET 및 리소스 구독 모델을 대체합니다."
+    },
+    {
+      "stage": "post",
+      "question": "현재의 Tasks 확장 라우팅 규칙은 무엇입니까?",
+      "options": [
+        "최종 출력에 tasks/result를 사용",
+        "세션 내 모든 작업을 복원하기 위해 tasks/list를 사용",
+        "taskId를 Mcp-Name으로 사용하여 tasks/get, tasks/update 및 tasks/cancel을 라우팅",
+        "Mcp-Session-Id에 작업을 저장"
+      ],
+      "correct": 2,
+      "explanation": "공식 확장은 get, update 및 cancel을 사용하며, 작업 ID는 프로토콜 세션 없이 라우팅 핸들 역할을 합니다."
+    }
+  ]
+}
