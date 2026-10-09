@@ -1,0 +1,78 @@
+{
+  "lesson": "56-iteration-scheduler",
+  "title": "반복 스케줄러",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "스케줄러는 왜 현재 최상의 브랜치를 항상 선택하지 않고 UCB 점수를 사용합니까?",
+      "options": [
+        "큐를 다른 방식으로 정렬할 수 없기 때문입니다",
+        "asyncio가 UCB를 요구하기 때문입니다",
+        "UCB가 계산 속도가 더 빠르기 때문입니다",
+        "탐욕적 선택은 탐색을 하지 않으며, UCB는 활용과 탐색의 균형을 맞추기 때문입니다"
+      ],
+      "correct": 3,
+      "explanation": "탐욕적 선택은 초기의 우위에 고정됩니다. 균일 선택은 활용을 하지 않습니다. UCB는 sqrt(ln N / n) 항을 통해 덜 탐색된 브랜치를 위한 용량을 예약하면서 리더를 선택합니다."
+    },
+    {
+      "stage": "pre",
+      "question": "UCB1에서 완료된 실행이 0개인 브랜치는 어떤 점수를 받습니까?",
+      "options": [
+        "양무한대이므로, 시도되지 않은 브랜치는 항상 먼저 선택됩니다",
+        "다른 모든 브랜치의 평균 보상",
+        "0",
+        "탐색 상수 c"
+      ],
+      "correct": 0,
+      "explanation": "교재에서는 runs=0인 경우 +inf를 할당합니다. 이는 모든 브랜치가 재방문되기 전에 적어도 한 번은 시도되도록 보장합니다."
+    },
+    {
+      "stage": "check",
+      "question": "스케줄러는 여러 슬롯을 어떻게 계속 바쁘게 유지합니까?",
+      "options": [
+        "파견된 각 가설에 대해 asyncio.create_task를 사용하고, 진행 중인 집합에서 FIRST_COMPLETED를 기다립니다",
+        "러너를 스레드 풀에서 실행합니다",
+        "이벤트 루프를 sleep으로 차단합니다",
+        "multiprocessing을 사용합니다"
+      ],
+      "correct": 0,
+      "explanation": "각 파견된 가설은 태스크가 됩니다. 메인 루프는 FIRST_COMPLETED를 기다리므로 완료된 슬롯이 즉시 해제되고 다른 가설이 파견됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "스케줄러는 브랜치에 대해 언제 paper.trigger를 방출합니까?",
+      "options": [
+        "해당 브랜치에 결과가 도달할 때마다",
+        "프루닝 하한(prune floor)에 도달했을 때",
+        "실행이 끝날 때만",
+        "브랜치 평균이 논문 임계값에 도달하거나 초과하는 첫 번째 결과에 대해, 브랜치당 한 번만"
+      ],
+      "correct": 3,
+      "explanation": "트리거는 브랜치 평균이 임계값을 넘어서는 첫 번째 시점에 브랜치당 한 번만 발동합니다. BranchStats의 paper_triggered 플래그가 반복을 방지합니다."
+    },
+    {
+      "stage": "post",
+      "question": "최소 실행 횟수 임계값 이후 평균 보상이 프루닝 하한(prune floor) 아래에 머무는 브랜치에는 어떤 일이 발생합니까?",
+      "options": [
+        "아무 일도 일어나지 않습니다. UCB가 결국 다른 브랜치를 선택할 것입니다",
+        "보상 하한이 자동으로 낮아집니다",
+        "브랜치가 pruned로 표시되고 해당 브랜치의 남은 가설들이 큐에서 제거됩니다",
+        "스케줄러가 예외를 발생시킵니다"
+      ],
+      "correct": 2,
+      "explanation": "프루닝은 브랜치를 미래의 스케줄링에서 제거합니다. 프루닝은 선택기와 분리되어 있습니다. UCB는 순위를 매기고, 프루닝은 제거합니다."
+    },
+    {
+      "stage": "post",
+      "question": "스케줄러는 어떤 두 가지 예산을 하드 리미트로 강제합니까?",
+      "options": [
+        "메모리와 CPU",
+        "paper triggers와 prune count",
+        "슬롯과 큐 깊이",
+        "max_experiments (총 실행 횟수)와 max_seconds (벽시계 시간)"
+      ],
+      "correct": 3,
+      "explanation": "둘 다 stop reasons로 발동합니다. max_experiments는 총 작업량을 제한합니다. max_seconds는 벽시계 시간을 제한합니다. trace는 어느 것이 실행을 중단시켰는지 기록합니다."
+    }
+  ]
+}
