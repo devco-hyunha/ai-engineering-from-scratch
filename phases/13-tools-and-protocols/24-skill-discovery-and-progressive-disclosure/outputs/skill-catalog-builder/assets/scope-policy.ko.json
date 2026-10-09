@@ -1,0 +1,11 @@
+{
+  "precedence": [
+    "project",
+    "user"
+  ],
+  "maxEntries": 40,
+  "maxDescriptionChars": 240,
+  "maxCatalogChars": 8000,
+  "equalPrecedenceCollision": "error",
+  "note": "이것은 예시 호스트 정책이며, 이식 가능한 에이전트 스킬(Agent Skills) 규칙이 아닙니다."
+}
