@@ -1,0 +1,78 @@
+{
+  "lesson": "13-llm-observability",
+  "title": "LLM 관측성 스택 선택",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "강의는 2026년 LLM 관측성 시장을 어떻게 구분합니까?",
+      "options": [
+        "개발 플랫폼 (평가/프롬프트/세션이 번들된 것) 대 게이트웨이/텔레메트리 도구",
+        "Python 대 TypeScript",
+        "벤더 대 오픈 소스",
+        "온프레미스 대 클라우드"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "강의는 MIT 라이선스 코어, 강력한 셀프 호스팅 스토리, 월 5만 이벤트 무료 클라우드 티어를 제공하는 도구를 무엇으로 위치시킵니까?",
+      "options": [
+        "Phoenix",
+        "Arize AX",
+        "LangSmith",
+        "Langfuse"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Datadog 같은 모놀리식 관측성 스택 대비 Arize AX의 주요 규모 주장(스케일 클레임)은 무엇입니까?",
+      "options": [
+        "항상 더 비쌈",
+        "제로 카피 Iceberg/Parquet 통합을 통해 대규모에서 약 100배 저렴함",
+        "일일 100만 이벤트 미만에서 무료",
+        "10% 저렴함"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "강의는 이식성(portability)을 위한 잘못된 계측(instrumentation) 계층을 무엇이라고 부릅니까?",
+      "options": [
+        "HTTP/OpenAI SDK 계층에서 계측하는 것",
+        "성공 사례에서 5% 샘플링하는 것",
+        "OpenTelemetry GenAI 시맨틱 컨벤션을 사용하는 것",
+        "에이전트 프레임워크 내부에서 계측하는 것, 이는 해당 프레임워크에 결합(coupling)되기 때문"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "강의는 관측성 도구 간 2026년 상호운용성(interop) 계층으로 어떤 OpenTelemetry 컨벤션을 식별합니까?",
+      "options": [
+        "GenAI 시맨틱 컨벤션 (gen_ai.system, gen_ai.request.model, gen_ai.usage.input_tokens)",
+        "OTel HTTP 시맨틱 컨벤션",
+        "OTel 메시징 시맨틱 컨벤션",
+        "OTel 데이터베이스 시맨틱 컨벤션"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "강의는 왜 전체 추적(full-trace) 보존이 일일 100만 요청을 넘어서 확장되지 못한다고 주장합니까?",
+      "options": [
+        "벤더가 이를 차단함",
+        "Phoenix는 100만 추적만 지원함",
+        "보존 저장 비용이 LLM 호출 자체보다 더 비싸며, 팀은 샘플링해야 함 (예: 오류 100%, 고비용 100%, 성공 5%)",
+        "OpenTelemetry가 추적 볼륨을 제한함"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
