@@ -1,0 +1,90 @@
+{
+  "lesson": "14-speculative-decoding-server",
+  "title": "캡스톤 14 — 추론적 디코딩(Speculative Decoding) 추론 서버",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "추론적 디코딩(Speculative Decoding)의 두 단계 메커니즘은 무엇인가요?",
+      "options": [
+        "두 개의 타겟 모델이 토큰마다 번갈아 작동합니다",
+        "임베딩 모델과 합성기가 사용됩니다",
+        "검색 캐시와 리랭커(Reranker)가 사용됩니다",
+        "드래프트 모델이 k개의 후보 토큰을 제안하고, 타겟 모델이 이를 단일 패스로 검증합니다"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "EAGLE-3는 ngram 드래프트가 하지 못하는 무엇을 수행하나요?",
+      "options": [
+        "토큰화를 완전히 피합니다",
+        "CPU에서만 실행됩니다",
+        "타겟 모델의 은닉 상태(hidden states)에 드래프트 헤드를 학습하여 더 높은 수용률을 달성합니다",
+        "타겟 모델을 대체합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "배치 크기 1, 8, 32에 걸쳐 p99 꼬리 지연(Tail Latency)을 보고하는 이유는 무엇인가요?",
+      "options": [
+        "안정 상태의 초당 토큰 수(Tokens per Second)는 거부(rejection) 시의 검증 패스가 일반 디코딩보다 더 비싸다는 사실을 숨길 수 있기 때문입니다",
+        "vLLM은 배치 크기 8 미만으로 서빙할 수 없습니다",
+        "p99는 배치 크기 32에서만 중요합니다",
+        "꼬리 지연(Tail Latency)은 배치 크기와 무관합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "트래픽 분포가 이동(Distribution Shift)하면 수용률이 왜 변하나요?",
+      "options": [
+        "드래프트 정렬은 입력 분포에 의존합니다: ShareGPT, 코드, 도메인 데이터는 서로 다른 패턴을 사용합니다",
+        "OS 스케줄러가 GPU 메모리를 재배치합니다",
+        "양자화(Quantization)가 런타임에 변경됩니다",
+        "vLLM이 매시간 모델을 회전합니다"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Kubernetes HPA는 어떤 신호에 따라 배포를 확장하나요?",
+      "options": [
+        "디스크 IOPS",
+        "CPU 사용률",
+        "추론 요청의 큐 대기 시간",
+        "클러스터 오토스케일러 노드"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "P-EAGLE는 직렬(serial) EAGLE-3에 무엇을 추가하나요?",
+      "options": [
+        "FP4 가중치로 양자화(Quantization)합니다",
+        "타겟 모델을 제거합니다",
+        "드래프트 가지(tree of draft branches)에 대한 병렬 추론을 단일 타겟 패스로 검증합니다",
+        "자동 데이터셋 큐레이션을 수행합니다"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "비추론적(non-speculative) 기준선 대비 평가 기준이 요구하는 처리량 목표는 무엇인가요?",
+      "options": [
+        "두 모델에서 품질이 일치할 때 최소 2.5배",
+        "기준선보다 임의의 개선",
+        "품질이 일치할 때 대략 1.1배",
+        "임의의 품질에서 정확히 10배 처리량"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}
