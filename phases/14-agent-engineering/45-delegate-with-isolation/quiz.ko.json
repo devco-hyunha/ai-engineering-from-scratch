@@ -1,0 +1,78 @@
+{
+  "lesson": "45-delegate-with-isolation",
+  "title": "격리된 위임",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "병렬 위임이 정당화되는 시점은 언제인가요?",
+      "options": [
+        "작업이 결정, 경로, 대기 시간에서 실질적인 독립성을 가질 때",
+        "10분 이상인 모든 작업에 대해",
+        "더 많은 에이전트(Agent)가 가용할 때마다",
+        "문서화에만 적용"
+      ],
+      "correct": 0,
+      "explanation": "병렬 처리는 단위들이 공유된 가변 결정이나 소유권 없이 진행할 수 있을 때만 도움이 됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "파일시스템 격리가 제공하지 않는 보장은 무엇인가요?",
+      "options": [
+        "독점적인 설계 및 경로 소유권",
+        "독립적인 명령 실행",
+        "복구 가능한 브랜치",
+        "별도의 디렉토리"
+      ],
+      "correct": 0,
+      "explanation": "두 개의 격리된 워크트리(Worktree)가 여전히 상충하는 설계를 구현할 수 있습니다."
+    },
+    {
+      "stage": "check",
+      "question": "각 작업 단위(unit)가 증명을 명시해야 하는 이유는 무엇인가요?",
+      "options": [
+        "핸드오프(Handoff)를 피하기 위해",
+        "동시성을 높이기 위해",
+        "통합자(integrator)가 재현 가능한 증거를 받기 위해",
+        "작업자가 성공을 주장할 수 있도록 하기 위해"
+      ],
+      "correct": 2,
+      "explanation": "통합자는 결과를 검증해야 하며, 요약만 신뢰해서는 안 됩니다."
+    },
+    {
+      "stage": "check",
+      "question": "두 단위(unit)가 겹치는 경로를 소유할 경우 어떻게 해야 하나요?",
+      "options": [
+        "마지막 작업자가 승리하도록 허용",
+        "검토 없이 병합",
+        "더 빠르게 실행",
+        "차단하고 분할을 재설계"
+      ],
+      "correct": 3,
+      "explanation": "겹치는 쓰기 소유권은 피할 수 있는 충돌과 모호성을 초래합니다."
+    },
+    {
+      "stage": "post",
+      "question": "보정된 자율성(calibrated autonomy)이란 무엇인가요?",
+      "options": [
+        "수동 작업만",
+        "증거와 롤백(Rollback)이 강한 곳에서의 자유, 결과가 중대한 곳에서의 체크포인트(Checkpoint)",
+        "완전 자동화",
+        "무작위 승인"
+      ],
+      "correct": 1,
+      "explanation": "권한은 결과의 중대성과 가역성에 따라 결정되어야 합니다."
+    },
+    {
+      "stage": "post",
+      "question": "통합자(integrator)의 최종 책임은 무엇인가요?",
+      "options": [
+        "핸드오프(Handoff) 삭제",
+        "더 큰 모델 선택",
+        "모든 단위(unit)를 재작성",
+        "전체 단위 간 검증 게이트(Verification Gate)를 실행하고 범위(Scope)를 강제"
+      ],
+      "correct": 3,
+      "explanation": "단위 단위(unit-level)의 증명은 종단 간(end-to-end) 통합 증명을 대체하지 못합니다."
+    }
+  ]
+}
