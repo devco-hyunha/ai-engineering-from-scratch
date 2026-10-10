@@ -96,6 +96,9 @@ site/langs.js
 !.claude/skills/build-project/**
 site/projects-data.js
 site/project-content/
+
+generated/agent-content.json
+site/agent-pages/
 site/manual-*.html
 site/manuals-data.js
 site/manuals.html

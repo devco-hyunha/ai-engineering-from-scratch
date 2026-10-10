@@ -4,7 +4,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = name => fs.readFileSync(path.join(root, name), 'utf8');
+const read = name => fs.readFileSync(path.join(root, name), 'utf8').replace(/\r\n/g, '\n');
 const sponsorUrl = 'https://serpapi.com/ai-engineering-from-scratch';
 const description = 'Web Search API for your AI apps. Available in Markdown and JSON for any integration.';
 const nitroUrl = 'https://nitrostack.ai/referral/aiengineeringfromscratch';
@@ -20,9 +20,17 @@ function between(text, start, end, file) {
   return placement;
 }
 
+function checkSponsorLink(text, file) {
+  const sponsorLink = text.match(/href="([^"]*SPONSORS\.md)">([^<]+)<\/a>/);
+  assert.ok(sponsorLink, file);
+  assert.equal(path.resolve(root, path.dirname(file), sponsorLink[1]), path.join(root, 'SPONSORS.md'), file);
+  assert.ok(sponsorLink[2].trim(), file);
+  if (file === 'README.md') assert.equal(sponsorLink[2], 'Become a sponsor');
+}
+
 test('sponsor placements preserve copy, destinations, and local artwork without tier labels', () => {
   const placements = [
-    ['README.md', '### Sponsors\n', '### Use every lesson the same way'],
+    ['README.md', '### Sponsors\n', '## Learning paths'],
     ['SPONSORS.md', '## Sponsor\n', '## How to sponsor'],
     ['BACKERS.md', '## Sponsors\n', '## Infrastructure support'],
   ];
@@ -39,7 +47,7 @@ test('sponsor placements preserve copy, destinations, and local artwork without 
   assert.match(sponsors, /<img src="https:\/\/serpapi\.com\/assets\/media_kit\/logo-with-wordmark\.svg" alt="SerpApi" width="180">/);
   assert.ok(sponsors.includes(`<a href="${nitroUrl}"><img src="${nitroLogo}" alt="NitroStack" width="56"></a> **NitroStack** | ${nitroDescription}`));
   const readme = read('README.md');
-  const placement = between(readme, '### Sponsors\n', '### Use every lesson the same way', 'README.md');
+  const placement = between(readme, '### Sponsors\n', '## Learning paths', 'README.md');
   const banners = [...placement.matchAll(/<a href="([^"]+)">\s*<picture><source\b([^>]+)><img\b([^>]+)><\/picture>\s*<\/a>/g)];
   const expectedBanners = [
     {
@@ -109,10 +117,7 @@ test('supporter navigation survives translated README headings', () => {
     const text = read(file);
     assert.ok(text.includes('href="#supporters"'), file);
     assert.ok(text.includes('<a id="supporters"></a>'), file);
-    const sponsorLink = text.match(/href="([^"]*SPONSORS\.md)">Become a sponsor/);
-    assert.ok(sponsorLink, file);
-    assert.equal(path.resolve(root, path.dirname(file), sponsorLink[1]), path.join(root, 'SPONSORS.md'), file);
-    assert.equal((text.match(/>Become a sponsor<\/a>/g) || []).length, 1, file);
+    checkSponsorLink(text, file);
     const sources = [...text.matchAll(/<source media="\(min-width: 768px\)" srcset="([^"]+)" width="48%">/g)];
     assert.equal(sources.length, 2, file);
     for (const [, src] of sources) {
@@ -122,10 +127,18 @@ test('supporter navigation survives translated README headings', () => {
     if (file !== 'README.md') {
       assert.doesNotMatch(
         text,
-        /### Sponsors|Thank you to our sponsors\.|Your support keeps every lesson free and open source\.|See all supporters|SerpApi\. Web Search API|## Sponsor the work|Free, MIT-licensed, 523 lessons\.|See all sponsors and backers|Want to support the work\?/
+        /Thank you to our sponsors\.|Your support keeps every lesson free and open source\.|See all supporters|SerpApi\. Web Search API|## Sponsor the work|Free, MIT-licensed, 523 lessons\.|See all sponsors and backers|Want to support the work\?/
       );
     }
   }
+});
+
+test('sponsor navigation accepts translated labels without accepting broken targets', () => {
+  const file = 'i18n/he/README.md';
+  checkSponsorLink('<a href="../../SPONSORS.md">Become a sponsor</a>', file);
+  checkSponsorLink('<a href="../../SPONSORS.md">תמכו בפרויקט</a>', file);
+  assert.throws(() => checkSponsorLink('<a href="SPONSORS.md">תמכו בפרויקט</a>', file));
+  assert.throws(() => checkSponsorLink('<a href="../../SPONSORS.md"> </a>', file));
 });
 
 test('sponsors page is rendered from SPONSORS.md at build time', () => {
@@ -178,7 +191,9 @@ test('the hamburger menu and every page footer link to the sponsors page', () =>
   assert.ok(read('site/header.js').includes("ensureNavigationLink(nav, 'sponsors.html', 'Sponsor us', 'header-mobile-only');"));
   assert.ok(JSON.parse(read('site/ui-strings.json')).keys.includes('Sponsor us'));
   const vercel = JSON.parse(read('vercel.json'));
-  assert.ok(vercel.rewrites.some(rule => rule.source === '/sponsors' && rule.destination === '/sponsors.html'));
+  assert.ok(vercel.rewrites.some(rule => rule.source === '/sponsors' && rule.has && rule.destination === '/agent-pages/sponsors.md'));
+  assert.ok(vercel.rewrites.some(rule => rule.source === '/sponsors' && !rule.has && rule.destination === '/sponsors.html'));
+  assert.equal(require('../lib/agent-content').PAGES['/sponsors'], 'sponsors.html');
 });
 
 test('sponsor changes are reserved for maintainers', () => {

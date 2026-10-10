@@ -30,11 +30,19 @@
       return total + (Array.isArray(phase.lessons) ? phase.lessons.length : 0);
     }, 0);
     var lang = currentLang();
+    var lessonLabel = lang === 'ko'
+      ? formatCount(lessonTotal) + '개 레슨'
+      : countLabel(lessonTotal, 'lesson', 'lessons');
+    var phaseLabel = lang === 'ko'
+      ? formatCount(PHASES.length) + '개 단계'
+      : countLabel(PHASES.length, 'phase', 'phases');
     var values = {
-      mastheadLessonCount: lang === 'ko' ? lessonTotal + '개 레슨' : lessonTotal + ' lessons',
-      mastheadPhaseCount: lang === 'ko' ? PHASES.length + '개 단계' : PHASES.length + ' phases',
-      prefaceLessonCount: lang === 'ko' ? lessonTotal + '개 공개 레슨' : lessonTotal + ' lessons',
-      prefacePhaseCount: lang === 'ko' ? PHASES.length + '개 단계' : PHASES.length + ' phases'
+      mastheadLessonCount: lessonLabel,
+      mastheadPhaseCount: phaseLabel,
+      prefaceLessonCount: lang === 'ko' ? formatCount(lessonTotal) + '개 공개 레슨' : lessonLabel,
+      prefacePhaseCount: phaseLabel,
+      tocLessonCount: lessonLabel,
+      tocPhaseCount: phaseLabel
     };
     Object.keys(values).forEach(function (id) {
       var target = document.getElementById(id);
@@ -114,9 +122,9 @@
     var phasePct = stats.phases > 0 ? (stats.completePhases / stats.phases) * 100 : 0;
     var glossaryCount = (typeof GLOSSARY !== 'undefined') ? GLOSSARY.length : 0;
 
-    setText('[data-stat="complete-frac"]', stats.complete + ' / ' + stats.lessons);
-    setText('[data-stat="phases-frac"]', stats.completePhases + ' / ' + stats.phases);
-    setText('[data-stat="glossary-count"]', String(glossaryCount));
+    setText('[data-stat="complete-frac"]', formatCount(stats.complete) + ' / ' + formatCount(stats.lessons));
+    setText('[data-stat="phases-frac"]', formatCount(stats.completePhases) + ' / ' + formatCount(stats.phases));
+    setText('[data-stat="glossary-count"]', formatCount(glossaryCount));
     setBar('[data-bar="complete"]', pct);
     setBar('[data-bar="phases"]', phasePct);
     setBar('[data-bar="languages"]', 100);
@@ -131,6 +139,10 @@
   function renderPhases() {
     var grid = document.getElementById('phasesGrid');
     if (!grid) return;
+    if (!PHASES.length) {
+      grid.innerHTML = '<p class="toc-empty">No phases are published yet.</p>';
+      return;
+    }
     var hasProgress = !!window.AIFSProgress;
     var html = '';
     for (var i = 0; i < PHASES.length; i++) {
@@ -146,12 +158,12 @@
         }
         if (staticDone || userDone) done++;
       }
-      var statusClass = p.status.replace(/ /g, '-');
+      var statusClass = escapeHtml(String(p.status || 'planned').replace(/ /g, '-'));
       var roman = toRoman(p.id);
       var num = String(p.id).padStart(2, '0');
       var phaseName = tPhaseName(p.id, p.name);
       html += '<div class="toc-row" data-phase="' + i + '" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Phase ' + num + ': ' + escapeHtml(phaseName) + '">';
-      html += '<span class="toc-num">' + roman + '.</span>';
+      html += '<span class="toc-num" dir="ltr">' + roman + '.</span>';
       html += '<div><span class="toc-status ' + statusClass + '"></span><span class="toc-name">' + escapeHtml(phaseName) + '</span></div>';
       html += '<span class="toc-meta">' + done + ' / ' + total + '</span>';
       html += '<span class="toc-meta">' + num + '</span>';
@@ -310,6 +322,7 @@
       var lessonLabel = bilingualLessonNameHtml(l.name, lessonPath);
       var nameClass = 'modal-lesson-name' + (lessonTitleKo(lessonPath) ? ' has-ko' : '');
       var lessonMeta = '<span class="modal-lesson-meta"><span class="modal-lesson-type" data-type="' + escapeHtml(l.type) + '"' + (l.combines ? ' title="Combines: ' + escapeHtml(l.combines) + '"' : '') + '>' + escapeHtml(l.type) + '</span><span aria-hidden="true">·</span><span class="modal-lesson-lang">' + escapeHtml(l.lang) + '</span></span>';
+      var lessonCopy = '<span class="modal-lesson-copy"><span class="' + nameClass + '" dir="auto" title="' + escapeHtml(tip) + '">' + lessonLabel + '</span>' + lessonMeta + '</span>';
 
       var openLabel = userComplete ? (tHome('reviewLesson') || 'Review') : (tHome('openLesson') || 'Open lesson');
       var comingSoonLabel = tHome('comingSoon') || 'Coming soon';
@@ -319,11 +332,11 @@
       html += '<div class="modal-lesson' + (userComplete ? ' user-done' : '') + '">';
       if (canOpen) {
         html += '<a href="' + lessonUrl + '" class="modal-lesson-open" title="' + escapeHtml(tip) + '" aria-label="' + escapeHtml(openLabel) + ': ' + escapeHtml(tip) + '">';
-        html += '<span class="modal-lesson-copy"><span class="' + nameClass + '">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += lessonCopy;
         html += '<span class="modal-lesson-cta">' + escapeHtml(openLabel) + '<span aria-hidden="true">→</span></span></a>';
       } else {
         html += '<span class="modal-lesson-open is-unavailable" aria-disabled="true" title="' + escapeHtml(tip) + '">';
-        html += '<span class="modal-lesson-copy"><span class="' + nameClass + '">' + lessonLabel + '</span>' + lessonMeta + '</span>';
+        html += lessonCopy;
         html += '<span class="modal-lesson-cta">' + escapeHtml(comingSoonLabel) + '</span></span>';
       }
 
@@ -335,7 +348,7 @@
       html += '</div>';
     }
 
-    container.innerHTML = html;
+    container.innerHTML = html || '<p class="modal-lessons-empty">No lessons are published in this phase yet.</p>';
 
     var toggles = container.querySelectorAll('.modal-lesson-toggle');
     for (var t = 0; t < toggles.length; t++) {
@@ -359,7 +372,7 @@
       var pct = Math.round((userDone / p.lessons.length) * 100);
       if (progEl) {
         progEl.style.display = '';
-        progEl.innerHTML = '<span><strong class="modal-progress-count">' + userDone + '</strong> of ' + p.lessons.length + ' lessons complete</span><span class="modal-progress-pct">' + pct + '%</span>';
+        progEl.innerHTML = '<span><strong class="modal-progress-count">' + formatCount(userDone) + '</strong> of ' + countLabel(p.lessons.length, 'lesson', 'lessons') + ' complete</span><span class="modal-progress-pct">' + pct + '%</span>';
       }
       if (barEl && barFill) {
         barEl.style.display = '';
@@ -715,10 +728,18 @@
     }
   }
 
+  function formatCount(value) {
+    return (Number(value) || 0).toLocaleString('en');
+  }
+
+  function countLabel(value, singular, plural) {
+    return formatCount(value) + ' ' + (Number(value) === 1 ? singular : plural);
+  }
+
   function escapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = str == null ? '' : str;
-    return div.innerHTML;
+    return div.innerHTML.replace(/"/g, '&quot;');
   }
 
   const currentLang = () => {
