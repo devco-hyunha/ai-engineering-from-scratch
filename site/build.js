@@ -1585,6 +1585,40 @@ function existingRepoFile(relPath) {
   return fs.existsSync(path.join(REPO_ROOT, relPath)) ? relPath : '';
 }
 
+function isLocaleJsonFilename(file) {
+  return /\.[a-z]{2}(?:-[A-Za-z0-9]+)?\.json$/i.test(String(file || ''));
+}
+
+function readOptionalJson(filePath, label) {
+  if (!fs.existsSync(filePath)) return null;
+  return readJson(filePath, label);
+}
+
+function attachLocale(entity, lang, overlay) {
+  if (!entity || !lang || !overlay || typeof overlay !== 'object') return entity;
+  if (!entity.locales || typeof entity.locales !== 'object') entity.locales = {};
+  entity.locales[lang] = overlay;
+  return entity;
+}
+
+function collectResearchPaths(programDir, programRel) {
+  const researchDir = path.join(programDir, 'research');
+  if (!fs.existsSync(researchDir)) return [];
+  return fs.readdirSync(researchDir)
+    .filter(name => name.endsWith('.md') && !/\.ko\.md$/i.test(name))
+    .sort()
+    .map(name => `${programRel}/research/${name}`);
+}
+
+function collectReferencePaths(programDir, programRel) {
+  const referencesDir = path.join(programDir, 'references');
+  if (!fs.existsSync(referencesDir)) return [];
+  return fs.readdirSync(referencesDir)
+    .filter(name => name.endsWith('.md') && !/\.ko\.md$/i.test(name))
+    .sort()
+    .map(name => `${programRel}/references/${name}`);
+}
+
 function parseCertifications() {
   const merged = { programs: [], tracks: [], lessonsByPath: {}, assessmentsById: {} };
   for (const programDir of certificationProgramDirs()) {
@@ -1614,10 +1648,17 @@ function parseCertificationProgram(programDir) {
   const programKey = path.basename(programDir);
   program.directory = repoRelativePath(programDir);
   program.learnerGuidePath = existingRepoFile(`${program.directory}/GETTING_STARTED.md`);
+  program.readmePath = existingRepoFile(`${program.directory}/README.md`);
   program.tutorSkillPath = existingRepoFile(`skills/${programKey}-certification/SKILL.md`);
+  program.researchPaths = collectResearchPaths(programDir, program.directory);
+  program.referencePaths = collectReferencePaths(programDir, program.directory);
+  const programLocale = readOptionalJson(path.join(programDir, 'program.ko.json'), `${program.directory}/program.ko.json`);
+  if (programLocale) attachLocale(program, 'ko', programLocale);
   const tracksDir = path.join(programDir, 'tracks');
   const trackFiles = fs.existsSync(tracksDir)
-    ? fs.readdirSync(tracksDir).filter(file => file.endsWith('.json')).sort()
+    ? fs.readdirSync(tracksDir)
+      .filter(file => file.endsWith('.json') && !isLocaleJsonFilename(file))
+      .sort()
     : [];
   const trackEntries = trackFiles.map(file => {
     const track = readJson(path.join(tracksDir, file), `certification track ${file}`);
@@ -1629,6 +1670,11 @@ function parseCertificationProgram(programDir) {
       ? track.lessons.map(normalizeLessonRef).filter(Boolean)
       : [];
     track.assessments = Array.isArray(track.assessments) ? track.assessments : [];
+    const trackLocale = readOptionalJson(
+      path.join(tracksDir, `${track.slug}.ko.json`),
+      `${program.directory}/tracks/${track.slug}.ko.json`
+    );
+    if (trackLocale) attachLocale(track, 'ko', trackLocale);
     return { file, track };
   });
   trackEntries.sort((a, b) => {
@@ -1657,7 +1703,7 @@ function parseCertificationProgram(programDir) {
       const quiz = fs.existsSync(quizPath) ? readJson(quizPath, `${relPath}/quiz.json`) : null;
       const meta = certificationDocMeta(markdown, entry.name.replace(/^\d+-/, '').replace(/-/g, ' '));
       const lessonDir = path.join(lessonsDir, entry.name);
-      lessonsByPath[relPath] = {
+      const lesson = {
         path: relPath,
         slug: entry.name,
         programId: program.id,
@@ -1679,6 +1725,23 @@ function parseCertificationProgram(programDir) {
         domainsByTrack: {},
         rolesByTrack: {},
       };
+      const koDocPath = path.join(lessonsDir, entry.name, 'docs', 'ko.md');
+      if (fs.existsSync(koDocPath)) {
+        const koMeta = certificationDocMeta(
+          fs.readFileSync(koDocPath, 'utf8'),
+          entry.name.replace(/^\d+-/, '').replace(/-/g, ' ')
+        );
+        attachLocale(lesson, 'ko', {
+          name: koMeta.name,
+          summary: koMeta.summary,
+          keywords: koMeta.keywords,
+          type: koMeta.type,
+          languages: koMeta.languages,
+          prerequisites: koMeta.prerequisites,
+          time: koMeta.time,
+        });
+      }
+      lessonsByPath[relPath] = lesson;
     }
   }
 

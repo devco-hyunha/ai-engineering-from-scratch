@@ -2734,7 +2734,7 @@
 
   <script src="build-meta.js"></script>
   <script src="langs.js?v=20260802a"></script>
-  <script src="lang-picker.js?v=20260925a"></script>
+  <script src="lang-picker.js?v=20261010a"></script>
   <script src="ui-i18n.js?v=20261006a"></script>
   <script src="lesson-titles-i18n.ko.js?v=20260914a"></script>
   <script src="data.js?v=20260821c"></script>
@@ -2861,8 +2861,8 @@
   </script>
   <script src="header.js?v=20261006a" defer></script>
   <script src="cmdpalette.js?v=20260821a" defer></script>
-  <script src="lesson-figures.js?v=843871fd2942"></script>
-  <script src="figure-manifest.js?v=b3744fdea707"></script>
+  <script src="lesson-figures.js?v=5f3e1e4b2f9b"></script>
+  <script src="figure-manifest.js?v=9206cd0f774f"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -2897,8 +2897,11 @@
       }
 
       // lang-picker.js renders the switcher into #langPicker; when the reader
-      // chooses a language, re-fetch the current lesson in it (quiz stays English).
+      // chooses a language, re-fetch the current lesson and quiz in that language.
       window.AIFS_onLangChange = function () {
+        lessonQuizPromise = null;
+        if (typeof initializeLessonData === 'function') initializeLessonData();
+        if (typeof buildSidebar === 'function') buildSidebar();
         if (typeof lessonPath !== 'undefined' && lessonPath) fetchLesson(lessonPath);
       };
 
@@ -3345,13 +3348,6 @@
 
         syncCertificationQuizProgressVersion();
 
-        if (certificationLesson) {
-          document.documentElement.lang = 'en';
-          document.documentElement.dir = 'ltr';
-          var langPicker = document.getElementById('langPicker');
-          if (langPicker) langPicker.hidden = true;
-        }
-
         if (certificationMode) {
           for (var ci = 0; ci < certificationTrack.lessons.length; ci++) {
             var certRef = certificationTrack.lessons[ci];
@@ -3360,9 +3356,10 @@
             var embedded = certs.lessonsByPath[certPath] || null;
             var core = embedded ? null : phaseLessonForPath(certPath);
             var display = embedded || (core && core.lesson) || {};
+            var englishName = display.name || display.title || certPath.split('/').pop().replace(/^\d+-/, '').replace(/-/g, ' ');
             flatLessons.push({
               lessonIndex: ci,
-              lessonName: display.name || display.title || certPath.split('/').pop().replace(/^\d+-/, '').replace(/-/g, ' '),
+              lessonName: embedded ? localizedCertificationLessonName(embedded, certPath) : englishName,
               lessonSlug: certPath.split('/').pop(),
               status: display.status || 'complete',
               type: certRef.role || display.type || 'Certification',
@@ -3662,7 +3659,25 @@
 
       function lessonTitleKo(path) {
         var map = window.AIFS_LESSON_TITLES_KO || {};
-        return path && map[path] ? map[path] : '';
+        if (path && map[path]) return map[path];
+        var certs = typeof CERTIFICATIONS !== 'undefined' ? CERTIFICATIONS : null;
+        var lesson = certs && certs.lessonsByPath ? certs.lessonsByPath[path] : null;
+        if (lesson && lesson.locales && lesson.locales.ko && lesson.locales.ko.name) {
+          return lesson.locales.ko.name;
+        }
+        return '';
+      }
+
+      function localizedCertificationLessonName(lesson, fallbackPath) {
+        if (!lesson) {
+          return fallbackPath
+            ? String(fallbackPath).split('/').pop().replace(/^\d+-/, '').replace(/-/g, ' ')
+            : '';
+        }
+        if (currentLang() === 'ko' && lesson.locales && lesson.locales.ko && lesson.locales.ko.name) {
+          return lesson.locales.ko.name;
+        }
+        return lesson.name || lesson.title || '';
       }
 
       function bilingualLessonTip(name, path) {
@@ -3738,11 +3753,19 @@
 
       function fetchLesson(path, retried, requestSequence) {
         if (!retried || !requestSequence) requestSequence = ++lessonFetchSequence;
-        if (certificationLesson && path === certificationLesson.path && typeof certificationLesson.markdown === 'string') {
+        var lang = currentLang();
+        var hasEmbeddedCertification = certificationLesson
+          && path === certificationLesson.path
+          && typeof certificationLesson.markdown === 'string';
+
+        // Certification lessons ship embedded English in certification-data.js.
+        // Prefer colocated docs/<lang>.md + quiz.<lang>.json when the reader
+        // picks another language, then fall back to the embedded English copy.
+        if (hasEmbeddedCertification && lang === 'en') {
           applyRenderedLanguage('en');
           lessonQuizPromise = Promise.resolve(certificationLesson.quiz || null);
           try {
-            renderLesson(certificationLesson.markdown, currentLang());
+            renderLesson(certificationLesson.markdown, 'en');
           } catch (embeddedError) {
             console.error('renderLesson failed', embeddedError);
             showError('Render error', 'Loaded the certification lesson but failed to render it. Details are in the browser console.');
@@ -3756,10 +3779,48 @@
           return;
         }
 
+        if (hasEmbeddedCertification && lang !== 'en') {
+          var certLocalizedQuizPath = path + '/quiz.' + lang + '.json';
+          var certLocalizedDocPath = path + '/docs/' + lang + '.md';
+          if (!retried || !lessonQuizPromise) {
+            lessonQuizPromise = fetchRepositoryFile(certLocalizedQuizPath)
+              .then(function (res) { return res.json(); })
+              .catch(function () {
+                return Promise.resolve(certificationLesson.quiz || null);
+              });
+          }
+          var certQuizPromise = lessonQuizPromise;
+          fetchRepositoryFile(certLocalizedDocPath)
+            .then(function (response) {
+              return response.text().then(function (markdown) {
+                return { markdown: markdown, lang: lang };
+              });
+            })
+            .catch(function () {
+              return { markdown: certificationLesson.markdown, lang: 'en' };
+            })
+            .then(function (documentResult) {
+              if (requestSequence !== lessonFetchSequence) return;
+              applyRenderedLanguage(documentResult.lang);
+              try {
+                renderLesson(documentResult.markdown, documentResult.lang);
+              } catch (certRenderError) {
+                console.error('renderLesson failed', certRenderError);
+                showError('Render error', 'Loaded the certification lesson but failed to render it. Details are in the browser console.');
+                return;
+              }
+              certQuizPromise.then(function (quizData) {
+                if (!quizData || requestSequence !== lessonFetchSequence) return;
+                try { renderQuiz(quizData); }
+                catch (quizError) { console.error('renderQuiz failed', quizError); }
+              });
+            });
+          return;
+        }
+
         // Local previews read the checked-out repository first. Deploys and a
         // missing local file use the branch-aware raw source from build-meta.
         var enPath = path + '/docs/en.md';
-        var lang = currentLang();
         var localizedPath = path + '/docs/' + lang + '.md';
         var localizedQuizPath = path + '/quiz.' + lang + '.json';
         var translatedUrl = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/translations/i18n/'
@@ -5398,7 +5459,12 @@
 
       function isRenderableOutput(file) {
         var name = outputFileName(file);
-        return !!name && name.charAt(0) !== '.' && (!file.type || file.type !== 'dir') && !/\.ko\.md$/i.test(name);
+        return !!name && name.charAt(0) !== '.' && (!file.type || file.type !== 'dir') && !/\.ko\.(md|json)$/i.test(name);
+      }
+
+      function localizedOutputName(filename, lang) {
+        if (!filename || !lang || lang === 'en') return '';
+        return String(filename).replace(/(\.(?:md|json))$/i, '.' + lang + '$1');
       }
 
       function isMarkdownOutput(file) {
@@ -5512,12 +5578,12 @@
           var installHint = '';
           var installCommand = '';
           var viewUrl = lessonFileViewUrl(file);
-          // Check if translated counterpart exists for current language
+          // Prefer a colocated translated counterpart (*.ko.md / *.ko.json).
           var curLang = currentLang();
           var translatedFile = null;
           var hasKoTranslation = false;
           if (Array.isArray(data)) {
-            var koName = filename.replace(/\.md$/i, '.ko.md');
+            var koName = localizedOutputName(filename, 'ko');
             for (var ki = 0; ki < data.length; ki++) {
               if (outputFileName(data[ki]) === koName) {
                 hasKoTranslation = true;

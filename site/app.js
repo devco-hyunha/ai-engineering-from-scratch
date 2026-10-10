@@ -1032,6 +1032,14 @@
       window.AIFS_applyNewsletterLang();
     }
 
+    var certReadmePath = isKorean
+      ? 'certifications/README.ko.md'
+      : 'certifications/README.md';
+    var certReadmeHref = 'https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/' + certReadmePath;
+    document.querySelectorAll('[data-cert-readme-link]').forEach(function (link) {
+      link.setAttribute('href', certReadmeHref);
+    });
+
     populateCurriculumSummary();
     renderPhases();
     var modalOverlay = document.getElementById('modalOverlay');
