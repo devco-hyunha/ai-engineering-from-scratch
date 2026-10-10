@@ -457,6 +457,11 @@
     surface.appendChild(stateText);
 
     var lines = splitName(localizedName);
+    if (lines.join(' ') !== String(localizedName || '').toUpperCase()) {
+      var fullName = svgEl('title');
+      fullName.textContent = localizedName;
+      group.insertBefore(fullName, group.firstChild);
+    }
     for (var i = 0; i < lines.length; i++) {
       var title = svgEl('text', {
         class: 'roadmap-node-title',
